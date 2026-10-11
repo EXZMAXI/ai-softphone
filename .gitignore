@@ -1,0 +1,7 @@
+build/
+install/
+dist/
+.cache/
+compile_commands.json
+__pycache__/
+*.pem

@@ -1,0 +1,359 @@
+{
+  "language": "nb",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Salg",
+      "description": "Å selge, gi tilbud, forhandle eller følge opp et kjøp — også en kunde som spør hva noe koster."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Brukerstøtte",
+      "description": "Å hjelpe noen med et produkt eller en tjeneste de allerede har: en feil, et spørsmål om bruken, en klage på hvordan det virker."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Privat",
+      "description": "Ikke forretning i det hele tatt — en privat samtale som tilfeldigvis gikk over denne linjen."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Annet",
+      "description": "Forretning, men verken salg eller brukerstøtte: en leverandør, en kollega, en levering, et feil nummer. Velg dette framfor å gjette mellom de andre."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Tilbakeringing lovet",
+      "description": "Noen i denne samtalen lovet å ringe tilbake, eller ba om å bli oppringt."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Klage",
+      "description": "Motparten uttrykte misnøye, enten den ble løst eller ikke."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Sendt videre",
+      "description": "Samtalen ble gitt videre til noen andre, eller motparten ba om det."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "Viktig kunde",
+      "description": "Motparten ble behandlet som en viktig konto, eller sa seg å være det."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Sint kunde",
+      "description": "Motparten var hørbart sint, fornærmende, eller truet med å gå."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Fare for oppsigelse",
+      "description": "Oppsigelse, manglende fornyelse eller bytte til noen andre ble nevnt, uansett hvor rolig."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Løfte gitt",
+      "description": "Vår side bandt seg til noe bestemt — en dato, en pris, en utbedring, en refusjon."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Sensitive data",
+      "description": "Et kortnummer, et passord, et dokumentnummer eller noe annet som ikke hører hjemme i et opptak, ble lest høyt."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Konkurrent",
+      "description": "Motparten nevnte noen andre som tilbyr det samme, eller sammenlignet oss med dem."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Løpende tekst",
+      "description": "Svar i løpende tekst. Ikke bruk JSON, lister eller overskrifter."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Punkter",
+      "description": "Svar bare med JSON, nøyaktig av denne formen:\n{\"items\": [{\"text\": \"hva som skal gjøres\", \"owner\": \"hvem, eller tomt\", \"due\": \"når, eller tomt\"}]}\nSvar med en tom array når det ikke er noe å regne opp. Skriv ingenting utenfor JSON-en."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Etiketter",
+      "description": "Svar bare med JSON, nøyaktig av denne formen:\n{\"labels\": [{\"code\": \"en kode fra listen du har fått\", \"confidence\": 0.0}]}\nBruk bare koder fra listen. Svar med en tom array når ingen passer.\nIkke finn på en kode, og skriv ingenting utenfor JSON-en."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Karakter",
+      "description": "Svar bare med JSON, nøyaktig av denne formen:\n{\"score\": 3, \"rationale\": \"hvorfor det tallet og ikke ett høyere\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"ordene du bygger på\"}]}\nKarakteren er et helt tall fra 1 til 5. Skriv ingenting utenfor JSON-en."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Kriterier",
+      "description": "Svar bare med JSON, nøyaktig av denne formen:\n{\"overall\": 3, \"rationale\": \"hvorfor det tallet og ikke ett høyere\",\n \"criteria\": [{\"name\": \"kriteriet slik det ble gitt deg\",\n               \"verdict\": \"pass\" eller \"weak\" eller \"fail\" eller \"n/a\",\n               \"note\": \"én setning\"}]}\nBedøm hvert kriterium du har fått og ingen andre. Samlet karakter er et helt\ntall fra 1 til 5. Skriv ingenting utenfor JSON-en."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Signaler",
+      "description": "Svar bare med JSON, nøyaktig av denne formen:\n{\"flags\": [{\"code\": \"en kode fra listen du har fått\",\n            \"severity\": \"low\" eller \"medium\" eller \"high\",\n            \"evidence\": \"ordene du bygger på\",\n            \"at_ms\": 0}]}\nBruk bare koder fra listen, og reis hver høyst én gang. Svar med en tom\narray når ingenting passer. Skriv ingenting utenfor JSON-en."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Svar",
+      "description": "Svar bare med JSON, nøyaktig av denne formen:\n{\"answer\": \"svaret ditt, eller si rett ut at samtalen ikke sier det\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"ordene svaret ditt hviler på\"}]}\nIkke svar ut fra noe annet enn samtalen. Skriv ingenting utenfor\nJSON-en."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Svar bare med JSON, i den formen det er bedt om ovenfor. Skriv ingenting utenfor JSON-en."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Som snakket",
+      "description": "Skriv svaret ditt på det samme språket som samtalen ble ført på."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Som snakket, navngitt",
+      "description": "Skriv svaret ditt på det samme språket som samtalen ble ført på, altså {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Et navngitt språk",
+      "description": "Skriv svaret ditt på dette språket: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Sammendrag",
+      "system": "Du leser utskrifter av telefonsamtaler og skriver korte, saklige sammendrag av dem. Du gjetter aldri på noe som ikke ble sagt, og du legger aldri til råd.",
+      "body": "Sammenfatt denne telefonsamtalen i ett kort avsnitt: hva den handlet om, hva som ble bestemt, og hva som skjer videre. Den varte {{duration}} og var {{direction}}, med {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Sammendrag på én linje",
+      "system": "Du leser utskrifter av telefonsamtaler og koker hver ned til én enkelt vending. Du gjetter aldri og legger aldri til råd.",
+      "body": "Kok denne telefonsamtalen ned til én vending på høyst tolv ord — den slags linje som ville stått i en tabell ved siden av navnet på den som ringte. Ikke punktum, ikke anførselstegn.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Oppgaver",
+      "system": "Du leser utskrifter av telefonsamtaler og regner opp hva noen har påtatt seg å gjøre. Du regner bare opp det som faktisk ble sagt; du finner aldri på en oppgave, en ansvarlig eller en dato.",
+      "body": "Regn opp hva noen i denne samtalen har påtatt seg å gjøre. Nevn hvem som skal gjøre det der det ble sagt, og innen når der det ble sagt. Har ingen påtatt seg noe, svar med en tom liste.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Emner",
+      "system": "Du leser utskrifter av telefonsamtaler og navngir hva de handlet om.",
+      "body": "Regn opp emnene denne samtalen faktisk berørte, høyst seks, hvert i noen få ord. La ansvarlig og dato stå tomme — de betyr ingenting her.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Navn og tall",
+      "system": "Du leser utskrifter av telefonsamtaler og plukker ut det som ble nevnt i dem. Du gjetter aldri på en skrivemåte og legger aldri til noe som ikke ble sagt.",
+      "body": "Plukk ut det som ble nevnt i denne samtalen, som JSON nøyaktig av denne formen:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nHver er en liste med strenger, skrevet slik de ble sagt. La heller en liste stå tom enn å gjette.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Kategori",
+      "system": "Du sorterer telefonsamtaler under en av kategoriene du får. Du velger fra listen og fra ingenting annet.",
+      "body": "Sorter denne samtalen under nøyaktig en av disse kategoriene. Svar med koden dens.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Etiketter",
+      "system": "Du merker telefonsamtaler med etikettene du får. Du velger fra listen og fra ingenting annet, og du utelater heller en etikett enn å tøye den.",
+      "body": "Hvilke av disse stemmer på denne samtalen? Svar med kodene deres, eller med en tom liste om ingen gjør det.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Signaler",
+      "system": "Du leser utskrifter av telefonsamtaler og reiser bare det du har fått i oppdrag å lete etter. Du siterer ordene du bygger hver enkelt på, og du reiser ingenting du ikke kan sitere.",
+      "body": "Reis de av disse som denne samtalen viser. Siter for hver ordene den hviler på, og oppgi øyeblikket i millisekunder da de ble sagt. Reis heller ingenting enn å tøye en definisjon.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Et spørsmål om denne samtalen",
+      "system": "Du besvarer spørsmål om én telefonsamtale, ut fra utskriften og ingenting annet. Der samtalen ikke sier det, sier du det rett ut i stedet for å gjette.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Salgskvalitet",
+      "system": "Du vurderer hvordan en selger håndterte en telefonsamtale. Du dømmer bare det utskriften viser, du antar aldri hva som skjedde før eller etter, og du er like streng mot en samtale som gikk bra som mot en som ikke gjorde det.",
+      "body": "Vurder vår side av denne samtalen — personen i telefonen — mot disse kriteriene og ingen andre:\n- hilsen: presenterte vedkommende seg og selskapet?\n- kartlegging: fant vedkommende ut hva kunden faktisk ville ha?\n- innvendinger: besvarte vedkommende det kunden tok opp, i stedet for å snakke utenom?\n- verdi: sa vedkommende hva kunden får, og ikke bare hva det koster?\n- neste skritt: sluttet samtalen med noe bestemt avtalt?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Kvalitet på brukerstøtten",
+      "system": "Du vurderer hvordan en støttemedarbeider håndterte en telefonsamtale. Du dømmer bare det utskriften viser, og vektlegger tyngre om kundens problem faktisk ble tatt hånd om enn hvor hyggelig samtalen var.",
+      "body": "Vurder vår side av denne samtalen — personen i telefonen — mot disse kriteriene og ingen andre:\n- hilsen: presenterte vedkommende seg og bekreftet hvem det ble snakket med?\n- forståelse: fastslo vedkommende hva som faktisk var galt før det ble svart?\n- løsning: ble problemet løst, eller ble det gitt et bestemt neste skritt?\n- tone: holdt vedkommende seg rolig og høflig, særlig der kunden ikke var det?\n- avslutning: sjekket vedkommende at kunden var fornøyd før det ble avsluttet?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Undertekster",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Oversettelse",
+      "system": "Du oversetter tale mens den blir sagt. Du svarer bare med oversettelsen — ingen innledning, ingen anførselstegn, ingen forklaring — og du lar navn, tall og priser stå akkurat slik de ble sagt.",
+      "body": "Oversett til {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Salg",
+      "system": "Du hjelper en person som selger over telefon. Du svarer med noen få korte linjer som kan leses mens man lytter, aldri i avsnitt, og du lover aldri noe på personens vegne.",
+      "body": "Den andre personen sa nettopp:\n\n{{reply}}\n\nTidligere i denne samtalen:\n\n{{conversation}}\n\nSi på én linje hva som skjer — en innvending, et spørsmål du ikke har svart på, et tegn på at de er klare — og på én linje hva du skal si nå. Er det ingenting å si, skriv bare «—».",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Hjelp i intervjuet",
+      "system": "Du hjelper en person som blir intervjuet. Du svarer med noen få korte linjer som kan leses mens man lytter, aldri i avsnitt, og du dikter aldri opp opplysninger om personen.",
+      "body": "Den andre personen sa nettopp:\n\n{{reply}}\n\nTidligere i denne samtalen:\n\n{{conversation}}\n\nSi i tre korte linjer hva hun egentlig spør om, og hva et godt svar bør dekke.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Transkriber hver samtale"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Sammenfatt den"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Kok den ned til én linje"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Sorter den under en kategori"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Merk den"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Reis alt som er verdt et blikk"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Vurder den, om det var salg"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Vurder den, om det var brukerstøtte"
+    }
+  ]
+}

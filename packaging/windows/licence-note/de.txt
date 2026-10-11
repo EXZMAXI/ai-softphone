@@ -1,0 +1,8 @@
+﻿WAS DIESE LIZENZ BEDEUTET
+
+Dieses Programm ist freie Software. Sie dürfen es benutzen, kopieren und ändern und an
+jeden weitergeben — solange derjenige dieselbe Freiheit erhält, und den Quelltext dazu.
+Es gibt keinerlei Gewährleistung.
+
+Die Lizenz selbst ist der englische Text unten, und dieser ist maßgeblich. Diese Notiz
+erklärt ihn nur.

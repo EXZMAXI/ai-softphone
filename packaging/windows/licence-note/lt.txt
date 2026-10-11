@@ -1,0 +1,8 @@
+﻿KĄ REIŠKIA ŠI LICENCIJA
+
+Ši programa yra laisva programinė įranga. Galite ją naudoti, kopijuoti ir keisti bei
+perduoti bet kam — su sąlyga, kad gavėjas gaus tą pačią laisvę, o kartu su ja ir pirminį
+kodą. Jokios garantijos nesuteikiama.
+
+Pati licencija yra žemiau pateiktas tekstas anglų kalba, ir būtent jis galioja. Šis
+paaiškinimas tik nusako jo esmę.

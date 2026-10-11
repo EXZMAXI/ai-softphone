@@ -1,0 +1,359 @@
+{
+  "language": "nl",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Verkoop",
+      "description": "Verkopen, offreren, onderhandelen of nabellen over een aankoop — ook een klant die vraagt wat iets kost."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Ondersteuning",
+      "description": "Iemand helpen met een product of dienst die hij al heeft: een storing, een vraag over het gebruik, een klacht over hoe het werkt."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Privé",
+      "description": "Helemaal niet zakelijk — een privégesprek dat toevallig over deze lijn ging."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Overig",
+      "description": "Zakelijk, maar noch verkoop noch ondersteuning: een leverancier, een collega, een levering, een verkeerd nummer. Kies dit liever dan tussen de andere te gokken."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Terugbellen toegezegd",
+      "description": "Iemand in dit gesprek heeft toegezegd terug te bellen, of gevraagd te worden teruggebeld."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Klacht",
+      "description": "De tegenpartij uitte ontevredenheid, of die nu verholpen is of niet."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Doorgezet",
+      "description": "Het gesprek is aan iemand anders overgedragen, of de tegenpartij vroeg daarom."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "Belangrijke klant",
+      "description": "De tegenpartij werd als belangrijke klant behandeld, of zei dat te zijn."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Boze klant",
+      "description": "De tegenpartij was hoorbaar boos, beledigend, of dreigde weg te gaan."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Opzegrisico",
+      "description": "Opzeggen, niet verlengen of overstappen naar iemand anders kwam ter sprake, hoe rustig ook."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Toezegging gedaan",
+      "description": "Onze kant heeft zich aan iets concreets verbonden — een datum, een prijs, een oplossing, een terugbetaling."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Gevoelige gegevens",
+      "description": "Een kaartnummer, een wachtwoord, een documentnummer of iets anders dat niet in een opname hoort, is hardop voorgelezen."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Concurrent",
+      "description": "De tegenpartij noemde iemand anders die hetzelfde aanbiedt, of vergeleek ons daarmee."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Lopende tekst",
+      "description": "Antwoord in lopende tekst. Gebruik geen JSON, lijsten of koppen."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Punten",
+      "description": "Antwoord alleen met JSON, precies in deze vorm:\n{\"items\": [{\"text\": \"wat er gedaan moet worden\", \"owner\": \"wie, of leeg\", \"due\": \"wanneer, of leeg\"}]}\nGeef een lege array terug wanneer er niets op te sommen valt. Schrijf niets buiten de JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Labels",
+      "description": "Antwoord alleen met JSON, precies in deze vorm:\n{\"labels\": [{\"code\": \"een code uit de lijst die je hebt gekregen\", \"confidence\": 0.0}]}\nGebruik alleen codes uit de lijst. Geef een lege array terug wanneer er geen past.\nVerzin geen code en schrijf niets buiten de JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Cijfer",
+      "description": "Antwoord alleen met JSON, precies in deze vorm:\n{\"score\": 3, \"rationale\": \"waarom dat getal en niet één hoger\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"de woorden waarop je je baseert\"}]}\nHet cijfer is een geheel getal van 1 tot 5. Schrijf niets buiten de JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Criteria",
+      "description": "Antwoord alleen met JSON, precies in deze vorm:\n{\"overall\": 3, \"rationale\": \"waarom dat getal en niet één hoger\",\n \"criteria\": [{\"name\": \"het criterium zoals het je is gegeven\",\n               \"verdict\": \"pass\" of \"weak\" of \"fail\" of \"n/a\",\n               \"note\": \"één zin\"}]}\nBeoordeel elk criterium dat je hebt gekregen en geen andere. Het eindcijfer is een geheel\ngetal van 1 tot 5. Schrijf niets buiten de JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Signalen",
+      "description": "Antwoord alleen met JSON, precies in deze vorm:\n{\"flags\": [{\"code\": \"een code uit de lijst die je hebt gekregen\",\n            \"severity\": \"low\" of \"medium\" of \"high\",\n            \"evidence\": \"de woorden waarop je je baseert\",\n            \"at_ms\": 0}]}\nGebruik alleen codes uit de lijst, en noem elke hoogstens één keer. Geef een lege array\nterug wanneer er niets van toepassing is. Schrijf niets buiten de JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Antwoord",
+      "description": "Antwoord alleen met JSON, precies in deze vorm:\n{\"answer\": \"je antwoord, of zeg ronduit dat het gesprek het niet zegt\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"de woorden waarop je antwoord steunt\"}]}\nAntwoord uit niets anders dan het gesprek. Schrijf niets buiten\nde JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Antwoord alleen met JSON, in de hierboven gevraagde vorm. Schrijf niets buiten de JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Zoals gesproken",
+      "description": "Schrijf je antwoord in dezelfde taal als waarin het gesprek werd gevoerd."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Zoals gesproken, benoemd",
+      "description": "Schrijf je antwoord in dezelfde taal als waarin het gesprek werd gevoerd, namelijk {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Een benoemde taal",
+      "description": "Schrijf je antwoord in deze taal: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Samenvatting",
+      "system": "Je leest transcripties van telefoongesprekken en schrijft er korte, feitelijke samenvattingen van. Je gokt nooit naar wat niet is gezegd, en je voegt nooit advies toe.",
+      "body": "Vat dit telefoongesprek samen in één korte alinea: waar het over ging, wat er is besloten, en wat er hierna gebeurt. Het duurde {{duration}} en was {{direction}}, met {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Samenvatting van één regel",
+      "system": "Je leest transcripties van telefoongesprekken en brengt elk terug tot één zinsnede. Je gokt nooit en je voegt nooit advies toe.",
+      "body": "Breng dit telefoongesprek terug tot één zinsnede van hoogstens twaalf woorden — het soort regel dat in een tabel naast de naam van de beller zou staan. Geen punt, geen aanhalingstekens.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Actiepunten",
+      "system": "Je leest transcripties van telefoongesprekken en somt op wat iemand op zich heeft genomen. Je somt alleen op wat echt is gezegd; je verzint nooit een taak, een verantwoordelijke of een datum.",
+      "body": "Som op wat wie dan ook in dit gesprek op zich heeft genomen. Noem wie het moet doen waar dat is gezegd, en tegen wanneer waar dat is gezegd. Heeft niemand iets op zich genomen, antwoord dan met een lege lijst.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Onderwerpen",
+      "system": "Je leest transcripties van telefoongesprekken en benoemt waar ze over gingen.",
+      "body": "Som de onderwerpen op die dit gesprek werkelijk heeft behandeld, hoogstens zes, elk in een paar woorden. Laat de verantwoordelijke en de datum leeg — die betekenen hier niets.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Namen en getallen",
+      "system": "Je leest transcripties van telefoongesprekken en haalt eruit wat erin is genoemd. Je gokt nooit naar een spelling en voegt nooit toe wat niet is gezegd.",
+      "body": "Haal eruit wat in dit gesprek is genoemd, als JSON precies in deze vorm:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nElk is een lijst van tekenreeksen, geschreven zoals ze zijn gezegd. Laat een lijst liever leeg dan te gokken.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Categorie",
+      "system": "Je ordent telefoongesprekken onder een van de categorieën die je krijgt. Je kiest uit de lijst en uit niets anders.",
+      "body": "Orden dit gesprek onder precies een van deze categorieën. Antwoord met de code ervan.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Labels",
+      "system": "Je labelt telefoongesprekken met de labels die je krijgt. Je kiest uit de lijst en uit niets anders, en je laat een label liever weg dan het op te rekken.",
+      "body": "Welke hiervan gelden voor dit gesprek? Antwoord met hun codes, of met een lege lijst als er geen geldt.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Signalen",
+      "system": "Je leest transcripties van telefoongesprekken en noemt alleen waar je naar hebt moeten zoeken. Je citeert de woorden waarop je je bij elk baseert, en je noemt niets dat je niet kunt citeren.",
+      "body": "Noem welke hiervan dit gesprek laat zien. Citeer bij elk de woorden waarop het steunt en geef het moment in milliseconden waarop ze zijn gezegd. Noem liever niets dan een definitie op te rekken.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Een vraag over dit gesprek",
+      "system": "Je beantwoordt vragen over één telefoongesprek, uit de transcriptie ervan en uit niets anders. Waar het gesprek het niet zegt, zeg je dat ronduit in plaats van te gokken.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Verkoopkwaliteit",
+      "system": "Je beoordeelt hoe een verkoper een telefoongesprek heeft gevoerd. Je oordeelt alleen over wat de transcriptie laat zien, je neemt nooit aan wat ervoor of erna gebeurde, en je bent net zo streng voor een gesprek dat goed ging als voor een dat dat niet deed.",
+      "body": "Beoordeel onze kant van dit gesprek — de persoon aan de telefoon — op deze criteria en geen andere:\n- begroeting: stelde die zich en het bedrijf voor?\n- inventarisatie: kwam die erachter wat de klant werkelijk wilde?\n- bezwaren: beantwoordde die wat de klant opwierp, in plaats van eromheen te praten?\n- waarde: zei die wat de klant krijgt, en niet alleen wat het kost?\n- vervolgstap: eindigde het gesprek met iets concreets?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Kwaliteit van de ondersteuning",
+      "system": "Je beoordeelt hoe een medewerker van de ondersteuning een telefoongesprek heeft gevoerd. Je oordeelt alleen over wat de transcriptie laat zien, en weegt zwaarder of het probleem van de klant werkelijk is aangepakt dan hoe prettig het gesprek was.",
+      "body": "Beoordeel onze kant van dit gesprek — de persoon aan de telefoon — op deze criteria en geen andere:\n- begroeting: stelde die zich voor en bevestigde die met wie die sprak?\n- begrip: stelde die vast wat er werkelijk mis was voordat die antwoordde?\n- oplossing: is het probleem opgelost, of is er een concrete vervolgstap gegeven?\n- toon: bleef die rustig en beleefd, vooral waar de klant dat niet was?\n- afsluiting: ging die na of de klant tevreden was voordat die afsloot?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Ondertitels",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Vertaling",
+      "system": "Je vertaalt spraak terwijl die gesproken wordt. Je antwoordt alleen met de vertaling — geen inleiding, geen aanhalingstekens, geen uitleg — en je laat namen, getallen en prijzen precies zoals ze gezegd zijn.",
+      "body": "Vertaal naar het {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Verkoop",
+      "system": "U helpt iemand die telefonisch verkoopt. U antwoordt in enkele korte regels die hij tijdens het luisteren kan lezen, nooit in alinea's, en u belooft nooit iets namens hem.",
+      "body": "De ander zei net:\n\n{{reply}}\n\nEerder in dit gesprek:\n\n{{conversation}}\n\nZeg in één regel wat er gebeurt — een bezwaar, een onbeantwoorde vraag, een teken dat ze eraan toe zijn — en in één regel wat je nu moet zeggen. Is er niets te zeggen, schrijf dan alleen „—”.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Hulp bij het gesprek",
+      "system": "U helpt iemand die een sollicitatiegesprek heeft. U antwoordt in enkele korte regels die hij tijdens het luisteren kan lezen, nooit in alinea's, en u verzint nooit feiten over hem.",
+      "body": "De ander zei net:\n\n{{reply}}\n\nEerder in dit gesprek:\n\n{{conversation}}\n\nZeg in drie korte regels wat hij werkelijk vraagt en wat een goed antwoord zou moeten bevatten.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Elk gesprek transcriberen"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Het samenvatten"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Het tot één regel terugbrengen"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Het onder een categorie ordenen"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Het labelen"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Noemen wat een blik waard is"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Het beoordelen, als het verkoop was"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Het beoordelen, als het ondersteuning was"
+    }
+  ]
+}

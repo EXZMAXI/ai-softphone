@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  AI Softphone - a cross-platform desktop SIP softphone with an AI enrichment layer.
+  https://ai-softphone.com
+
+  SPDX-FileCopyrightText: Copyright (C) 2026 AI-Softphone Developers Team
+  SPDX-FileCopyrightText: Copyright (C) 2026 Ilya Pleshchinskiy
+  SPDX-License-Identifier: GPL-2.0-or-later
+
+  This file is part of AI Softphone. There is NO WARRANTY, to the extent
+  permitted by law. See the file LICENSE for the full terms.
+-->
+<component type="desktop-application">
+    <id>com.ai-softphone.phone</id>
+
+    <name>AI Softphone</name>
+    <name xml:lang="ru">AI Софтфон</name>
+    <name xml:lang="pt">AI Softphone</name>
+
+    <summary>Make and take SIP calls, with transcription and summaries</summary>
+    <summary xml:lang="ru">Звонки по SIP с расшифровкой и краткими итогами</summary>
+    <summary xml:lang="pt">Chamadas SIP com transcrição e resumos</summary>
+
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>GPL-2.0-or-later</project_license>
+
+    <developer id="com.ai-softphone">
+        <name>AI Softphone</name>
+    </developer>
+
+    <launchable type="desktop-id">ai-softphone.desktop</launchable>
+
+    <provides>
+        <binary>ai-softphone</binary>
+        <binary>ai-softphone-cli</binary>
+    </provides>
+
+    <description>
+        <p>
+            A desktop softphone for SIP telephony: several accounts and several
+            calls at once, hold, transfer and conference, DTMF, hotkeys, a
+            contact list and a call history that stay on this machine.
+        </p>
+        <p xml:lang="ru">
+            Настольный SIP-телефон: несколько учётных записей и несколько
+            разговоров одновременно, удержание, перевод и конференция, DTMF,
+            горячие клавиши, список контактов и история звонков, которые
+            остаются на этой машине.
+        </p>
+        <p xml:lang="pt">
+            Um softphone de secretária para telefonia SIP: várias contas e
+            várias chamadas em simultâneo, espera, transferência e conferência,
+            DTMF, teclas de atalho, uma lista de contactos e um histórico de
+            chamadas que ficam nesta máquina.
+        </p>
+    </description>
+
+    <categories>
+        <category>Network</category>
+        <category>Telephony</category>
+    </categories>
+
+    <url type="homepage">https://ai-softphone.com</url>
+    <url type="bugtracker">https://github.com/bpmkit/ai-softphone/issues</url>
+
+    <content_rating type="oars-1.1"/>
+</component>

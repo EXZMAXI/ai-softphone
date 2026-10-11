@@ -1,0 +1,101 @@
+#!/bin/sh
+#
+# AI Softphone - a cross-platform desktop SIP softphone with an AI enrichment layer.
+# https://ai-softphone.com
+#
+# SPDX-FileCopyrightText: Copyright (C) 2026 AI-Softphone Developers Team
+# SPDX-FileCopyrightText: Copyright (C) 2026 Ilya Pleshchinskiy
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# This file is part of AI Softphone. There is NO WARRANTY, to the extent
+# permitted by law. See the file LICENSE for the full terms.
+
+HERE=$(dirname "$(readlink -f "$0")")
+RUNTIME="${HERE}/usr/lib/ai-softphone/runtime"
+NEEDS="${HERE}/usr/lib/ai-softphone/needs"
+
+complain() {
+    printf '%s\n' "$1" >&2
+    if command -v zenity > /dev/null 2>&1; then
+        zenity --error --no-wrap --title="AI Softphone" --text="$1" > /dev/null 2>&1
+    elif command -v kdialog > /dev/null 2>&1; then
+        kdialog --error "$1" > /dev/null 2>&1
+    elif command -v xmessage > /dev/null 2>&1; then
+        xmessage -center "$1" > /dev/null 2>&1
+    fi
+}
+
+at_least() {
+    [ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | head -1)" = "$2" ]
+}
+
+if [ -r "${NEEDS}" ]; then
+    . "${NEEDS}"
+
+    have=$(getconf GNU_LIBC_VERSION 2> /dev/null | awk '{print $2}')
+    if [ -z "${have}" ]; then
+        have=$(ldd --version 2> /dev/null | head -1 | awk '{print $NF}')
+    fi
+
+    if [ -n "${have}" ] && [ -n "${glibc}" ] && ! at_least "${have}" "${glibc}"; then
+        complain "AI Softphone cannot start on this system.
+
+It needs the GNU C library ${glibc} or newer, and this machine has ${have}.
+
+That usually means the operating system is older than this build: Ubuntu 22.04
+or newer, Debian 12 or newer, or anything of the same age. The version of the
+phone for older systems, if there is one, is on the website beside this
+download."
+        exit 1
+    fi
+fi
+
+PLATFORMS="${HERE}/usr/plugins/platforms"
+
+if [ -z "${QT_QPA_PLATFORM}" ] && [ -d "${PLATFORMS}" ]; then
+    if [ -n "${WAYLAND_DISPLAY}" ] || [ "${XDG_SESSION_TYPE}" = "wayland" ]; then
+        wanted="wayland"
+        carried="${PLATFORMS}/libqwayland-generic.so"
+    elif [ -n "${DISPLAY}" ]; then
+        wanted="xcb"
+        carried="${PLATFORMS}/libqxcb.so"
+    else
+        wanted=""
+        carried=""
+    fi
+
+    if [ "${wanted}" = "wayland" ] && [ -n "${DISPLAY}" ] \
+        && [ -e "${PLATFORMS}/libqxcb.so" ]; then
+        QT_QPA_PLATFORM="xcb"
+        export QT_QPA_PLATFORM
+    elif [ -n "${wanted}" ] && [ ! -e "${carried}" ]; then
+        complain "AI Softphone cannot start on this session.
+
+This is a ${wanted} session and this build does not carry the ${wanted} plugin
+Qt needs for it.
+
+Starting it from a terminal with QT_QPA_PLATFORM=xcb may work if an X server or
+XWayland is running. Please tell us what desktop this is — the About page has a
+form, and there is an address on the website."
+        exit 1
+    fi
+fi
+
+if [ -r "${NEEDS}" ] && [ -n "${libstdcxx}" ] && [ -d "${RUNTIME}" ]; then
+    theirs=""
+    for one in /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /usr/lib64/libstdc++.so.6 \
+        /usr/lib/libstdc++.so.6; do
+        if [ -e "${one}" ]; then
+            theirs=$(grep -ao 'GLIBCXX_[0-9][0-9.]*' "${one}" 2> /dev/null \
+                | sed 's/GLIBCXX_//' | sort -V | tail -1)
+            break
+        fi
+    done
+
+    if [ -z "${theirs}" ] || ! at_least "${theirs}" "${libstdcxx}"; then
+        LD_LIBRARY_PATH="${RUNTIME}${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+        export LD_LIBRARY_PATH
+    fi
+fi
+
+exec "${HERE}/usr/bin/ai-softphone" "$@"

@@ -1,0 +1,36 @@
+// AI Softphone - a cross-platform desktop SIP softphone with an AI enrichment layer.
+// https://ai-softphone.com
+//
+// SPDX-FileCopyrightText: Copyright (C) 2026 AI-Softphone Developers Team
+// SPDX-FileCopyrightText: Copyright (C) 2026 Ilya Pleshchinskiy
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// This file is part of AI Softphone. There is NO WARRANTY, to the extent
+// permitted by law. See the file LICENSE for the full terms.
+
+#ifndef SOFTPHONE_LAME_CONFIG_H
+#define SOFTPHONE_LAME_CONFIG_H
+
+#define PACKAGE "lame"
+#define VERSION "@SOFTPHONE_LAME_VERSION@"
+
+#define STDC_HEADERS 1
+#define PROTOTYPES 1
+
+#define HAVE_ERRNO_H 1
+#define HAVE_FCNTL_H 1
+#define HAVE_LIMITS_H 1
+#define HAVE_INTTYPES_H 1
+#define HAVE_STDINT_H 1
+#define HAVE_STRCHR 1
+#define HAVE_MEMCPY 1
+
+#define USE_FAST_LOG 1
+
+#define LAME_LIBRARY_BUILD 1
+
+typedef long double ieee854_float80_t;
+typedef double ieee754_float64_t;
+typedef float ieee754_float32_t;
+
+#endif

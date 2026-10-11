@@ -1,0 +1,8 @@
+﻿MIDA SEE LITSENTS TÄHENDAB
+
+See programm on vaba tarkvara. Te võite seda kasutada, kopeerida ja muuta ning edasi anda
+kellele tahes — tingimusel, et saaja saab sama vabaduse ja koos sellega lähtekoodi. Mingit
+garantiid ei anta.
+
+Litsents ise on allolev ingliskeelne tekst ja just see kehtib. See märkus üksnes selgitab
+seda.

@@ -1,0 +1,8 @@
+﻿VAD DEN HÄR LICENSEN INNEBÄR
+
+Det här programmet är fri programvara. Du får använda det, kopiera det och ändra det, och
+ge det vidare till vem som helst — så länge den som får det får samma frihet, och
+källkoden med. Det finns ingen garanti.
+
+Själva licensen är den engelska texten nedan, och det är den som gäller. Den här notisen
+förklarar den bara.

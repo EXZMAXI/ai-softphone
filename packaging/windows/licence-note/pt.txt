@@ -1,0 +1,7 @@
+﻿O QUE ESTA LICENÇA SIGNIFICA
+
+Este programa é software livre. Pode usá-lo, copiá-lo e alterá-lo, e passá-lo a qualquer
+pessoa — desde que quem o receba obtenha a mesma liberdade, e o código-fonte com ela. Não
+há qualquer garantia.
+
+A licença em si é o texto inglês abaixo, e é esse que vale. Esta nota apenas o explica.

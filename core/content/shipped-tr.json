@@ -1,0 +1,359 @@
+{
+  "language": "tr",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Satış",
+      "description": "Satma, fiyat verme, pazarlık ya da bir alışverişin ardını izleme — müşterinin bir şeyin kaça olduğunu sorması da buna girer."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Destek",
+      "description": "Birine, zaten sahip olduğu bir ürün ya da hizmet konusunda yardım: bir arıza, kullanımla ilgili bir soru, işleyişinden bir yakınma."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Özel",
+      "description": "Hiç iş değil — rastgele bu hatta yapılmış özel bir konuşma."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Diğer",
+      "description": "İş, ama ne satış ne destek: bir tedarikçi, bir çalışma arkadaşı, bir teslimat, yanlış numara. Ötekiler arasında tahmin yürütmek yerine bunu seçin."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Geri arama sözü",
+      "description": "Bu çağrıda biri geri arayacağına söz verdi ya da kendisinin aranmasını istedi."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Yakınma",
+      "description": "Karşı taraf hoşnutsuzluğunu dile getirdi, çözülmüş olsun ya da olmasın."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Üste taşındı",
+      "description": "Çağrı başka birine verildi ya da karşı taraf bunu istedi."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "VIP müşteri",
+      "description": "Karşı tarafa önemli bir müşteri gibi davranıldı ya da kendisi öyle olduğunu söyledi."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Öfkeli müşteri",
+      "description": "Karşı tarafın öfkeli olduğu, hakaret ettiği ya da ayrılmakla korkuttuğu duyuluyordu."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Ayrılma tehlikesi",
+      "description": "İptal, yenilememe ya da başkasına geçme, ne kadar sakin söylenmiş olursa olsun, dile getirildi."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Verilen söz",
+      "description": "Bizim taraf belirli bir şeye bağlandı — bir tarih, bir fiyat, bir onarım, bir geri ödeme."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Duyarlı veri",
+      "description": "Bir kart numarası, parola, belge numarası ya da bir kayıtta bulunmaması gereken başka bir şey sesli okundu."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Rakip",
+      "description": "Karşı taraf aynı şeyi sunan başka birini adlandırdı ya da bizi onunla karşılaştırdı."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Düzyazı",
+      "description": "Yalın düzyazıyla yanıtlayın. JSON, liste ya da başlık kullanmayın."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Maddeler",
+      "description": "Yalnızca JSON ile, tam olarak şu biçimde yanıtlayın:\n{\"items\": [{\"text\": \"yapılacak olan\", \"owner\": \"kim, ya da boş\", \"due\": \"ne zaman, ya da boş\"}]}\nSıralanacak bir şey yoksa boş dizi kullanın. JSON dışında hiçbir şey yazmayın."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Etiketler",
+      "description": "Yalnızca JSON ile, tam olarak şu biçimde yanıtlayın:\n{\"labels\": [{\"code\": \"verilen listeden bir kod\", \"confidence\": 0.0}]}\nYalnızca listedeki kodları kullanın. Hiçbiri uymuyorsa boş dizi kullanın. Kod\nuydurmayın ve JSON dışında hiçbir şey yazmayın."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Puan",
+      "description": "Yalnızca JSON ile, tam olarak şu biçimde yanıtlayın:\n{\"score\": 3, \"rationale\": \"neden bu sayı da bir üstü değil\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"dayandığınız sözler\"}]}\nPuan 1 ile 5 arası bir tam sayıdır. JSON dışında hiçbir şey yazmayın."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Ölçütler",
+      "description": "Yalnızca JSON ile, tam olarak şu biçimde yanıtlayın:\n{\"overall\": 3, \"rationale\": \"neden bu sayı da bir üstü değil\",\n \"criteria\": [{\"name\": \"ölçüt, size verildiği gibi\",\n               \"verdict\": \"pass\" ya da \"weak\" ya da \"fail\" ya da \"n/a\",\n               \"note\": \"tek cümle\"}]}\nVerilen her ölçütü değerlendirin, başkasını değil. Genel puan 1 ile 5 arası bir\ntam sayıdır. JSON dışında hiçbir şey yazmayın."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "İşaretler",
+      "description": "Yalnızca JSON ile, tam olarak şu biçimde yanıtlayın:\n{\"flags\": [{\"code\": \"verilen listeden bir kod\",\n            \"severity\": \"low\" ya da \"medium\" ya da \"high\",\n            \"evidence\": \"dayandığınız sözler\",\n            \"at_ms\": 0}]}\nYalnızca listedeki kodları kullanın ve her birini en çok bir kez kaldırın. Hiçbir\nşey uymuyorsa boş dizi kullanın. JSON dışında hiçbir şey yazmayın."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Yanıt",
+      "description": "Yalnızca JSON ile, tam olarak şu biçimde yanıtlayın:\n{\"answer\": \"yanıtınız ya da açıkça görüşmenin bunu söylemediği\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"yanıtınızın dayandığı sözler\"}]}\nGörüşmeden başka hiçbir şeyden yanıtlamayın. JSON dışında hiçbir şey yazmayın."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Yalnızca JSON ile, yukarıda istenen biçimde yanıtlayın. JSON dışında hiçbir şey yazmayın."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Konuşulduğu gibi",
+      "description": "Yanıtınızı, görüşmenin yapıldığı dilde yazın."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Konuşulduğu gibi, adıyla",
+      "description": "Yanıtınızı, görüşmenin yapıldığı dilde yazın; o da şudur: {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Belirtilen dil",
+      "description": "Yanıtınızı şu dilde yazın: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Özet",
+      "system": "Telefon görüşmelerinin dökümlerini okur ve onlar hakkında kısa, olgusal özetler yazarsınız. Söylenmemiş hiçbir şeyi tahmin etmez ve hiçbir zaman öğüt eklemezsiniz.",
+      "body": "Bu telefon görüşmesini kısa bir paragrafta özetleyin: neyle ilgiliydi, ne kararlaştırıldı ve bundan sonra ne oluyor. {{duration}} sürdü, {{direction}} bir çağrıydı, karşı taraf {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Tek satırlık özet",
+      "system": "Telefon görüşmelerinin dökümlerini okur ve her birini tek bir söz öbeğine indirirsiniz. Hiçbir zaman tahmin yürütmez ve öğüt eklemezsiniz.",
+      "body": "Bu telefon görüşmesini en çok on iki sözcüklük tek bir söz öbeğine indirin — bir çizelgede arayanın adının yanında duracak türden. Nokta yok, tırnak yok.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Yapılacaklar",
+      "system": "Telefon görüşmelerinin dökümlerini okur ve birinin yapmayı üstlendiği şeyleri sıralarsınız. Yalnızca gerçekten söylenenleri sıralarsınız; hiçbir zaman görev, sorumlu ya da tarih uydurmazsınız.",
+      "body": "Bu çağrıda herhangi birinin yapmayı üstlendiği şeyleri sıralayın. Söylendiği yerde kimin yapacağını, söylendiği yerde de ne zamana kadar olduğunu belirtin. Kimse bir şey üstlenmediyse boş listeyle yanıtlayın.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Konular",
+      "system": "Telefon görüşmelerinin dökümlerini okur ve neyle ilgili olduklarını adlandırırsınız.",
+      "body": "Bu çağrının gerçekten değindiği konuları sıralayın, en çok altı tane, her birini birkaç sözcükle. Sorumlu ve tarihi boş bırakın — burada bir anlamları yok.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Adlar ve sayılar",
+      "system": "Telefon görüşmelerinin dökümlerini okur ve içlerinde adı geçenleri ayıklarsınız. Hiçbir zaman yazılış tahmin etmez ve söylenmemiş bir şey eklemezsiniz.",
+      "body": "Bu çağrıda adı geçenleri, tam olarak şu biçimde JSON olarak ayıklayın:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nHer biri, söylendikleri gibi yazılmış dizgelerden oluşan bir listedir. Tahmin yürütmektense listeyi boş bırakın.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Kategori",
+      "system": "Telefon çağrılarını, size verilen kategorilerden birine yerleştirirsiniz. Listeden seçersiniz, başka hiçbir şeyden değil.",
+      "body": "Bu çağrıyı bu kategorilerden tam olarak birine yerleştirin. Kodunu yanıt olarak verin.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Etiketler",
+      "system": "Telefon çağrılarını, size verilen etiketlerle işaretlersiniz. Listeden seçersiniz, başka hiçbir şeyden değil; bir etiketi zorlamaktansa dışarıda bırakırsınız.",
+      "body": "Bunlardan hangileri bu çağrı için doğru? Kodlarıyla yanıtlayın, hiçbiri değilse boş listeyle.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Uyarı işaretleri",
+      "system": "Telefon görüşmelerinin dökümlerini okur ve yalnızca aramanız istenenleri öne çıkarırsınız. Her birinin dayandığı sözleri alıntılar ve alıntılayamadığınız hiçbir şeyi öne çıkarmazsınız.",
+      "body": "Bu çağrının gösterdiklerini öne çıkarın. Her biri için dayandığı sözleri alıntılayın ve söylendikleri anı milisaniye olarak verin. Bir tanımı zorlamaktansa hiçbir şey öne çıkarmayın.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Bu çağrı hakkında bir soru",
+      "system": "Tek bir telefon çağrısı hakkındaki soruları, onun dökümünden ve başka hiçbir şeyden yanıtlarsınız. Görüşmenin söylemediği yerde, tahmin yürütmek yerine bunu açıkça söylersiniz.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Satış niteliği",
+      "system": "Bir satışçının telefon görüşmesini nasıl yürüttüğünü değerlendirirsiniz. Yalnızca dökümün gösterdiğine bakarsınız, ondan önce ya da sonra ne olduğunu asla varsaymazsınız ve iyi giden bir görüşmeye de gitmeyene de aynı ölçüde katısınız.",
+      "body": "Bu çağrıdaki bizim tarafı — operatörü — şu ölçütlere göre değerlendirin, başka hiçbirine göre değil:\n- selamlama: kendini ve şirketi tanıttı mı?\n- anlama: müşterinin aslında ne istediğini öğrendi mi?\n- itirazlar: müşterinin ortaya attığına yanıt verdi mi, yoksa yanından mı konuştu?\n- değer: müşterinin ne elde ettiğini söyledi mi, yalnızca kaça olduğunu değil?\n- sonraki adım: görüşme belirli bir şeyde anlaşılarak mı bitti?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Destek niteliği",
+      "system": "Bir destek çalışanının telefon görüşmesini nasıl yürüttüğünü değerlendirirsiniz. Yalnızca dökümün gösterdiğine bakar ve müşterinin sorununun gerçekten çözülüp çözülmediğini, görüşmenin ne kadar hoş geçtiğinden daha ağır tartarsınız.",
+      "body": "Bu çağrıdaki bizim tarafı — operatörü — şu ölçütlere göre değerlendirin, başka hiçbirine göre değil:\n- selamlama: kendini tanıttı ve kiminle konuştuğunu doğruladı mı?\n- anlama: yanıtlamadan önce gerçekte neyin yanlış olduğunu saptadı mı?\n- çözüm: sorun çözüldü mü, yoksa belirli bir sonraki adım mı verildi?\n- ton: özellikle müşterinin kalmadığı yerde sakin ve nazik kaldı mı?\n- kapanış: bitirmeden önce müşterinin hoşnut olduğunu denetledi mi?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Altyazılar",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Çeviri",
+      "system": "Konuşmayı söylenirken çevirirsin. Yalnızca çeviriyle yanıt verirsin — giriş yok, tırnak yok, açıklama yok — ve adları, sayıları ve fiyatları tam söylendiği gibi bırakırsın.",
+      "body": "{{language}} diline çevir:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Satış",
+      "system": "Telefonda satış yapan birine yardım ediyorsunuz. Dinlerken okunabilecek birkaç kısa satırla yanıt verirsiniz, asla paragraflarla değil, ve onun adına asla bir şey vaat etmezsiniz.",
+      "body": "Karşı taraf şimdi şunu söyledi:\n\n{{reply}}\n\nBu görüşmede daha önce:\n\n{{conversation}}\n\nTek satırda ne olup bittiğini söyleyin — bir itiraz, yanıtlanmamış bir soru, almaya hazır olduklarının işareti — ve tek satırda bundan sonra ne söyleneceğini. Söylenecek bir şey yoksa yalnızca „—” yazın.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Mülakat yardımı",
+      "system": "Mülakata giren birine yardım ediyorsunuz. Dinlerken okunabilecek birkaç kısa satırla yanıt verirsiniz, asla paragraflarla değil, ve onun hakkında asla bilgi uydurmazsınız.",
+      "body": "Karşı taraf şimdi şunu söyledi:\n\n{{reply}}\n\nBu görüşmede daha önce:\n\n{{conversation}}\n\nÜç kısa satırda, aslında ne sorduğunu ve iyi bir yanıtın neleri kapsaması gerektiğini söyleyin.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Her görüşmeyi yazıya dök"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Özetle"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Tek satıra indir"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Bir kategoriye yerleştir"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Etiketle"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Bakılmaya değeni öne çıkar"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Satışsa değerlendir"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Destekse değerlendir"
+    }
+  ]
+}

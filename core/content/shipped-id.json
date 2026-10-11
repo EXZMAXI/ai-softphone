@@ -1,0 +1,359 @@
+{
+  "language": "id",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Penjualan",
+      "description": "Menjual, memberi penawaran, menawar atau menindaklanjuti pembelian — termasuk pelanggan yang menanyakan harga sesuatu."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Dukungan",
+      "description": "Membantu seseorang dengan produk atau layanan yang sudah dimilikinya: kerusakan, pertanyaan tentang pemakaian, keluhan tentang cara kerjanya."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Pribadi",
+      "description": "Sama sekali bukan urusan kerja — percakapan pribadi yang kebetulan terjadi di saluran ini."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Lainnya",
+      "description": "Urusan kerja, tetapi bukan penjualan maupun dukungan: pemasok, rekan kerja, pengiriman, salah sambung. Pilih ini alih-alih menebak di antara yang lain."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Dijanjikan menelepon balik",
+      "description": "Seseorang dalam panggilan ini berjanji menelepon balik, atau minta ditelepon balik."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Keluhan",
+      "description": "Pihak lain menyatakan ketidakpuasan, entah terselesaikan atau tidak."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Dinaikkan",
+      "description": "Panggilan diserahkan kepada orang lain, atau pihak lain memintanya."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "Pelanggan VIP",
+      "description": "Pihak lain diperlakukan sebagai pelanggan penting, atau mengatakan sendiri bahwa ia begitu."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Pelanggan marah",
+      "description": "Terdengar bahwa pihak lain marah, menghina, atau mengancam pergi."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Risiko berhenti",
+      "description": "Pembatalan, tidak memperpanjang, atau pindah ke pihak lain sempat disinggung, betapapun tenangnya."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Janji diberikan",
+      "description": "Pihak kami mengikatkan diri pada sesuatu yang tertentu — tanggal, harga, perbaikan, pengembalian dana."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Data sensitif",
+      "description": "Nomor kartu, kata sandi, nomor dokumen atau apa pun yang tidak seharusnya ada dalam rekaman dibacakan dengan suara."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Pesaing",
+      "description": "Pihak lain menyebut pihak lain yang menawarkan hal sama, atau membandingkan kami dengannya."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Prosa",
+      "description": "Jawablah dalam prosa biasa. Jangan pakai JSON, daftar atau judul."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Butir",
+      "description": "Jawab hanya dengan JSON, persis berbentuk ini:\n{\"items\": [{\"text\": \"apa yang harus dikerjakan\", \"owner\": \"siapa, atau kosong\", \"due\": \"kapan, atau kosong\"}]}\nBila tidak ada yang perlu didaftar, pakai larik kosong. Jangan menulis apa pun di luar JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Label",
+      "description": "Jawab hanya dengan JSON, persis berbentuk ini:\n{\"labels\": [{\"code\": \"kode dari daftar yang diberikan\", \"confidence\": 0.0}]}\nPakai hanya kode dari daftar itu. Bila tidak ada yang cocok, pakai larik kosong.\nJangan mengarang kode, dan jangan menulis apa pun di luar JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Skor",
+      "description": "Jawab hanya dengan JSON, persis berbentuk ini:\n{\"score\": 3, \"rationale\": \"mengapa angka itu dan bukan satu tingkat lebih tinggi\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"kata-kata yang jadi dasarnya\"}]}\nSkor adalah bilangan bulat dari 1 sampai 5. Jangan menulis apa pun di luar JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Kriteria",
+      "description": "Jawab hanya dengan JSON, persis berbentuk ini:\n{\"overall\": 3, \"rationale\": \"mengapa angka itu dan bukan satu tingkat lebih tinggi\",\n \"criteria\": [{\"name\": \"kriteria seperti yang diberikan kepada Anda\",\n               \"verdict\": \"pass\" atau \"weak\" atau \"fail\" atau \"n/a\",\n               \"note\": \"satu kalimat\"}]}\nNilailah setiap kriteria yang diberikan dan tidak ada yang lain. Skor keseluruhan\nadalah bilangan bulat dari 1 sampai 5. Jangan menulis apa pun di luar JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Tanda",
+      "description": "Jawab hanya dengan JSON, persis berbentuk ini:\n{\"flags\": [{\"code\": \"kode dari daftar yang diberikan\",\n            \"severity\": \"low\" atau \"medium\" atau \"high\",\n            \"evidence\": \"kata-kata yang jadi dasarnya\",\n            \"at_ms\": 0}]}\nPakai hanya kode dari daftar itu, dan angkat masing-masing paling banyak sekali.\nBila tidak ada yang cocok, pakai larik kosong. Jangan menulis apa pun di luar JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Jawaban",
+      "description": "Jawab hanya dengan JSON, persis berbentuk ini:\n{\"answer\": \"jawaban Anda, atau terus terang bahwa percakapannya tidak menyebutkan\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"kata-kata yang menjadi dasar jawaban Anda\"}]}\nJangan menjawab dari apa pun selain percakapan itu. Jangan menulis apa pun di luar JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Jawab hanya dengan JSON, dalam bentuk yang diminta di atas. Jangan menulis apa pun di luar JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Sebagaimana diucapkan",
+      "description": "Tulis jawaban Anda dalam bahasa yang sama dengan percakapannya."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Sebagaimana diucapkan, disebut",
+      "description": "Tulis jawaban Anda dalam bahasa yang sama dengan percakapannya, yaitu {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Bahasa yang ditentukan",
+      "description": "Tulis jawaban Anda dalam bahasa ini: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Ringkasan",
+      "system": "Anda membaca transkrip panggilan telepon dan menulis ringkasan yang pendek dan berdasar fakta. Anda tidak pernah menebak yang tidak diucapkan, dan tidak pernah menambahkan nasihat.",
+      "body": "Ringkas panggilan telepon ini dalam satu paragraf pendek: tentang apa, apa yang diputuskan, dan apa berikutnya. Berlangsung {{duration}} dan merupakan panggilan {{direction}}, dengan {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Ringkasan satu baris",
+      "system": "Anda membaca transkrip panggilan telepon dan memadatkan tiap panggilan jadi satu frasa. Anda tidak pernah menebak dan tidak pernah menambahkan nasihat.",
+      "body": "Padatkan panggilan telepon ini jadi satu frasa paling banyak dua belas kata — jenis baris yang akan masuk ke tabel di samping nama penelepon. Tanpa titik, tanpa tanda kutip.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Daftar tindakan",
+      "system": "Anda membaca transkrip panggilan telepon dan mendaftar apa yang disanggupi seseorang. Anda hanya mendaftar yang benar-benar diucapkan; Anda tidak pernah mengarang tugas, penanggung jawab, atau tanggal.",
+      "body": "Daftarkan apa yang disanggupi siapa pun dalam panggilan ini. Sebutkan siapa yang harus mengerjakannya bila itu diucapkan, dan sampai kapan bila itu diucapkan. Bila tidak ada yang menyanggupi apa pun, jawablah dengan daftar kosong.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Topik",
+      "system": "Anda membaca transkrip panggilan telepon dan menyebutkan tentang apa panggilan itu.",
+      "body": "Daftarkan hal-hal yang benar-benar dibahas panggilan ini, paling banyak enam, masing-masing dalam beberapa kata. Biarkan penanggung jawab dan tanggal kosong — di sini keduanya tidak berarti apa-apa.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Nama dan angka",
+      "system": "Anda membaca transkrip panggilan telepon dan memungut apa yang disebut di dalamnya. Anda tidak pernah menebak ejaan dan tidak pernah menambahkan yang tidak diucapkan.",
+      "body": "Pungut apa yang disebut dalam panggilan ini, sebagai JSON persis berbentuk ini:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nMasing-masing adalah daftar teks, ditulis sebagaimana diucapkan. Lebih baik biarkan daftarnya kosong daripada menebak.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Kategori",
+      "system": "Anda menempatkan panggilan telepon ke salah satu kategori yang diberikan. Anda memilih dari daftar itu dan bukan dari yang lain.",
+      "body": "Tempatkan panggilan ini ke persis satu dari kategori-kategori ini. Jawablah dengan kodenya.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Label",
+      "system": "Anda melabeli panggilan telepon dengan label yang diberikan. Anda memilih dari daftar itu dan bukan dari yang lain, dan lebih baik melewatkan sebuah label daripada memaksakannya.",
+      "body": "Mana di antara ini yang benar tentang panggilan ini? Jawablah dengan kodenya, atau dengan daftar kosong bila tidak ada.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Tanda peringatan",
+      "system": "Anda membaca transkrip panggilan telepon dan hanya mengangkat apa yang diminta untuk dicari. Anda mengutip kata-kata yang jadi dasar masing-masing, dan tidak mengangkat apa pun yang tidak dapat Anda kutip.",
+      "body": "Angkat mana saja dari ini yang ditunjukkan panggilan ini. Untuk masing-masing, kutip kata-kata yang jadi dasarnya dan sebutkan saatnya dalam milidetik. Lebih baik tidak mengangkat apa pun daripada memaksakan sebuah definisi.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Pertanyaan tentang panggilan ini",
+      "system": "Anda menjawab pertanyaan tentang satu panggilan telepon, dari transkripnya dan bukan dari yang lain. Bila percakapannya tidak menyebutkan, Anda mengatakannya terus terang alih-alih menebak.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Kualitas penjualan",
+      "system": "Anda menilai bagaimana seorang penjual menangani panggilan telepon. Anda menilai hanya dari yang ditunjukkan transkrip, tidak pernah mengandaikan apa yang terjadi sebelum atau sesudahnya, dan sama ketatnya pada panggilan yang berjalan baik maupun yang tidak.",
+      "body": "Nilailah pihak kami dalam panggilan ini — operatornya — menurut kriteria ini dan tidak ada yang lain:\n- salam: apakah ia memperkenalkan diri dan perusahaannya?\n- penggalian: apakah ia mengetahui apa yang sebenarnya diinginkan pelanggan?\n- keberatan: apakah ia menjawab yang diangkat pelanggan, alih-alih bicara melenceng?\n- nilai: apakah ia menyebutkan apa yang didapat pelanggan, bukan hanya harganya?\n- langkah berikut: apakah panggilan berakhir dengan sesuatu yang tertentu dan disepakati?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Kualitas dukungan",
+      "system": "Anda menilai bagaimana seorang petugas dukungan menangani panggilan telepon. Anda menilai hanya dari yang ditunjukkan transkrip, dan lebih menimbang apakah masalah pelanggan benar-benar tertangani daripada seberapa menyenangkan percakapannya.",
+      "body": "Nilailah pihak kami dalam panggilan ini — operatornya — menurut kriteria ini dan tidak ada yang lain:\n- salam: apakah ia memperkenalkan diri dan memastikan sedang bicara dengan siapa?\n- pemahaman: apakah ia memastikan apa yang sebenarnya salah sebelum menjawab?\n- penyelesaian: apakah masalahnya selesai, atau diberikan langkah berikut yang tertentu?\n- nada: apakah ia tetap tenang dan sopan, terutama saat pelanggan tidak begitu?\n- penutup: apakah ia memastikan pelanggan puas sebelum mengakhiri?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Subtitel",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Terjemahan",
+      "system": "Kamu menerjemahkan ucapan seiring ia terjadi. Kamu menjawab hanya dengan terjemahannya — tanpa pembuka, tanpa tanda kutip, tanpa penjelasan — dan membiarkan nama, angka dan harga tepat seperti yang diucapkan.",
+      "body": "Terjemahkan ke {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Penjualan",
+      "system": "Anda membantu seseorang yang menjual melalui telepon. Anda menjawab dalam beberapa baris pendek yang dapat dibaca sambil mendengarkan, tidak pernah dalam paragraf, dan tidak pernah menjanjikan apa pun atas namanya.",
+      "body": "Pihak lain baru saja berkata:\n\n{{reply}}\n\nSebelumnya dalam percakapan ini:\n\n{{conversation}}\n\nSebutkan dalam satu baris apa yang sedang terjadi — penolakan, pertanyaan yang belum dijawab, tanda mereka siap membeli — dan dalam satu baris apa yang harus dikatakan berikutnya. Jika tidak ada yang perlu dikatakan, tulis hanya „—”.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Bantuan wawancara",
+      "system": "Anda membantu seseorang yang sedang diwawancarai. Anda menjawab dalam beberapa baris pendek yang dapat dibaca sambil mendengarkan, tidak pernah dalam paragraf, dan tidak pernah mengarang fakta tentang orang itu.",
+      "body": "Pihak lain baru saja berkata:\n\n{{reply}}\n\nSebelumnya dalam percakapan ini:\n\n{{conversation}}\n\nDalam tiga baris pendek, katakan apa yang sebenarnya ia tanyakan dan apa yang harus dicakup oleh jawaban yang baik.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Transkripsikan tiap percakapan"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Ringkas"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Padatkan jadi satu baris"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Tempatkan dalam kategori"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Beri label"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Angkat yang patut dilihat"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Nilai, bila itu penjualan"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Nilai, bila itu dukungan"
+    }
+  ]
+}

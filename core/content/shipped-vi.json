@@ -1,0 +1,359 @@
+{
+  "language": "vi",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Bán hàng",
+      "description": "Bán, báo giá, thương lượng hay theo sát một vụ mua — kể cả khách hỏi giá một thứ gì đó."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Hỗ trợ",
+      "description": "Giúp ai đó về sản phẩm hay dịch vụ họ đã có: một hỏng hóc, một câu hỏi về cách dùng, một lời than phiền về cách nó hoạt động."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Cá nhân",
+      "description": "Hoàn toàn không phải việc công — một cuộc trò chuyện riêng tình cờ diễn ra trên đường dây này."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Khác",
+      "description": "Việc công, nhưng không phải bán hàng cũng chẳng phải hỗ trợ: một nhà cung cấp, một đồng nghiệp, một chuyến giao hàng, một cuộc gọi nhầm. Hãy chọn cái này thay vì đoán giữa những cái kia."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Đã hứa gọi lại",
+      "description": "Ai đó trong cuộc gọi này hứa sẽ gọi lại, hoặc xin được gọi lại."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Than phiền",
+      "description": "Phía bên kia bày tỏ sự không hài lòng, dù đã được giải quyết hay chưa."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Đã chuyển lên",
+      "description": "Cuộc gọi được giao cho người khác, hoặc phía bên kia đề nghị như vậy."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "Khách VIP",
+      "description": "Phía bên kia được đối xử như một khách hàng quan trọng, hoặc tự nói mình là như vậy."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Khách giận dữ",
+      "description": "Nghe rõ phía bên kia đang giận, xúc phạm, hoặc doạ sẽ bỏ đi."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Nguy cơ rời bỏ",
+      "description": "Việc huỷ, không gia hạn hay chuyển sang bên khác đã được nêu ra, dù bình thản đến đâu."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Đã hứa",
+      "description": "Phía ta đã cam kết một điều cụ thể — một ngày, một mức giá, một lần sửa, một khoản hoàn tiền."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Dữ liệu nhạy cảm",
+      "description": "Một số thẻ, mật khẩu, số giấy tờ hay bất cứ thứ gì không nên có trong bản ghi đã được đọc lên thành tiếng."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Đối thủ",
+      "description": "Phía bên kia nêu tên một bên khác cung cấp thứ tương tự, hoặc so sánh chúng ta với họ."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Văn xuôi",
+      "description": "Hãy trả lời bằng văn xuôi thường. Đừng dùng JSON, danh sách hay tiêu đề."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Các mục",
+      "description": "Chỉ trả lời bằng JSON, đúng theo hình thức này:\n{\"items\": [{\"text\": \"việc cần làm\", \"owner\": \"ai, hoặc để trống\", \"due\": \"khi nào, hoặc để trống\"}]}\nKhi không có gì để liệt kê, hãy dùng mảng rỗng. Đừng viết gì ngoài JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Nhãn",
+      "description": "Chỉ trả lời bằng JSON, đúng theo hình thức này:\n{\"labels\": [{\"code\": \"một mã trong danh sách được đưa cho bạn\", \"confidence\": 0.0}]}\nChỉ dùng các mã trong danh sách. Khi không mã nào hợp, hãy dùng mảng rỗng.\nĐừng bịa ra mã, và đừng viết gì ngoài JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Điểm số",
+      "description": "Chỉ trả lời bằng JSON, đúng theo hình thức này:\n{\"score\": 3, \"rationale\": \"vì sao là con số đó chứ không phải cao hơn một bậc\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"những lời làm căn cứ\"}]}\nĐiểm số là một số nguyên từ 1 đến 5. Đừng viết gì ngoài JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Tiêu chí",
+      "description": "Chỉ trả lời bằng JSON, đúng theo hình thức này:\n{\"overall\": 3, \"rationale\": \"vì sao là con số đó chứ không phải cao hơn một bậc\",\n \"criteria\": [{\"name\": \"tiêu chí đúng như được đưa cho bạn\",\n               \"verdict\": \"pass\" hoặc \"weak\" hoặc \"fail\" hoặc \"n/a\",\n               \"note\": \"một câu\"}]}\nHãy xét mọi tiêu chí được đưa cho bạn và không xét cái nào khác. Điểm chung là\nmột số nguyên từ 1 đến 5. Đừng viết gì ngoài JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Dấu hiệu",
+      "description": "Chỉ trả lời bằng JSON, đúng theo hình thức này:\n{\"flags\": [{\"code\": \"một mã trong danh sách được đưa cho bạn\",\n            \"severity\": \"low\" hoặc \"medium\" hoặc \"high\",\n            \"evidence\": \"những lời làm căn cứ\",\n            \"at_ms\": 0}]}\nChỉ dùng các mã trong danh sách, và nêu mỗi mã nhiều nhất một lần. Khi không có\ngì hợp, hãy dùng mảng rỗng. Đừng viết gì ngoài JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Câu trả lời",
+      "description": "Chỉ trả lời bằng JSON, đúng theo hình thức này:\n{\"answer\": \"câu trả lời của bạn, hoặc nói thẳng là cuộc trò chuyện không cho biết\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"những lời mà câu trả lời dựa vào\"}]}\nĐừng trả lời từ bất cứ đâu ngoài cuộc trò chuyện. Đừng viết gì ngoài JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Chỉ trả lời bằng JSON, theo hình thức đã nêu ở trên. Đừng viết gì ngoài JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Theo ngôn ngữ đã nói",
+      "description": "Hãy viết câu trả lời bằng đúng ngôn ngữ của cuộc trò chuyện."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Theo ngôn ngữ đã nói, có nêu tên",
+      "description": "Hãy viết câu trả lời bằng đúng ngôn ngữ của cuộc trò chuyện, tức là {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Một ngôn ngữ được nêu",
+      "description": "Hãy viết câu trả lời bằng ngôn ngữ này: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Tóm tắt",
+      "system": "Bạn đọc bản gỡ băng các cuộc gọi điện thoại và viết những bản tóm tắt ngắn, đúng sự thật. Bạn không bao giờ đoán điều chưa được nói, và không bao giờ thêm lời khuyên.",
+      "body": "Hãy tóm tắt cuộc gọi điện thoại này trong một đoạn ngắn: nó về chuyện gì, đã quyết định gì, và tiếp theo là gì. Nó kéo dài {{duration}} và là cuộc gọi {{direction}}, với {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Tóm tắt một dòng",
+      "system": "Bạn đọc bản gỡ băng các cuộc gọi điện thoại và rút gọn mỗi cuộc thành một cụm từ. Bạn không bao giờ đoán và không bao giờ thêm lời khuyên.",
+      "body": "Hãy rút gọn cuộc gọi điện thoại này thành một cụm từ nhiều nhất mười hai chữ — kiểu dòng sẽ nằm trong một bảng bên cạnh tên người gọi. Không dấu chấm, không dấu ngoặc kép.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Việc cần làm",
+      "system": "Bạn đọc bản gỡ băng các cuộc gọi điện thoại và liệt kê những gì ai đó nhận làm. Bạn chỉ liệt kê những gì thực sự được nói ra; bạn không bao giờ bịa ra một việc, một người phụ trách hay một thời hạn.",
+      "body": "Hãy liệt kê những gì bất cứ ai trong cuộc gọi này nhận làm. Nêu ai phải làm ở chỗ điều đó được nói ra, và đến khi nào ở chỗ điều đó được nói ra. Nếu không ai nhận làm gì, hãy trả lời bằng danh sách rỗng.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Chủ đề",
+      "system": "Bạn đọc bản gỡ băng các cuộc gọi điện thoại và nêu chúng nói về chuyện gì.",
+      "body": "Hãy liệt kê những chuyện cuộc gọi này thực sự bàn tới, nhiều nhất sáu, mỗi chuyện vài chữ. Hãy để trống người phụ trách và thời hạn — ở đây chúng chẳng có nghĩa gì.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Tên và con số",
+      "system": "Bạn đọc bản gỡ băng các cuộc gọi điện thoại và nhặt ra những gì được nêu tên trong đó. Bạn không bao giờ đoán cách viết và không bao giờ thêm điều chưa được nói.",
+      "body": "Hãy nhặt ra những gì được nêu tên trong cuộc gọi này, dưới dạng JSON đúng theo hình thức này:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nMỗi mục là một danh sách chuỗi, viết đúng như đã được nói. Thà để danh sách rỗng còn hơn đoán.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Hạng mục",
+      "system": "Bạn xếp các cuộc gọi điện thoại vào một trong những hạng mục được đưa cho bạn. Bạn chọn từ danh sách đó và không từ đâu khác.",
+      "body": "Hãy xếp cuộc gọi này vào đúng một trong các hạng mục này. Trả lời bằng mã của nó.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Nhãn",
+      "system": "Bạn gắn nhãn cho các cuộc gọi điện thoại bằng những nhãn được đưa cho bạn. Bạn chọn từ danh sách đó và không từ đâu khác, và thà bỏ qua một nhãn còn hơn gán gượng.",
+      "body": "Nhãn nào trong số này đúng với cuộc gọi này? Hãy trả lời bằng mã của chúng, hoặc bằng danh sách rỗng nếu không có nhãn nào.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Dấu hiệu cảnh báo",
+      "system": "Bạn đọc bản gỡ băng các cuộc gọi điện thoại và chỉ nêu những gì bạn được giao đi tìm. Bạn trích lời làm căn cứ cho từng cái, và không nêu bất cứ điều gì bạn không trích được.",
+      "body": "Hãy nêu những dấu hiệu nào trong số này mà cuộc gọi cho thấy. Với mỗi cái, hãy trích những lời làm căn cứ và cho biết thời điểm chúng được nói, tính bằng mili giây. Thà không nêu gì còn hơn gán gượng một định nghĩa.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Một câu hỏi về cuộc gọi này",
+      "system": "Bạn trả lời các câu hỏi về một cuộc gọi điện thoại, từ bản gỡ băng của nó và không từ đâu khác. Ở chỗ cuộc trò chuyện không cho biết, bạn nói thẳng ra thay vì đoán.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Chất lượng bán hàng",
+      "system": "Bạn đánh giá cách một nhân viên bán hàng xử lý một cuộc gọi điện thoại. Bạn chỉ xét những gì bản gỡ băng cho thấy, không bao giờ giả định điều gì xảy ra trước hay sau nó, và nghiêm khắc như nhau với cuộc gọi suôn sẻ lẫn cuộc gọi không suôn sẻ.",
+      "body": "Hãy đánh giá phía ta trong cuộc gọi này — người trực máy — theo các tiêu chí sau và không theo tiêu chí nào khác:\n- chào hỏi: có xưng tên mình và công ty không?\n- tìm hiểu: có nắm được khách thực sự muốn gì không?\n- phản biện: có trả lời điều khách nêu ra, thay vì nói lệch đi không?\n- giá trị: có nói khách được gì, chứ không chỉ nói giá bao nhiêu không?\n- bước tiếp theo: cuộc gọi có kết thúc bằng một điều cụ thể đã thoả thuận không?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Chất lượng hỗ trợ",
+      "system": "Bạn đánh giá cách một nhân viên hỗ trợ xử lý một cuộc gọi điện thoại. Bạn chỉ xét những gì bản gỡ băng cho thấy, và coi trọng việc vấn đề của khách có thực sự được giải quyết hơn là cuộc trò chuyện dễ chịu đến đâu.",
+      "body": "Hãy đánh giá phía ta trong cuộc gọi này — người trực máy — theo các tiêu chí sau và không theo tiêu chí nào khác:\n- chào hỏi: có xưng tên và xác nhận đang nói chuyện với ai không?\n- thấu hiểu: có xác định được thực sự đang trục trặc gì trước khi trả lời không?\n- giải quyết: vấn đề đã xong, hay đã đưa ra một bước tiếp theo cụ thể?\n- giọng điệu: có giữ được bình tĩnh và lịch sự, nhất là khi khách thì không?\n- kết thúc: có kiểm lại rằng khách đã hài lòng trước khi kết thúc không?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Phụ đề",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Bản dịch",
+      "system": "Bạn dịch lời nói ngay khi nó diễn ra. Bạn chỉ trả lời bằng bản dịch — không mở đầu, không dấu ngoặc kép, không giải thích — và giữ tên, số và giá đúng như đã nói.",
+      "body": "Dịch sang {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Kinh doanh",
+      "system": "Bạn giúp một người bán hàng qua điện thoại. Bạn trả lời bằng vài dòng ngắn có thể đọc trong khi nghe, không bao giờ bằng đoạn văn, và không bao giờ hứa điều gì thay cho người đó.",
+      "body": "Người đối diện vừa nói:\n\n{{reply}}\n\nTrước đó trong cuộc trò chuyện này:\n\n{{conversation}}\n\nNói trong một dòng điều đang diễn ra — một phản đối, một câu hỏi chưa được trả lời, một dấu hiệu họ đã sẵn sàng — và trong một dòng điều nên nói tiếp. Nếu không có gì đáng nói, chỉ viết „—”.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Trợ giúp phỏng vấn",
+      "system": "Bạn giúp một người đang được phỏng vấn. Bạn trả lời bằng vài dòng ngắn có thể đọc trong khi nghe, không bao giờ bằng đoạn văn, và không bao giờ bịa ra thông tin về người đó.",
+      "body": "Người đối diện vừa nói:\n\n{{reply}}\n\nTrước đó trong cuộc trò chuyện này:\n\n{{conversation}}\n\nTrong ba dòng ngắn, hãy nói họ thực sự đang hỏi gì và một câu trả lời tốt nên bao gồm những gì.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Gỡ băng mọi cuộc trò chuyện"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Tóm tắt nó"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Rút nó thành một dòng"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Xếp nó vào một hạng mục"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Gắn nhãn cho nó"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Nêu những gì đáng xem"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Đánh giá nó, nếu là bán hàng"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Đánh giá nó, nếu là hỗ trợ"
+    }
+  ]
+}

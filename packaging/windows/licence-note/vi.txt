@@ -1,0 +1,8 @@
+﻿GIẤY PHÉP NÀY CÓ NGHĨA LÀ GÌ
+
+Chương trình này là phần mềm tự do. Bạn có thể dùng, sao chép và sửa đổi nó, và chuyển nó
+cho bất kỳ ai — miễn là người nhận cũng có được sự tự do đó, kèm theo mã nguồn. Không có
+bảo hành nào cả.
+
+Bản thân giấy phép là văn bản tiếng Anh dưới đây, và đó mới là văn bản có hiệu lực. Ghi
+chú này chỉ giải thích nó.

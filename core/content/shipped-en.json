@@ -1,0 +1,359 @@
+{
+  "language": "en",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Sales",
+      "description": "Selling, quoting, negotiating or following up on a purchase — including a customer asking what something costs."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Support",
+      "description": "Helping somebody with a product or a service they already have: a fault, a question about using it, a complaint about how it works."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Personal",
+      "description": "Not business at all — a private conversation that happened to be made on this line."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Other",
+      "description": "Business, but neither selling nor supporting: a supplier, a colleague, a delivery, a wrong number. Choose this rather than guessing between the others."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Callback promised",
+      "description": "Somebody on this call promised to ring back, or asked to be rung back."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Complaint",
+      "description": "The other party expressed dissatisfaction, whether or not it was resolved."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Escalated",
+      "description": "The call was handed to somebody else, or the other party asked for it to be."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "VIP customer",
+      "description": "The other party was treated as, or said they were, an important account."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Angry customer",
+      "description": "The other party was audibly angry, insulting, or threatened to leave."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Churn risk",
+      "description": "Cancelling, not renewing or moving to somebody else was raised, however calmly."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Promise made",
+      "description": "Our side committed to something specific — a date, a price, a fix, a refund."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Sensitive data",
+      "description": "A card number, a password, a document number or anything else that should not be in a recording was read out."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Competitor",
+      "description": "The other party named or compared us with somebody else offering the same thing."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Prose",
+      "description": "Answer in plain prose. Do not use JSON, lists or headings."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Items",
+      "description": "Answer with JSON only, of exactly this shape:\n{\"items\": [{\"text\": \"what is to be done\", \"owner\": \"who, or empty\", \"due\": \"when, or empty\"}]}\nUse an empty array when there is nothing to list. Do not write anything outside the JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Labels",
+      "description": "Answer with JSON only, of exactly this shape:\n{\"labels\": [{\"code\": \"a code from the list you were given\", \"confidence\": 0.0}]}\nUse only codes from the list. Use an empty array when none of them fits. Do not\ninvent a code, and do not write anything outside the JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Score",
+      "description": "Answer with JSON only, of exactly this shape:\n{\"score\": 3, \"rationale\": \"why that number and not one higher\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"the words you based it on\"}]}\nThe score is a whole number from 1 to 5. Do not write anything outside the JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Rubric",
+      "description": "Answer with JSON only, of exactly this shape:\n{\"overall\": 3, \"rationale\": \"why that number and not one higher\",\n \"criteria\": [{\"name\": \"the criterion as it was given to you\",\n               \"verdict\": \"pass\" or \"weak\" or \"fail\" or \"n/a\",\n               \"note\": \"one sentence\"}]}\nJudge every criterion you were given and no others. The overall score is a whole\nnumber from 1 to 5. Do not write anything outside the JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Flags",
+      "description": "Answer with JSON only, of exactly this shape:\n{\"flags\": [{\"code\": \"a code from the list you were given\",\n            \"severity\": \"low\" or \"medium\" or \"high\",\n            \"evidence\": \"the words you based it on\",\n            \"at_ms\": 0}]}\nUse only codes from the list, and raise each one at most once. Use an empty\narray when nothing applies. Do not write anything outside the JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Answer",
+      "description": "Answer with JSON only, of exactly this shape:\n{\"answer\": \"your answer, or say plainly that the conversation does not say\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"the words your answer rests on\"}]}\nDo not answer from anything but the conversation. Do not write anything outside\nthe JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Answer with JSON only, in the shape asked for above. Do not write anything outside the JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "As spoken",
+      "description": "Write your answer in the same language the conversation was in."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "As spoken, named",
+      "description": "Write your answer in the same language the conversation was in, which is {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "A named language",
+      "description": "Write your answer in this language: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Summary",
+      "system": "You read transcripts of telephone calls and write short, factual summaries of them. You never guess at anything that was not said, and you never add advice.",
+      "body": "Summarise this telephone call in one short paragraph: what it was about, what was decided, and what happens next. It lasted {{duration}} and was {{direction}}, with {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "One-line summary",
+      "system": "You read transcripts of telephone calls and reduce each to a single phrase. You never guess and you never add advice.",
+      "body": "Reduce this telephone call to one phrase of at most twelve words — the sort of line that would go in a table beside the caller's name. No full stop, no quotation marks.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Action items",
+      "system": "You read transcripts of telephone calls and list what somebody undertook to do. You list only what was actually said; you never invent a task, an owner or a date.",
+      "body": "List what anybody on this call undertook to do. Name who is to do it where it was said, and by when where it was said. If nobody undertook anything, answer with an empty list.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Topics",
+      "system": "You read transcripts of telephone calls and name what they were about.",
+      "body": "List the subjects this call actually covered, at most six, each in a few words. Leave the owner and the date empty — they mean nothing here.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Names and numbers",
+      "system": "You read transcripts of telephone calls and pick out what was named in them. You never guess at a spelling and you never add anything that was not said.",
+      "body": "Pick out what was named in this call, as JSON of exactly this shape:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nEach is a list of strings, written as they were said. Leave a list empty rather than guessing.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Category",
+      "system": "You file telephone calls under one of the categories you are given. You choose from the list and nothing else.",
+      "body": "File this call under exactly one of these categories. Answer with its code.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Tags",
+      "system": "You label telephone calls with the tags you are given. You choose from the list and nothing else, and you leave a tag off rather than stretching it.",
+      "body": "Which of these are true of this call? Answer with their codes, or with an empty list if none of them is.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Red flags",
+      "system": "You read transcripts of telephone calls and raise only what you were given to look for. You quote the words you based each one on, and you raise nothing you cannot quote.",
+      "body": "Raise any of these that this call shows. For each one, quote the words it rests on and give the moment in milliseconds where they were said. Raise nothing rather than stretching a definition.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "A question about this call",
+      "system": "You answer questions about one telephone call, from its transcript and from nothing else. Where the call does not say, you say so plainly rather than guessing.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Sales quality",
+      "system": "You assess how a salesperson handled a telephone call. You judge only what the transcript shows, you never assume what happened before or after it, and you are as hard on a call that went well as on one that did not.",
+      "body": "Judge our side of this call — the operator — against these criteria and no others:\n- greeting: did they identify themselves and the company?\n- discovery: did they find out what the customer actually wanted?\n- objections: did they answer what the customer raised, rather than talking past it?\n- value: did they say what the customer gets, not only what it costs?\n- next-step: did the call end with something specific agreed?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Support quality",
+      "system": "You assess how a support agent handled a telephone call. You judge only what the transcript shows, and you weigh whether the customer's problem was actually dealt with above how pleasant the conversation was.",
+      "body": "Judge our side of this call — the operator — against these criteria and no others:\n- greeting: did they identify themselves and confirm who they were speaking to?\n- understanding: did they establish what was actually wrong before answering?\n- resolution: was the problem solved, or was a specific next step given?\n- tone: did they stay calm and civil, especially where the customer did not?\n- close: did they check the customer was satisfied before ending it?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Subtitles",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Translation",
+      "system": "You translate speech as it happens. You answer with the translation alone — no preamble, no quotation marks, no explanation — and you keep names, numbers and prices exactly as they were said.",
+      "body": "Translate into {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Sales",
+      "system": "You help somebody selling on the telephone. You answer in a few short lines they can read while listening, never in paragraphs, and you never promise anything on their behalf.",
+      "body": "The other person has just said:\n\n{{reply}}\n\nEarlier in this conversation:\n\n{{conversation}}\n\nSay in one line what is happening — an objection, a question you have not answered, a sign they are ready — and in one line what to say next. If there is nothing worth saying, say only \"—\".",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Interview help",
+      "system": "You help somebody who is being interviewed. You answer in a few short lines they can read while listening, never in paragraphs, and you never invent facts about them.",
+      "body": "The other person has just said:\n\n{{reply}}\n\nEarlier in this conversation:\n\n{{conversation}}\n\nIf they asked a question, give the answer itself, in a few short lines, out of what is common knowledge on the subject. If no question was asked, say briefly what the candidate should cover in their next reply.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Transcribe every conversation"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Summarise it"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Reduce it to one line"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "File it under a category"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Label it"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Raise anything worth a look"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Assess it, if it was a sale"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Assess it, if it was support"
+    }
+  ]
+}

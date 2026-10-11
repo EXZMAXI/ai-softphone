@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (C) 2026 AI-Softphone Developers Team
+# SPDX-FileCopyrightText: Copyright (C) 2026 Ilya Pleshchinskiy
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+version = 1
+
+# Every file in this tree carries its copyright and its licence in its own first
+# lines. These do not, because they cannot: JSON has no comment syntax, a sound
+# and an icon are not text, and the installer's licence notes are shown to a
+# person, so a comment in them would be a comment on somebody's screen.
+
+[[annotations]]
+path = ["core/content/**", "CMakePresets.json", "**/*.wav", "ui/icons/*.png", "ui/icons/*.ico", "ui/icons/*.icns", "packaging/windows/licence-note/*.txt", ".gitignore", "third_party/components.json", "THIRD-PARTY-LICENCES"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = ["Copyright (C) 2026 AI-Softphone Developers Team", "Copyright (C) 2026 Ilya Pleshchinskiy"]
+SPDX-License-Identifier = "GPL-2.0-or-later"
+
+# The licence texts of other people's work, carried verbatim from each
+# component's own tree or from the Free Software Foundation's and the Apache
+# Software Foundation's own wording. Each states its own copyright inside itself,
+# which is the whole reason it is here; nothing may be asserted over them.
+
+[[annotations]]
+path = ["third_party/licences/*.txt", "third_party/fluent-icons/LICENSE", "LICENSE"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Each text states its own copyright holders"
+SPDX-License-Identifier = "LicenseRef-see-the-text-itself"
+
+# Inno Setup's user-contributed message catalogues, taken from
+# https://jrsoftware.org/files/istrans/ for the ten languages Inno Setup does not
+# ship itself. Each names its own translators in its first lines, and they are
+# left byte for byte as they arrived.
+
+[[annotations]]
+path = ["packaging/windows/languages/*.isl"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Inno Setup translation contributors named in each file"
+SPDX-License-Identifier = "LicenseRef-Inno-Setup"

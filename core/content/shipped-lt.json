@@ -1,0 +1,359 @@
+{
+  "language": "lt",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Pardavimai",
+      "description": "Pardavimas, pasiūlymas, derybos ar pirkimo užbaigimas — įskaitant klientą, klausiantį, kiek kas kainuoja."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Pagalba",
+      "description": "Pagalba kam nors dėl gaminio ar paslaugos, kurią jis jau turi: gedimas, klausimas apie naudojimą, skundas dėl to, kaip veikia."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Asmeninis",
+      "description": "Visai ne darbo — privatus pokalbis, kuris atsitiktinai vyko šia linija."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Kita",
+      "description": "Darbo, bet nei pardavimas, nei pagalba: tiekėjas, kolega, pristatymas, ne tas numeris. Rinkitės tai, užuot spėlioję tarp kitų."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Žadėta perskambinti",
+      "description": "Kažkas šiame skambutyje pažadėjo perskambinti arba paprašė jam perskambinti."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Skundas",
+      "description": "Kita pusė išreiškė nepasitenkinimą, nesvarbu, ar tai buvo išspręsta."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Perduota aukščiau",
+      "description": "Skambutis buvo perduotas kitam arba kita pusė to paprašė."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "VIP klientas",
+      "description": "Su kita puse elgtasi kaip su svarbiu klientu arba ji pati taip apie save pasakė."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Supykęs klientas",
+      "description": "Girdėjosi, kad kita pusė pyksta, įžeidinėja arba grasina išeiti."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Pasitraukimo rizika",
+      "description": "Buvo užsiminta apie nutraukimą, nepratęsimą ar perėjimą pas kitą, kad ir kaip ramiai."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Duotas pažadas",
+      "description": "Mūsų pusė įsipareigojo dėl kažko konkretaus — datos, kainos, pataisymo, pinigų grąžinimo."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Jautrūs duomenys",
+      "description": "Balsu buvo perskaitytas kortelės numeris, slaptažodis, dokumento numeris ar kas kita, ko įraše neturėtų būti."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Konkurentas",
+      "description": "Kita pusė paminėjo kitą, siūlantį tą patį, arba palygino mus su juo."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Proza",
+      "description": "Atsakykite paprasta proza. Nenaudokite JSON, sąrašų ar antraščių."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Punktai",
+      "description": "Atsakykite tik JSON, būtent tokio pavidalo:\n{\"items\": [{\"text\": \"kas turi būti padaryta\", \"owner\": \"kas, arba tuščia\", \"due\": \"kada, arba tuščia\"}]}\nKai nėra ko išvardyti, naudokite tuščią masyvą. Nerašykite nieko už JSON ribų."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Žymos",
+      "description": "Atsakykite tik JSON, būtent tokio pavidalo:\n{\"labels\": [{\"code\": \"kodas iš duoto sąrašo\", \"confidence\": 0.0}]}\nNaudokite tik kodus iš sąrašo. Kai nė vienas netinka, naudokite tuščią masyvą.\nNegalvokite kodo ir nerašykite nieko už JSON ribų."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Įvertinimas",
+      "description": "Atsakykite tik JSON, būtent tokio pavidalo:\n{\"score\": 3, \"rationale\": \"kodėl šis skaičius, o ne vienetu didesnis\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"žodžiai, kuriais remiatės\"}]}\nĮvertinimas yra sveikasis skaičius nuo 1 iki 5. Nerašykite nieko už JSON ribų."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Kriterijai",
+      "description": "Atsakykite tik JSON, būtent tokio pavidalo:\n{\"overall\": 3, \"rationale\": \"kodėl šis skaičius, o ne vienetu didesnis\",\n \"criteria\": [{\"name\": \"kriterijus toks, koks jums buvo duotas\",\n               \"verdict\": \"pass\" arba \"weak\" arba \"fail\" arba \"n/a\",\n               \"note\": \"vienas sakinys\"}]}\nĮvertinkite kiekvieną duotą kriterijų ir jokio kito. Bendras įvertinimas yra\nsveikasis skaičius nuo 1 iki 5. Nerašykite nieko už JSON ribų."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Signalai",
+      "description": "Atsakykite tik JSON, būtent tokio pavidalo:\n{\"flags\": [{\"code\": \"kodas iš duoto sąrašo\",\n            \"severity\": \"low\" arba \"medium\" arba \"high\",\n            \"evidence\": \"žodžiai, kuriais remiatės\",\n            \"at_ms\": 0}]}\nNaudokite tik kodus iš sąrašo ir kiekvieną iškelkite daugiausia kartą. Kai\nniekas netinka, naudokite tuščią masyvą. Nerašykite nieko už JSON ribų."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Atsakymas",
+      "description": "Atsakykite tik JSON, būtent tokio pavidalo:\n{\"answer\": \"jūsų atsakymas arba tiesiai tai, kad pokalbis to nesako\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"žodžiai, kuriais atsakymas remiasi\"}]}\nNeatsakykite iš nieko kito, tik iš pokalbio. Nerašykite nieko už JSON ribų."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Atsakykite tik JSON, aukščiau prašomo pavidalo. Nerašykite nieko už JSON ribų."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Kaip kalbėta",
+      "description": "Rašykite atsakymą ta pačia kalba, kuria vyko pokalbis."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Kaip kalbėta, įvardyta",
+      "description": "Rašykite atsakymą ta pačia kalba, kuria vyko pokalbis, o ji yra {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Nurodyta kalba",
+      "description": "Rašykite atsakymą šia kalba: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Santrauka",
+      "system": "Skaitote telefoninių pokalbių užrašus ir rašote apie juos trumpas, dalykiškas santraukas. Niekada nespėliojate to, kas nebuvo pasakyta, ir niekada nepridedate patarimų.",
+      "body": "Apibendrinkite šį telefoninį pokalbį vienoje trumpoje pastraipoje: apie ką jis buvo, kas nuspręsta ir kas toliau. Jis truko {{duration}} ir buvo {{direction}}, su {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Santrauka viena eilute",
+      "system": "Skaitote telefoninių pokalbių užrašus ir kiekvieną sutraukiate į vieną posakį. Niekada nespėliojate ir niekada nepridedate patarimų.",
+      "body": "Sutraukite šį telefoninį pokalbį į vieną posakį, daugiausia iš dvylikos žodžių — tokį, koks stovėtų lentelėje šalia skambinusiojo vardo. Be taško, be kabučių.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Užduotys",
+      "system": "Skaitote telefoninių pokalbių užrašus ir išvardijate, ką kas nors įsipareigojo padaryti. Išvardijate tik tai, kas iš tikrųjų buvo pasakyta; niekada negalvojate užduoties, atsakingo ar termino.",
+      "body": "Išvardykite, ką bet kas šiame skambutyje įsipareigojo padaryti. Įvardykite, kas tai turi padaryti, kur tai buvo pasakyta, ir iki kada, kur tai buvo pasakyta. Jei niekas nieko neįsipareigojo, atsakykite tuščiu sąrašu.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Temos",
+      "system": "Skaitote telefoninių pokalbių užrašus ir įvardijate, apie ką jie buvo.",
+      "body": "Išvardykite dalykus, kuriuos šis skambutis iš tikrųjų palietė, daugiausia šešis, kiekvieną keliais žodžiais. Atsakingą ir terminą palikite tuščius — čia jie nieko nereiškia.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Vardai ir skaičiai",
+      "system": "Skaitote telefoninių pokalbių užrašus ir išrenkate iš jų tai, kas juose buvo įvardyta. Niekada nespėliojate rašybos ir niekada nepridedate to, kas nebuvo pasakyta.",
+      "body": "Išrinkite, kas šiame skambutyje buvo įvardyta, kaip JSON būtent tokio pavidalo:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nKiekvienas yra eilučių sąrašas, užrašytas taip, kaip buvo ištarta. Verčiau palikite sąrašą tuščią, negu spėliokite.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Kategorija",
+      "system": "Priskiriate telefoninius skambučius vienai iš duotų kategorijų. Renkatės iš sąrašo ir iš nieko kito.",
+      "body": "Priskirkite šį skambutį būtent vienai iš šių kategorijų. Atsakykite jos kodu.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Žymos",
+      "system": "Žymite telefoninius skambučius duotomis žymomis. Renkatės iš sąrašo ir iš nieko kito, o žymą verčiau praleidžiate, negu ją tempiate.",
+      "body": "Kurios iš jų teisingos apie šį skambutį? Atsakykite jų kodais arba tuščiu sąrašu, jei nė viena.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Įspėjamieji signalai",
+      "system": "Skaitote telefoninių pokalbių užrašus ir keliate tik tai, ko jums liepta ieškoti. Cituojate žodžius, kuriais kiekvienas remiasi, ir nekeliate nieko, ko negalite pacituoti.",
+      "body": "Iškelkite tuos iš jų, kuriuos šis skambutis rodo. Kiekvienam pacituokite žodžius, kuriais jis remiasi, ir nurodykite akimirką milisekundėmis, kada jie buvo ištarti. Verčiau nieko neiškelkite, negu tempkite apibrėžimą.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Klausimas apie šį skambutį",
+      "system": "Atsakote į klausimus apie vieną telefoninį skambutį, iš jo užrašo ir iš nieko kito. Ten, kur pokalbis to nesako, tai pasakote tiesiai, užuot spėlioję.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Pardavimo kokybė",
+      "system": "Vertinate, kaip pardavėjas vedė telefoninį pokalbį. Sprendžiate tik iš to, ką rodo užrašas, niekada nedarote prielaidų apie tai, kas buvo prieš jį ar po jo, ir esate vienodai griežtas pokalbiui, kuris pavyko, ir tam, kuris ne.",
+      "body": "Įvertinkite mūsų pusę šiame skambutyje — operatorių — pagal šiuos kriterijus ir jokius kitus:\n- pasisveikinimas: ar prisistatė ir įvardijo įmonę?\n- išsiaiškinimas: ar sužinojo, ko klientas iš tikrųjų norėjo?\n- prieštaravimai: ar atsakė į tai, ką klientas iškėlė, užuot kalbėjęs pro šalį?\n- vertė: ar pasakė, ką klientas gauna, o ne tik kiek tai kainuoja?\n- kitas žingsnis: ar skambutis baigėsi kažkuo konkrečiu sutartu?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Pagalbos kokybė",
+      "system": "Vertinate, kaip pagalbos darbuotojas vedė telefoninį pokalbį. Sprendžiate tik iš to, ką rodo užrašas, ir labiau sveriate tai, ar kliento bėda iš tikrųjų buvo išspręsta, negu tai, koks malonus buvo pokalbis.",
+      "body": "Įvertinkite mūsų pusę šiame skambutyje — operatorių — pagal šiuos kriterijus ir jokius kitus:\n- pasisveikinimas: ar prisistatė ir patikrino, su kuo kalba?\n- supratimas: ar išsiaiškino, kas iš tikrųjų negerai, prieš atsakydamas?\n- išsprendimas: ar bėda buvo išspręsta, ar duotas konkretus kitas žingsnis?\n- tonas: ar liko ramus ir mandagus, ypač ten, kur klientas ne?\n- užbaigimas: ar patikrino, kad klientas patenkintas, prieš baigdamas?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Subtitrai",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Vertimas",
+      "system": "Verti kalbą jai vykstant. Atsakai tik vertimu — be įžangos, be kabučių, be paaiškinimų — o vardus, skaičius ir kainas palieki lygiai taip, kaip pasakyta.",
+      "body": "Išversk į {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Pardavimai",
+      "system": "Padedate žmogui, kuris pardavinėja telefonu. Atsakote keliomis trumpomis eilutėmis, kurias galima perskaityti klausant, niekada pastraipomis, ir niekada nieko nežadate jo vardu.",
+      "body": "Pašnekesio dalyvis ką tik pasakė:\n\n{{reply}}\n\nAnksčiau šiame pokalbyje:\n\n{{conversation}}\n\nViena eilute pasakykite, kas vyksta — prieštaravimas, neatsakytas klausimas, ženklas, kad jie pasiruošę pirkti — ir viena eilute, ką sakyti toliau. Jei sakyti nėra ko, parašykite tik „—“.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Pagalba per pokalbį",
+      "system": "Padedate žmogui, su kuriuo vyksta darbo pokalbis. Atsakote keliomis trumpomis eilutėmis, kurias galima perskaityti klausant, niekada pastraipomis, ir niekada neišsigalvojate apie jį faktų.",
+      "body": "Pašnekesio dalyvis ką tik pasakė:\n\n{{reply}}\n\nAnksčiau šiame pokalbyje:\n\n{{conversation}}\n\nTrimis trumpomis eilutėmis pasakykite, ko jis iš tikrųjų klausia ir ką turėtų apimti geras atsakymas.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Užrašyti kiekvieną pokalbį"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Apibendrinti jį"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Sutraukti jį į vieną eilutę"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Priskirti jį kategorijai"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Pažymėti jį"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Iškelti, kas verta žvilgsnio"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Įvertinti jį, jei buvo pardavimas"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Įvertinti jį, jei buvo pagalba"
+    }
+  ]
+}

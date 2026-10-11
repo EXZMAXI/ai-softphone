@@ -1,0 +1,8 @@
+﻿HVAD DENNE LICENS BETYDER
+
+Dette program er fri software. Du må bruge det, kopiere det og ændre det og give det
+videre til hvem som helst — så længe den, der får det, får den samme frihed og kildekoden
+med. Der er ingen garanti.
+
+Selve licensen er den engelske tekst nedenfor, og det er den, der gælder. Denne note
+forklarer den kun.

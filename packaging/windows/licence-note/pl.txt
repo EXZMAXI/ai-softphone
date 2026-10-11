@@ -1,0 +1,8 @@
+﻿CO OZNACZA TA LICENCJA
+
+Ten program jest wolnym oprogramowaniem. Możesz go używać, kopiować i zmieniać oraz
+przekazywać komukolwiek — pod warunkiem, że otrzymujący dostanie tę samą wolność, a wraz
+z nią kod źródłowy. Nie ma żadnej gwarancji.
+
+Samą licencją jest angielski tekst poniżej i to on ma moc prawną. Ta notatka jedynie go
+wyjaśnia.

@@ -1,0 +1,430 @@
+{
+  "note": [
+    "The one list of what this product ships that somebody else wrote.",
+    "",
+    "Read by four things, which is why it exists: scripts/make-third-party-notices.py",
+    "writes THIRD-PARTY-LICENCES from it, scripts/check-third-party-notices.py holds",
+    "ui/src/about.cpp and the two READMEs' tables to agreeing with it, and the",
+    "packaging scripts install the result. Before this file the same list was kept in",
+    "two places by hand and about.cpp's own comment admitted it; the two had drifted",
+    "by five components, LAME among them, whose licence asks in as many words to be",
+    "acknowledged by name.",
+    "",
+    "`licences` names files in third_party/licences/, carried verbatim from the",
+    "component's own tree or, for the long canonical texts, from the Free Software",
+    "Foundation's and the Apache Software Foundation's own wording. An empty",
+    "`licences` means the text travels from the machine the package is built on,",
+    "which is where that library comes from: see `third-party/` in the staged tree.",
+    "",
+    "`notice` is what a recipient is shown; `offered` and `verdict` are the argument,",
+    "and the argument is longer in README.md than a user wants on a screen."
+  ],
+  "components": [
+    {
+      "id": "qt",
+      "name": "Qt 6",
+      "what": "The interface, and the libraries under it",
+      "url": "https://www.qt.io",
+      "notice": "GPL-2.0 or GPL-3.0",
+      "offered": "Commercial **or LGPL-3.0 or GPL-2.0 or GPL-3.0**",
+      "verdict": "both GPL versions are on offer",
+      "copyright": [
+        "Copyright (C) The Qt Company Ltd. and other contributors"
+      ],
+      "licences": [
+        "LICENSE",
+        "third_party/licences/GPL-3.0.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "remark": "Qt carries third-party code of its own - FreeType, libpng, PCRE2, HarfBuzz, libjpeg, ICU and more - each under its own terms. Qt enumerates them in the SPDX SBOM that ships inside the Qt installation this was built against, at $QT_ROOT_DIR/sbom/, and that enumeration rather than this file is the authority on them.",
+      "about": true
+    },
+    {
+      "id": "pjproject",
+      "name": "pjproject (PJSIP)",
+      "what": "The SIP stack and its media engine",
+      "url": "https://www.pjsip.org",
+      "notice": "GPL-2.0-or-later",
+      "offered": "GPL-2.0-**or-later**",
+      "verdict": "compatible with either",
+      "copyright": [
+        "Copyright (C) 2008-2024 Teluu Inc. (http://www.teluu.com)",
+        "Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>"
+      ],
+      "licences": [
+        "LICENSE"
+      ],
+      "where": "all",
+      "public": true,
+      "about": true
+    },
+    {
+      "id": "pjproject-speex",
+      "name": "speex and speexdsp, inside pjproject",
+      "what": "The echo canceller and the resampler pjproject uses",
+      "url": "https://www.speex.org",
+      "notice": "BSD-3-Clause",
+      "offered": "BSD-3-Clause",
+      "verdict": "compatible",
+      "copyright": [
+        "Copyright 2002-2008 Xiph.org Foundation",
+        "Copyright 2002-2008 Jean-Marc Valin",
+        "Copyright 2005-2007 Analog Devices Inc.",
+        "Copyright 2005-2008 Commonwealth Scientific and Industrial Research Organisation (CSIRO)"
+      ],
+      "licences": [
+        "third_party/licences/pjproject-speex.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "about": false
+    },
+    {
+      "id": "pjproject-rnnoise",
+      "name": "RNNoise, inside pjproject's WebRTC echo canceller",
+      "what": "Noise suppression",
+      "url": "https://github.com/xiph/rnnoise",
+      "notice": "BSD-3-Clause",
+      "offered": "BSD-3-Clause",
+      "verdict": "compatible",
+      "copyright": [
+        "Copyright (c) 2017, Mozilla",
+        "Copyright (c) 2007-2017, Jean-Marc Valin"
+      ],
+      "licences": [
+        "third_party/licences/pjproject-rnnoise.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "about": false
+    },
+    {
+      "id": "pjproject-resample",
+      "name": "resample, inside pjproject",
+      "what": "Sample-rate conversion",
+      "url": "https://www.pjsip.org",
+      "notice": "LGPL-2.1-or-later",
+      "offered": "LGPL-**2.1**",
+      "verdict": "compatible",
+      "copyright": [
+        "Copyright (C) 1994-2002 Julius O. Smith III and others"
+      ],
+      "licences": [
+        "third_party/licences/LGPL-2.1.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "about": false
+    },
+    {
+      "id": "pjproject-srtp",
+      "name": "libsrtp, inside pjproject",
+      "what": "SRTP, which is how media is encrypted",
+      "url": "https://github.com/cisco/libsrtp",
+      "notice": "BSD-3-Clause",
+      "offered": "BSD-3-Clause",
+      "verdict": "compatible",
+      "copyright": [
+        "Copyright (c) 2001-2017 Cisco Systems, Inc. All rights reserved."
+      ],
+      "licences": [
+        "third_party/licences/pjproject-srtp.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "about": false
+    },
+    {
+      "id": "pjproject-webrtc",
+      "name": "WebRTC, inside pjproject",
+      "what": "The echo canceller",
+      "url": "https://webrtc.googlesource.com",
+      "notice": "BSD-3-Clause",
+      "offered": "BSD-3-Clause",
+      "verdict": "compatible",
+      "copyright": [
+        "Copyright (c) 2011, The WebRTC project authors. All rights reserved."
+      ],
+      "licences": [
+        "third_party/licences/pjproject-webrtc.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "about": false
+    },
+    {
+      "id": "pjproject-gsm",
+      "name": "GSM 06.10, inside pjproject",
+      "what": "The GSM codec",
+      "url": "https://www.quut.com/gsm/",
+      "notice": "permissive (Degener and Bormann)",
+      "offered": "permissive",
+      "verdict": "compatible",
+      "copyright": [
+        "Copyright 1992, 1993, 1994 by Jutta Degener and Carsten Bormann, Technische Universitaet Berlin"
+      ],
+      "licences": [
+        "third_party/licences/pjproject-gsm.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "about": false
+    },
+    {
+      "id": "pjproject-ilbc",
+      "name": "iLBC, inside pjproject",
+      "what": "The iLBC codec, from RFC 3951",
+      "url": "https://www.rfc-editor.org/rfc/rfc3951",
+      "notice": "IETF RFC terms",
+      "offered": "IETF RFC 3951 terms",
+      "verdict": "compatible",
+      "copyright": [
+        "Copyright (C) The Internet Society (2004). All Rights Reserved."
+      ],
+      "licences": [
+        "third_party/licences/pjproject-ilbc.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "about": false
+    },
+    {
+      "id": "opus",
+      "name": "Opus",
+      "what": "The Opus codec, which pjproject links",
+      "url": "https://opus-codec.org",
+      "notice": "BSD-3-Clause",
+      "offered": "BSD-3-Clause",
+      "verdict": "compatible",
+      "copyright": [],
+      "licences": [],
+      "where": "all",
+      "public": true,
+      "about": true,
+      "remark": "Built from source by scripts/build-pjproject.sh and scripts/build-macos-deps.sh, and on Linux the package carries the machine's own. Its text travels from whichever of those provided it; see usr/share/doc/ai-softphone/third-party/."
+    },
+    {
+      "id": "openssl",
+      "name": "OpenSSL",
+      "what": "TLS for signalling, for https and for verifying a release",
+      "url": "https://www.openssl.org",
+      "notice": "Apache-2.0",
+      "offered": "**Apache-2.0**",
+      "verdict": "compatible with GPL-3.0 only - which is why the offer is \"or later\"",
+      "copyright": [
+        "Copyright (c) 1998-2025 The OpenSSL Project Authors",
+        "Copyright (c) 1995-1998 Eric A. Young, Tim J. Hudson"
+      ],
+      "licences": [
+        "third_party/licences/Apache-2.0.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "remark": "Carried inside the Windows installer. On Linux it is the machine's own, declared as a dependency of the package and taken from the machine by the AppImage.",
+      "about": true
+    },
+    {
+      "id": "sqlite",
+      "name": "SQLite",
+      "what": "The local database",
+      "url": "https://www.sqlite.org",
+      "notice": "public domain",
+      "offered": "public domain",
+      "verdict": "compatible",
+      "copyright": [
+        "The authors disclaim copyright to the SQLite source code."
+      ],
+      "licences": [
+        "third_party/licences/sqlite.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "about": true
+    },
+    {
+      "id": "nlohmann-json",
+      "name": "nlohmann/json",
+      "what": "Reading and writing JSON",
+      "url": "https://github.com/nlohmann/json",
+      "notice": "MIT",
+      "offered": "MIT",
+      "verdict": "compatible",
+      "copyright": [
+        "Copyright (c) 2013-2022 Niels Lohmann"
+      ],
+      "licences": [
+        "third_party/licences/nlohmann-json.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "about": true
+    },
+    {
+      "id": "cpp-httplib",
+      "name": "cpp-httplib",
+      "what": "The HTTP client and the local control API",
+      "url": "https://github.com/yhirose/cpp-httplib",
+      "notice": "MIT",
+      "offered": "MIT",
+      "verdict": "compatible",
+      "copyright": [
+        "Copyright (c) 2017 yhirose"
+      ],
+      "licences": [
+        "third_party/licences/cpp-httplib.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "about": true
+    },
+    {
+      "id": "ixwebsocket",
+      "name": "IXWebSocket",
+      "what": "The socket ten streaming recognisers are carried on",
+      "url": "https://github.com/machinezone/IXWebSocket",
+      "notice": "BSD-3-Clause",
+      "offered": "BSD-3",
+      "verdict": "compatible",
+      "copyright": [
+        "Copyright (c) 2018 Machine Zone, Inc. All rights reserved."
+      ],
+      "licences": [
+        "third_party/licences/ixwebsocket.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "about": true
+    },
+    {
+      "id": "nghttp2",
+      "name": "nghttp2",
+      "what": "HTTP/2, for the one streaming recogniser that is gRPC",
+      "url": "https://nghttp2.org",
+      "notice": "MIT",
+      "offered": "MIT",
+      "verdict": "compatible; the library only, `ENABLE_LIB_ONLY`",
+      "copyright": [
+        "Copyright (c) 2012, 2014, 2015, 2016 Tatsuhiro Tsujikawa",
+        "Copyright (c) 2012, 2014, 2015, 2016 nghttp2 contributors"
+      ],
+      "licences": [
+        "third_party/licences/nghttp2.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "about": true
+    },
+    {
+      "id": "lame",
+      "name": "LAME",
+      "what": "The MP3 encoder every recording is written with",
+      "url": "https://lame.sourceforge.io",
+      "notice": "LGPL-2.0-or-later",
+      "offered": "LGPL-**2.0-or-later**",
+      "verdict": "compatible; LGPL-2.0 §3 permits taking it under the GPL",
+      "copyright": [
+        "Copyright (c) 1999-2017 The LAME Project"
+      ],
+      "licences": [
+        "third_party/licences/lame.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "remark": "LAME's own LICENSE asks to be acknowledged by name with a link to its site, which this notice does.",
+      "about": true
+    },
+    {
+      "id": "minimp3",
+      "name": "minimp3",
+      "what": "The MP3 decoder the player and the waveform read with",
+      "url": "https://github.com/lieff/minimp3",
+      "notice": "CC0-1.0",
+      "offered": "CC0",
+      "verdict": "compatible",
+      "copyright": [
+        "Dedicated to the public domain by its author, lieff."
+      ],
+      "licences": [
+        "third_party/licences/minimp3.txt"
+      ],
+      "where": "all",
+      "public": true,
+      "about": true
+    },
+    {
+      "id": "fluent-icons",
+      "name": "Fluent UI System Icons",
+      "what": "The pictures on the buttons and in the rows",
+      "url": "https://github.com/microsoft/fluentui-system-icons",
+      "notice": "MIT",
+      "offered": "MIT",
+      "verdict": "compatible; the drawings themselves carry their notice",
+      "copyright": [
+        "Copyright (c) 2020 Microsoft Corporation"
+      ],
+      "licences": [
+        "third_party/fluent-icons/LICENSE"
+      ],
+      "where": "all",
+      "public": true,
+      "about": true
+    },
+    {
+      "id": "libsecret",
+      "name": "libsecret",
+      "what": "The desktop keyring, where one answers",
+      "url": "https://wiki.gnome.org/Projects/Libsecret",
+      "notice": "LGPL-2.1-or-later",
+      "offered": "LGPL-2.1+",
+      "verdict": "compatible",
+      "copyright": [],
+      "licences": [],
+      "where": "linux",
+      "public": true,
+      "about": true
+    },
+    {
+      "id": "alsa",
+      "name": "ALSA",
+      "what": "The sound devices the telephone opens",
+      "url": "https://www.alsa-project.org",
+      "notice": "LGPL-2.1-or-later",
+      "offered": "LGPL-2.1+",
+      "verdict": "compatible",
+      "copyright": [],
+      "licences": [],
+      "where": "linux",
+      "public": true,
+      "about": true
+    },
+    {
+      "id": "pulseaudio",
+      "name": "PulseAudio (client)",
+      "what": "The sound server, where the machine runs one",
+      "url": "https://www.freedesktop.org/wiki/Software/PulseAudio/",
+      "notice": "LGPL-2.1-or-later",
+      "offered": "LGPL-2.1+",
+      "verdict": "compatible - the GPL parts of PulseAudio are the server, which is not linked",
+      "copyright": [],
+      "licences": [],
+      "where": "linux",
+      "public": true,
+      "about": true
+    },
+    {
+      "id": "googletest",
+      "name": "GoogleTest",
+      "what": "The test suites",
+      "url": "https://github.com/google/googletest",
+      "notice": null,
+      "offered": "BSD-3, and tests only",
+      "verdict": "not distributed",
+      "copyright": [],
+      "licences": [],
+      "where": "none",
+      "public": false,
+      "about": false
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+// AI Softphone - a cross-platform desktop SIP softphone with an AI enrichment layer.
+// https://ai-softphone.com
+//
+// SPDX-FileCopyrightText: Copyright (C) 2026 AI-Softphone Developers Team
+// SPDX-FileCopyrightText: Copyright (C) 2026 Ilya Pleshchinskiy
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// This file is part of AI Softphone. There is NO WARRANTY, to the extent
+// permitted by law. See the file LICENSE for the full terms.
+
+#pragma once
+
+#include <softphone/container/manifest.hpp>
+#include <softphone/container/plugin.hpp>
+#include <softphone/plugins/storage/storage_host.hpp>
+
+#include <filesystem>
+#include <functional>
+#include <string>
+
+namespace softphone::plugins::storage {
+
+class StoragePlugin final : public container::IPlugin {
+public:
+
+    StoragePlugin(std::filesystem::path file, std::string contentLanguage,
+                  std::function<void(core::StoreStatus)> opened = {});
+
+    ~StoragePlugin() override;
+
+    bool initialize(container::PluginContext &context, std::string &problem) override;
+    void leaving() noexcept override;
+
+    [[nodiscard]] StorageHost &host() noexcept
+    {
+        return host_;
+    }
+
+private:
+    StorageHost host_;
+    std::filesystem::path file_;
+    std::string contentLanguage_;
+    std::function<void(core::StoreStatus)> opened_;
+};
+
+[[nodiscard]] container::Manifest storageManifest();
+
+}

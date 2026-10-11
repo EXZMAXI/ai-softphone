@@ -1,0 +1,8 @@
+﻿MITÄ TÄMÄ LISENSSI TARKOITTAA
+
+Tämä ohjelma on vapaa ohjelmisto. Saat käyttää sitä, kopioida sitä ja muuttaa sitä sekä
+antaa sen kenelle tahansa eteenpäin — kunhan saaja saa saman vapauden ja lähdekoodin
+mukana. Mitään takuuta ei anneta.
+
+Itse lisenssi on alla oleva englanninkielinen teksti, ja se on määräävä. Tämä huomautus
+vain selittää sen.

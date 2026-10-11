@@ -1,0 +1,38 @@
+# AI Softphone - a cross-platform desktop SIP softphone with an AI enrichment layer.
+# https://ai-softphone.com
+#
+# SPDX-FileCopyrightText: Copyright (C) 2026 AI-Softphone Developers Team
+# SPDX-FileCopyrightText: Copyright (C) 2026 Ilya Pleshchinskiy
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# This file is part of AI Softphone. There is NO WARRANTY, to the extent
+# permitted by law. See the file LICENSE for the full terms.
+
+[Desktop Entry]
+Type=Application
+Version=1.5
+
+Name=AI Softphone
+GenericName=Softphone
+Comment=Make and take SIP calls, with transcription and summaries
+
+Name[ru]=AI Софтфон
+GenericName[ru]=Софтфон
+Comment[ru]=Звонки по SIP с расшифровкой и краткими итогами
+
+Name[pt]=AI Softphone
+GenericName[pt]=Softphone
+Comment[pt]=Chamadas SIP com transcrição e resumos
+
+Exec=ai-softphone %u
+Icon=ai-softphone
+Terminal=false
+StartupNotify=true
+
+StartupWMClass=ai-softphone
+
+MimeType=x-scheme-handler/tel;x-scheme-handler/callto;x-scheme-handler/sip;x-scheme-handler/sips;
+
+Categories=Network;Telephony;
+Keywords=SIP;VoIP;telephone;phone;call;
+Keywords[ru]=SIP;VoIP;телефон;звонок;связь;

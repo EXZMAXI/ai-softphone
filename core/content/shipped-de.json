@@ -1,0 +1,359 @@
+{
+  "language": "de",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Vertrieb",
+      "description": "Verkaufen, Angebote, Verhandlungen oder das Nachfassen zu einem Kauf — auch die Frage eines Kunden, was etwas kostet."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Support",
+      "description": "Hilfe zu einem Produkt oder einer Leistung, die jemand bereits hat: eine Störung, eine Frage zur Bedienung, eine Beschwerde darüber, wie es funktioniert."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Privat",
+      "description": "Überhaupt nicht geschäftlich — ein privates Gespräch, das zufällig über diese Leitung lief."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Sonstiges",
+      "description": "Geschäftlich, aber weder Vertrieb noch Support: ein Lieferant, eine Kollegin, eine Lieferung, eine falsche Nummer. Wählen Sie das, statt zwischen den anderen zu raten."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Rückruf zugesagt",
+      "description": "Jemand in diesem Gespräch hat einen Rückruf zugesagt oder um einen gebeten."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Beschwerde",
+      "description": "Die Gegenseite hat Unzufriedenheit geäußert, ob sie ausgeräumt wurde oder nicht."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Eskaliert",
+      "description": "Das Gespräch wurde an jemand anderen übergeben, oder die Gegenseite hat darum gebeten."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "VIP-Kunde",
+      "description": "Die Gegenseite wurde als wichtiger Kunde behandelt oder hat sich als solcher bezeichnet."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Verärgerter Kunde",
+      "description": "Die Gegenseite war hörbar verärgert, wurde beleidigend oder drohte mit Abwanderung."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Abwanderungsgefahr",
+      "description": "Kündigung, Nichtverlängerung oder ein Wechsel zu jemand anderem kam zur Sprache, wie ruhig auch immer."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Zusage gemacht",
+      "description": "Unsere Seite hat sich zu etwas Konkretem verpflichtet — einem Termin, einem Preis, einer Behebung, einer Erstattung."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Sensible Daten",
+      "description": "Eine Kartennummer, ein Passwort, eine Ausweisnummer oder etwas anderes, das nicht in einer Aufnahme stehen sollte, wurde vorgelesen."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Wettbewerber",
+      "description": "Die Gegenseite hat jemand anderen mit demselben Angebot genannt oder uns damit verglichen."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Fließtext",
+      "description": "Antworten Sie in Fließtext. Verwenden Sie kein JSON, keine Listen und keine Überschriften."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Punkte",
+      "description": "Antworten Sie nur mit JSON, genau in dieser Form:\n{\"items\": [{\"text\": \"was zu tun ist\", \"owner\": \"wer, oder leer\", \"due\": \"wann, oder leer\"}]}\nGeben Sie ein leeres Array zurück, wenn es nichts aufzuzählen gibt. Schreiben Sie nichts außerhalb des JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Label",
+      "description": "Antworten Sie nur mit JSON, genau in dieser Form:\n{\"labels\": [{\"code\": \"ein Code aus der Liste, die Sie bekommen haben\", \"confidence\": 0.0}]}\nVerwenden Sie nur Codes aus der Liste. Geben Sie ein leeres Array zurück, wenn keiner passt.\nErfinden Sie keinen Code und schreiben Sie nichts außerhalb des JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Bewertung",
+      "description": "Antworten Sie nur mit JSON, genau in dieser Form:\n{\"score\": 3, \"rationale\": \"warum diese Zahl und nicht eine höhere\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"die Worte, auf die Sie sich stützen\"}]}\nDie Bewertung ist eine ganze Zahl von 1 bis 5. Schreiben Sie nichts außerhalb des JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Kriterien",
+      "description": "Antworten Sie nur mit JSON, genau in dieser Form:\n{\"overall\": 3, \"rationale\": \"warum diese Zahl und nicht eine höhere\",\n \"criteria\": [{\"name\": \"das Kriterium, wie es Ihnen gegeben wurde\",\n               \"verdict\": \"pass\" oder \"weak\" oder \"fail\" oder \"n/a\",\n               \"note\": \"ein Satz\"}]}\nBeurteilen Sie jedes Kriterium, das Sie bekommen haben, und keine anderen. Die Gesamtnote ist eine\nganze Zahl von 1 bis 5. Schreiben Sie nichts außerhalb des JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Auffälligkeiten",
+      "description": "Antworten Sie nur mit JSON, genau in dieser Form:\n{\"flags\": [{\"code\": \"ein Code aus der Liste, die Sie bekommen haben\",\n            \"severity\": \"low\" oder \"medium\" oder \"high\",\n            \"evidence\": \"die Worte, auf die Sie sich stützen\",\n            \"at_ms\": 0}]}\nVerwenden Sie nur Codes aus der Liste und führen Sie jeden höchstens einmal an. Geben Sie ein leeres\nArray zurück, wenn nichts zutrifft. Schreiben Sie nichts außerhalb des JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Antwort",
+      "description": "Antworten Sie nur mit JSON, genau in dieser Form:\n{\"answer\": \"Ihre Antwort, oder sagen Sie klar, dass das Gespräch dazu nichts sagt\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"die Worte, auf denen Ihre Antwort ruht\"}]}\nAntworten Sie aus nichts anderem als dem Gespräch. Schreiben Sie nichts außerhalb\ndes JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Antworten Sie nur mit JSON, in der oben verlangten Form. Schreiben Sie nichts außerhalb des JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Wie gesprochen",
+      "description": "Schreiben Sie Ihre Antwort in derselben Sprache, in der das Gespräch geführt wurde."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Wie gesprochen, benannt",
+      "description": "Schreiben Sie Ihre Antwort in derselben Sprache, in der das Gespräch geführt wurde, nämlich {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Eine benannte Sprache",
+      "description": "Schreiben Sie Ihre Antwort in dieser Sprache: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Zusammenfassung",
+      "system": "Sie lesen Transkripte von Telefongesprächen und schreiben kurze, sachliche Zusammenfassungen davon. Sie raten nie etwas, das nicht gesagt wurde, und geben nie Ratschläge.",
+      "body": "Fassen Sie dieses Telefongespräch in einem kurzen Absatz zusammen: worum es ging, was entschieden wurde und was als Nächstes geschieht. Es dauerte {{duration}} und war {{direction}}, mit {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Zusammenfassung in einer Zeile",
+      "system": "Sie lesen Transkripte von Telefongesprächen und bringen jedes auf einen einzigen Satzteil. Sie raten nie und geben nie Ratschläge.",
+      "body": "Bringen Sie dieses Telefongespräch auf eine Wendung von höchstens zwölf Wörtern — die Art Zeile, die in einer Tabelle neben dem Namen des Anrufers steht. Kein Punkt, keine Anführungszeichen.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Aufgaben",
+      "system": "Sie lesen Transkripte von Telefongesprächen und listen auf, wozu sich jemand verpflichtet hat. Sie listen nur, was tatsächlich gesagt wurde; Sie erfinden nie eine Aufgabe, eine Zuständigkeit oder ein Datum.",
+      "body": "Listen Sie auf, wozu sich jemand in diesem Gespräch verpflichtet hat. Nennen Sie, wer es tun soll, wo das gesagt wurde, und bis wann, wo das gesagt wurde. Hat sich niemand zu etwas verpflichtet, antworten Sie mit einer leeren Liste.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Themen",
+      "system": "Sie lesen Transkripte von Telefongesprächen und benennen, worum es darin ging.",
+      "body": "Listen Sie die Themen auf, die dieses Gespräch tatsächlich berührt hat, höchstens sechs, jedes in wenigen Worten. Lassen Sie Zuständigkeit und Datum leer — sie bedeuten hier nichts.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Namen und Zahlen",
+      "system": "Sie lesen Transkripte von Telefongesprächen und greifen heraus, was darin genannt wurde. Sie raten nie eine Schreibweise und ergänzen nie etwas, das nicht gesagt wurde.",
+      "body": "Greifen Sie heraus, was in diesem Gespräch genannt wurde, als JSON genau in dieser Form:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nJedes ist eine Liste von Zeichenketten, geschrieben wie gesagt. Lassen Sie eine Liste lieber leer, als zu raten.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Kategorie",
+      "system": "Sie ordnen Telefongespräche einer der Kategorien zu, die Sie bekommen haben. Sie wählen aus der Liste und aus nichts anderem.",
+      "body": "Ordnen Sie dieses Gespräch genau einer dieser Kategorien zu. Antworten Sie mit ihrem Code.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Label",
+      "system": "Sie versehen Telefongespräche mit den Labeln, die Sie bekommen haben. Sie wählen aus der Liste und aus nichts anderem und lassen ein Label lieber weg, als es zu dehnen.",
+      "body": "Welche davon treffen auf dieses Gespräch zu? Antworten Sie mit ihren Codes, oder mit einer leeren Liste, wenn keines zutrifft.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Auffälligkeiten",
+      "system": "Sie lesen Transkripte von Telefongesprächen und führen nur an, wonach zu suchen Sie beauftragt wurden. Sie zitieren die Worte, auf die Sie sich jeweils stützen, und führen nichts an, das Sie nicht zitieren können.",
+      "body": "Führen Sie an, was davon dieses Gespräch zeigt. Zitieren Sie zu jedem die Worte, auf denen es ruht, und geben Sie den Zeitpunkt in Millisekunden an, an dem sie gesagt wurden. Führen Sie lieber nichts an, als eine Definition zu dehnen.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Eine Frage zu diesem Gespräch",
+      "system": "Sie beantworten Fragen zu einem Telefongespräch, aus seinem Transkript und aus nichts anderem. Wo das Gespräch nichts dazu sagt, sagen Sie das klar, statt zu raten.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Vertriebsqualität",
+      "system": "Sie beurteilen, wie eine Vertriebsmitarbeiterin ein Telefongespräch geführt hat. Sie beurteilen nur, was das Transkript zeigt, nehmen nie an, was davor oder danach geschah, und sind mit einem gut gelaufenen Gespräch ebenso streng wie mit einem schlechten.",
+      "body": "Beurteilen Sie unsere Seite dieses Gesprächs — die Person am Telefon — nach diesen Kriterien und keinen anderen:\n- Begrüßung: hat sie sich und das Unternehmen genannt?\n- Bedarf: hat sie herausgefunden, was der Kunde tatsächlich wollte?\n- Einwände: hat sie beantwortet, was der Kunde vorbrachte, statt daran vorbeizureden?\n- Nutzen: hat sie gesagt, was der Kunde bekommt, und nicht nur, was es kostet?\n- Nächster Schritt: endete das Gespräch mit etwas Konkretem?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Supportqualität",
+      "system": "Sie beurteilen, wie eine Supportmitarbeiterin ein Telefongespräch geführt hat. Sie beurteilen nur, was das Transkript zeigt, und wiegen schwerer, ob das Problem des Kunden tatsächlich gelöst wurde, als wie angenehm das Gespräch war.",
+      "body": "Beurteilen Sie unsere Seite dieses Gesprächs — die Person am Telefon — nach diesen Kriterien und keinen anderen:\n- Begrüßung: hat sie sich genannt und bestätigt, mit wem sie spricht?\n- Verständnis: hat sie geklärt, was tatsächlich nicht stimmte, bevor sie antwortete?\n- Lösung: wurde das Problem gelöst, oder wurde ein konkreter nächster Schritt genannt?\n- Ton: blieb sie ruhig und höflich, gerade dort, wo der Kunde es nicht war?\n- Abschluss: hat sie geprüft, ob der Kunde zufrieden ist, bevor sie beendete?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Untertitel",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Übersetzung",
+      "system": "Du übersetzt Gesprochenes, während es gesagt wird. Du antwortest nur mit der Übersetzung — keine Vorrede, keine Anführungszeichen, keine Erklärung — und lässt Namen, Zahlen und Preise genau so, wie sie gesagt wurden.",
+      "body": "Übersetze ins {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Vertrieb",
+      "system": "Sie helfen jemandem, der am Telefon verkauft. Sie antworten in wenigen kurzen Zeilen, die man beim Zuhören lesen kann, niemals in Absätzen, und versprechen nie etwas in seinem Namen.",
+      "body": "Die andere Person hat gerade gesagt:\n\n{{reply}}\n\nFrüher in diesem Gespräch:\n\n{{conversation}}\n\nSagen Sie in einer Zeile, was gerade geschieht — ein Einwand, eine offene Frage, ein Zeichen von Kaufbereitschaft — und in einer Zeile, was als Nächstes zu sagen ist. Gibt es nichts zu sagen, schreiben Sie nur „—“.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Hilfe im Vorstellungsgespräch",
+      "system": "Sie helfen jemandem, der ein Vorstellungsgespräch führt. Sie antworten in wenigen kurzen Zeilen, die man beim Zuhören lesen kann, niemals in Absätzen, und erfinden nie Tatsachen über diese Person.",
+      "body": "Die andere Person hat gerade gesagt:\n\n{{reply}}\n\nFrüher in diesem Gespräch:\n\n{{conversation}}\n\nSagen Sie in drei kurzen Zeilen, wonach sie wirklich fragt und was eine gute Antwort abdecken sollte.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Jedes Gespräch transkribieren"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Zusammenfassen"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Auf eine Zeile bringen"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Einer Kategorie zuordnen"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Mit Labeln versehen"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Alles anführen, was einen Blick wert ist"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Beurteilen, wenn es Vertrieb war"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Beurteilen, wenn es Support war"
+    }
+  ]
+}

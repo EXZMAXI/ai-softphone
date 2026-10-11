@@ -1,0 +1,8 @@
+﻿ČO TÁTO LICENCIA ZNAMENÁ
+
+Tento program je slobodný softvér. Môžete ho používať, kopírovať a meniť a odovzdať komu
+chcete — pokiaľ ten, kto ho dostane, získa rovnakú slobodu a s ňou aj zdrojový kód. Žiadna
+záruka sa neposkytuje.
+
+Samotnou licenciou je anglický text nižšie a práve ten je záväzný. Táto poznámka ho len
+vysvetľuje.

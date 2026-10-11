@@ -1,0 +1,359 @@
+{
+  "language": "ro",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Vânzări",
+      "description": "Vânzare, ofertare, negociere sau urmărirea unei achiziții — inclusiv un client care întreabă cât costă ceva."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Asistență",
+      "description": "Ajutor dat cuiva pentru un produs sau un serviciu pe care îl are deja: o defecțiune, o întrebare despre folosire, o plângere despre cum funcționează."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Personal",
+      "description": "Deloc de serviciu — o convorbire particulară purtată întâmplător pe această linie."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Altele",
+      "description": "De serviciu, dar nici vânzare, nici asistență: un furnizor, un coleg, o livrare, un număr greșit. Alegeți asta în loc să ghiciți între celelalte."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Revenire promisă",
+      "description": "Cineva din această convorbire a promis că sună înapoi sau a cerut să fie sunat înapoi."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Plângere",
+      "description": "Cealaltă parte și-a arătat nemulțumirea, indiferent dacă s-a rezolvat sau nu."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Escaladat",
+      "description": "Apelul a fost dat altcuiva sau cealaltă parte a cerut asta."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "Client VIP",
+      "description": "Cealaltă parte a fost tratată drept un client important sau a spus ea însăși că este."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Client furios",
+      "description": "Se auzea că cealaltă parte este furioasă, jignește sau amenință că pleacă."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Risc de plecare",
+      "description": "S-a vorbit despre anulare, neprelungire sau trecerea la altcineva, oricât de calm."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Promisiune făcută",
+      "description": "Partea noastră s-a angajat la ceva anume — o dată, un preț, o reparație, o restituire."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Date sensibile",
+      "description": "S-a citit cu voce tare un număr de card, o parolă, un număr de act sau orice altceva care nu ar trebui să fie într-o înregistrare."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Concurent",
+      "description": "Cealaltă parte a numit pe altcineva care oferă același lucru sau ne-a comparat cu el."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Proză",
+      "description": "Răspundeți în proză simplă. Nu folosiți JSON, liste sau titluri."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Elemente",
+      "description": "Răspundeți doar cu JSON, exact de această formă:\n{\"items\": [{\"text\": \"ce este de făcut\", \"owner\": \"cine, sau gol\", \"due\": \"când, sau gol\"}]}\nFolosiți o listă goală când nu este nimic de enumerat. Nu scrieți nimic în afara JSON-ului."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Etichete",
+      "description": "Răspundeți doar cu JSON, exact de această formă:\n{\"labels\": [{\"code\": \"un cod din lista primită\", \"confidence\": 0.0}]}\nFolosiți doar coduri din listă. Folosiți o listă goală când niciunul nu se\npotrivește. Nu inventați un cod și nu scrieți nimic în afara JSON-ului."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Notă",
+      "description": "Răspundeți doar cu JSON, exact de această formă:\n{\"score\": 3, \"rationale\": \"de ce acest număr și nu unul mai mare\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"cuvintele pe care v-ați bazat\"}]}\nNota este un număr întreg de la 1 la 5. Nu scrieți nimic în afara JSON-ului."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Criterii",
+      "description": "Răspundeți doar cu JSON, exact de această formă:\n{\"overall\": 3, \"rationale\": \"de ce acest număr și nu unul mai mare\",\n \"criteria\": [{\"name\": \"criteriul așa cum v-a fost dat\",\n               \"verdict\": \"pass\" sau \"weak\" sau \"fail\" sau \"n/a\",\n               \"note\": \"o propoziție\"}]}\nJudecați fiecare criteriu primit și niciunul altul. Nota generală este un număr\nîntreg de la 1 la 5. Nu scrieți nimic în afara JSON-ului."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Semnale",
+      "description": "Răspundeți doar cu JSON, exact de această formă:\n{\"flags\": [{\"code\": \"un cod din lista primită\",\n            \"severity\": \"low\" sau \"medium\" sau \"high\",\n            \"evidence\": \"cuvintele pe care v-ați bazat\",\n            \"at_ms\": 0}]}\nFolosiți doar coduri din listă și ridicați fiecare cel mult o dată. Folosiți o\nlistă goală când nimic nu se potrivește. Nu scrieți nimic în afara JSON-ului."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Răspuns",
+      "description": "Răspundeți doar cu JSON, exact de această formă:\n{\"answer\": \"răspunsul dumneavoastră sau, pe șleau, că discuția nu spune\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"cuvintele pe care se sprijină răspunsul\"}]}\nNu răspundeți din nimic altceva decât din discuție. Nu scrieți nimic în afara JSON-ului."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Răspundeți doar cu JSON, în forma cerută mai sus. Nu scrieți nimic în afara JSON-ului."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Cum s-a vorbit",
+      "description": "Scrieți răspunsul în aceeași limbă în care a fost discuția."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Cum s-a vorbit, numit",
+      "description": "Scrieți răspunsul în aceeași limbă în care a fost discuția, adică {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "O limbă anume",
+      "description": "Scrieți răspunsul în această limbă: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Rezumat",
+      "system": "Citiți transcrieri de convorbiri telefonice și scrieți despre ele rezumate scurte și la obiect. Nu ghiciți niciodată ce nu s-a spus și nu adăugați niciodată sfaturi.",
+      "body": "Rezumați această convorbire telefonică într-un paragraf scurt: despre ce a fost, ce s-a hotărât și ce urmează. A durat {{duration}} și a fost {{direction}}, cu {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Rezumat într-un rând",
+      "system": "Citiți transcrieri de convorbiri telefonice și reduceți fiecare la o singură expresie. Nu ghiciți niciodată și nu adăugați niciodată sfaturi.",
+      "body": "Reduceți această convorbire telefonică la o expresie de cel mult douăsprezece cuvinte — de felul celei care ar sta într-un tabel lângă numele apelantului. Fără punct, fără ghilimele.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Sarcini",
+      "system": "Citiți transcrieri de convorbiri telefonice și enumerați la ce s-a angajat cineva. Enumerați doar ce s-a spus cu adevărat; nu inventați niciodată o sarcină, un responsabil sau un termen.",
+      "body": "Enumerați la ce s-a angajat oricine din această convorbire. Numiți cine trebuie să facă lucrul, acolo unde s-a spus, și până când, acolo unde s-a spus. Dacă nimeni nu s-a angajat la nimic, răspundeți cu o listă goală.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Subiecte",
+      "system": "Citiți transcrieri de convorbiri telefonice și numiți despre ce au fost.",
+      "body": "Enumerați lucrurile pe care le-a atins într-adevăr această convorbire, cel mult șase, fiecare în câteva cuvinte. Lăsați responsabilul și termenul goale — aici nu înseamnă nimic.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Nume și numere",
+      "system": "Citiți transcrieri de convorbiri telefonice și scoateți din ele ce a fost numit. Nu ghiciți niciodată o ortografie și nu adăugați niciodată ce nu s-a spus.",
+      "body": "Scoateți ce a fost numit în această convorbire, ca JSON exact de această formă:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nFiecare este o listă de șiruri, scrise așa cum au fost rostite. Mai bine lăsați o listă goală decât să ghiciți.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Categorie",
+      "system": "Încadrați convorbirile telefonice într-una dintre categoriile primite. Alegeți din listă și din nimic altceva.",
+      "body": "Încadrați această convorbire în exact una dintre aceste categorii. Răspundeți cu codul ei.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Etichete",
+      "system": "Etichetați convorbirile telefonice cu etichetele primite. Alegeți din listă și din nimic altceva și mai bine lăsați o etichetă deoparte decât să o forțați.",
+      "body": "Care dintre acestea sunt adevărate despre această convorbire? Răspundeți cu codurile lor sau cu o listă goală, dacă niciuna.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Semnale de alarmă",
+      "system": "Citiți transcrieri de convorbiri telefonice și ridicați doar ce vi s-a dat să căutați. Citați cuvintele pe care v-ați bazat de fiecare dată și nu ridicați nimic ce nu puteți cita.",
+      "body": "Ridicați-le pe acelea dintre acestea pe care le arată convorbirea. Pentru fiecare, citați cuvintele pe care se sprijină și dați momentul în milisecunde când au fost rostite. Mai bine nu ridicați nimic decât să forțați o definiție.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "O întrebare despre această convorbire",
+      "system": "Răspundeți la întrebări despre o singură convorbire telefonică, din transcrierea ei și din nimic altceva. Acolo unde convorbirea nu spune, spuneți asta pe șleau în loc să ghiciți.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Calitatea vânzării",
+      "system": "Apreciați cum a purtat un agent de vânzări o convorbire telefonică. Judecați doar ce arată transcrierea, nu presupuneți niciodată ce a fost înainte sau după ea și sunteți la fel de exigent cu o convorbire care a mers bine ca și cu una care nu a mers.",
+      "body": "Judecați partea noastră din această convorbire — operatorul — după aceste criterii și după niciunul altul:\n- salut: s-a prezentat pe sine și firma?\n- descoperire: a aflat ce voia de fapt clientul?\n- obiecții: a răspuns la ce a ridicat clientul, în loc să vorbească pe lângă?\n- valoare: a spus ce primește clientul, nu doar cât costă?\n- pasul următor: s-a încheiat convorbirea cu ceva anume convenit?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Calitatea asistenței",
+      "system": "Apreciați cum a purtat un agent de asistență o convorbire telefonică. Judecați doar ce arată transcrierea și cântăriți mai mult dacă problema clientului a fost într-adevăr rezolvată decât cât de plăcută a fost discuția.",
+      "body": "Judecați partea noastră din această convorbire — operatorul — după aceste criterii și după niciunul altul:\n- salut: s-a prezentat și a lămurit cu cine vorbește?\n- înțelegere: a stabilit ce era de fapt în neregulă înainte să răspundă?\n- rezolvare: s-a rezolvat problema sau s-a dat un pas următor anume?\n- ton: a rămas calm și civilizat, mai ales acolo unde clientul nu a rămas?\n- încheiere: a verificat că e mulțumit clientul înainte să încheie?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Subtitrări",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Traducere",
+      "system": "Traduci vorbirea în timp ce are loc. Răspunzi numai cu traducerea — fără preambul, fără ghilimele, fără explicații — și lași numele, numerele și prețurile exact așa cum au fost spuse.",
+      "body": "Tradu în {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Vânzări",
+      "system": "Ajutați o persoană care vinde la telefon. Răspundeți în câteva rânduri scurte, care pot fi citite în timp ce ascultă, niciodată în paragrafe, și nu promiteți niciodată nimic în numele ei.",
+      "body": "Interlocutorul a spus chiar acum:\n\n{{reply}}\n\nMai devreme în această conversație:\n\n{{conversation}}\n\nSpuneți într-un rând ce se întâmplă — o obiecție, o întrebare fără răspuns, un semn că sunt pregătiți — și într-un rând ce să spuneți mai departe. Dacă nu e nimic de spus, scrieți doar „—”.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Ajutor la interviu",
+      "system": "Ajutați o persoană care susține un interviu. Răspundeți în câteva rânduri scurte, care pot fi citite în timp ce ascultă, niciodată în paragrafe, și nu inventați niciodată fapte despre ea.",
+      "body": "Interlocutorul a spus chiar acum:\n\n{{reply}}\n\nMai devreme în această conversație:\n\n{{conversation}}\n\nÎn trei rânduri scurte, spuneți ce întreabă de fapt și ce ar trebui să acopere un răspuns bun.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Transcrie fiecare convorbire"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Rezumă-o"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Redu-o la un rând"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Încadreaz-o într-o categorie"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Etichetează-o"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Ridică ce merită o privire"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Apreciaz-o, dacă a fost o vânzare"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Apreciaz-o, dacă a fost asistență"
+    }
+  ]
+}

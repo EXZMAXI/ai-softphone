@@ -1,0 +1,359 @@
+{
+  "language": "cs",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Prodej",
+      "description": "Prodej, nabídka, vyjednávání nebo dotažení nákupu — včetně zákazníka, který se ptá, co něco stojí."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Podpora",
+      "description": "Pomoc někomu s výrobkem nebo službou, kterou už má: závada, dotaz k používání, stížnost na to, jak to funguje."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Soukromý",
+      "description": "Vůbec ne pracovní — soukromý hovor, který se náhodou vedl na této lince."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Jiné",
+      "description": "Pracovní, ale ani prodej, ani podpora: dodavatel, kolega, dodávka, omyl. Zvolte tohle, místo abyste hádali mezi ostatními."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Slíbeno zavolat zpět",
+      "description": "Někdo v tomto hovoru slíbil zavolat zpět nebo o zpětné zavolání požádal."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Stížnost",
+      "description": "Druhá strana vyjádřila nespokojenost, ať už se to vyřešilo, nebo ne."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Předáno výš",
+      "description": "Hovor byl předán někomu jinému, nebo o to druhá strana požádala."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "Zákazník VIP",
+      "description": "S druhou stranou se jednalo jako s důležitým zákazníkem, nebo to o sobě sama řekla."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Rozzlobený zákazník",
+      "description": "Bylo slyšet, že je druhá strana rozzlobená, uráží nebo hrozí odchodem."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Riziko odchodu",
+      "description": "Padlo zrušení, neprodloužení nebo přechod k někomu jinému, byť sebeklidněji."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Daný slib",
+      "description": "Naše strana se zavázala k něčemu konkrétnímu — termínu, ceně, opravě, vrácení peněz."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Citlivé údaje",
+      "description": "Nahlas zaznělo číslo karty, heslo, číslo dokladu nebo cokoli jiného, co v nahrávce být nemá."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Konkurent",
+      "description": "Druhá strana jmenovala někoho jiného, kdo nabízí totéž, nebo nás s ním srovnala."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Próza",
+      "description": "Odpovězte prostou prózou. Nepoužívejte JSON, seznamy ani nadpisy."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Položky",
+      "description": "Odpovězte pouze JSONem, přesně tohoto tvaru:\n{\"items\": [{\"text\": \"co se má udělat\", \"owner\": \"kdo, nebo prázdné\", \"due\": \"kdy, nebo prázdné\"}]}\nKdyž není co vypsat, použijte prázdné pole. Nepište nic mimo JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Štítky",
+      "description": "Odpovězte pouze JSONem, přesně tohoto tvaru:\n{\"labels\": [{\"code\": \"kód ze seznamu, který jste dostali\", \"confidence\": 0.0}]}\nPoužívejte jen kódy ze seznamu. Když nesedí žádný, použijte prázdné pole. Kód\nsi nevymýšlejte a nepište nic mimo JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Hodnocení",
+      "description": "Odpovězte pouze JSONem, přesně tohoto tvaru:\n{\"score\": 3, \"rationale\": \"proč tohle číslo a ne o jedno vyšší\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"slova, o která se to opírá\"}]}\nHodnocení je celé číslo od 1 do 5. Nepište nic mimo JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Kritéria",
+      "description": "Odpovězte pouze JSONem, přesně tohoto tvaru:\n{\"overall\": 3, \"rationale\": \"proč tohle číslo a ne o jedno vyšší\",\n \"criteria\": [{\"name\": \"kritérium tak, jak vám bylo zadáno\",\n               \"verdict\": \"pass\" nebo \"weak\" nebo \"fail\" nebo \"n/a\",\n               \"note\": \"jedna věta\"}]}\nPosuďte každé zadané kritérium a žádné jiné. Celkové hodnocení je celé číslo\nod 1 do 5. Nepište nic mimo JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Signály",
+      "description": "Odpovězte pouze JSONem, přesně tohoto tvaru:\n{\"flags\": [{\"code\": \"kód ze seznamu, který jste dostali\",\n            \"severity\": \"low\" nebo \"medium\" nebo \"high\",\n            \"evidence\": \"slova, o která se to opírá\",\n            \"at_ms\": 0}]}\nPoužívejte jen kódy ze seznamu a každý zvedněte nejvýš jednou. Když nesedí nic,\npoužijte prázdné pole. Nepište nic mimo JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Odpověď",
+      "description": "Odpovězte pouze JSONem, přesně tohoto tvaru:\n{\"answer\": \"vaše odpověď, nebo rovnou to, že to hovor neříká\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"slova, o která se odpověď opírá\"}]}\nNeodpovídejte z ničeho jiného než z hovoru. Nepište nic mimo JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Odpovězte pouze JSONem, ve tvaru popsaném výše. Nepište nic mimo JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Jak se mluvilo",
+      "description": "Odpověď napište ve stejném jazyce, v jakém byl hovor."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Jak se mluvilo, jmenovitě",
+      "description": "Odpověď napište ve stejném jazyce, v jakém byl hovor, tedy: {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Určený jazyk",
+      "description": "Odpověď napište v tomto jazyce: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Shrnutí",
+      "system": "Čtete přepisy telefonních hovorů a píšete o nich krátká, věcná shrnutí. Nikdy nehádáte to, co nezaznělo, a nikdy nepřidáváte rady.",
+      "body": "Shrňte tento telefonní hovor do jednoho krátkého odstavce: o co šlo, co se rozhodlo a co bude dál. Trval {{duration}} a byl {{direction}}, s {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Shrnutí na jeden řádek",
+      "system": "Čtete přepisy telefonních hovorů a každý zkracujete na jediné sousloví. Nikdy nehádáte a nikdy nepřidáváte rady.",
+      "body": "Zkraťte tento telefonní hovor na jedno sousloví nejvýše o dvanácti slovech — takové, jaké by stálo v tabulce vedle jména volajícího. Bez tečky, bez uvozovek.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Úkoly",
+      "system": "Čtete přepisy telefonních hovorů a vypisujete, k čemu se kdo zavázal. Vypisujete jen to, co skutečně zaznělo; nikdy si nevymýšlíte úkol, odpovědného ani termín.",
+      "body": "Vypište, k čemu se kdokoli v tomto hovoru zavázal. Uveďte, kdo to má udělat, pokud to zaznělo, a do kdy, pokud to zaznělo. Pokud se nikdo k ničemu nezavázal, odpovězte prázdným seznamem.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Témata",
+      "system": "Čtete přepisy telefonních hovorů a pojmenováváte, o čem byly.",
+      "body": "Vypište věci, které tento hovor skutečně probral, nejvýše šest, každou v několika slovech. Odpovědného a termín nechte prázdné — tady nic neznamenají.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Jména a čísla",
+      "system": "Čtete přepisy telefonních hovorů a vybíráte z nich, co v nich bylo jmenováno. Nikdy nehádáte pravopis a nikdy nepřidáváte to, co nezaznělo.",
+      "body": "Vyberte, co v tomto hovoru zaznělo jménem, jako JSON přesně tohoto tvaru:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nKaždé je seznam řetězců, zapsaných tak, jak zazněly. Raději nechte seznam prázdný, než abyste hádali.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Kategorie",
+      "system": "Zařazujete telefonní hovory do jedné z kategorií, které dostanete. Vybíráte ze seznamu a z ničeho jiného.",
+      "body": "Zařaďte tento hovor přesně do jedné z těchto kategorií. Odpovězte jejím kódem.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Štítky",
+      "system": "Označujete telefonní hovory štítky, které dostanete. Vybíráte ze seznamu a z ničeho jiného, a štítek raději vynecháte, než abyste ho natahovali.",
+      "body": "Které z nich o tomto hovoru platí? Odpovězte jejich kódy, nebo prázdným seznamem, pokud žádný.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Varovné signály",
+      "system": "Čtete přepisy telefonních hovorů a zvedáte jen to, co vám bylo zadáno hledat. Citujete slova, o která se každý opírá, a nezvedáte nic, co neumíte odcitovat.",
+      "body": "Zvedněte ty z nich, které tento hovor ukazuje. U každého odcitujte slova, o která se opírá, a uveďte okamžik v milisekundách, kdy zazněla. Raději nezvedejte nic, než abyste natahovali definici.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Otázka k tomuto hovoru",
+      "system": "Odpovídáte na otázky o jednom telefonním hovoru, z jeho přepisu a z ničeho jiného. Tam, kde to hovor neříká, to rovnou řeknete, místo abyste hádali.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Kvalita prodeje",
+      "system": "Posuzujete, jak obchodník vedl telefonní hovor. Posuzujete jen to, co ukazuje přepis, nikdy nepředpokládáte, co bylo před ním nebo po něm, a jste stejně přísní na hovor, který dopadl dobře, jako na ten, který ne.",
+      "body": "Posuďte naši stranu tohoto hovoru — operátora — podle těchto kritérií a žádných jiných:\n- pozdrav: představil se a řekl firmu?\n- zjišťování: zjistil, co zákazník doopravdy chtěl?\n- námitky: odpověděl na to, co zákazník nadnesl, místo aby mluvil mimo?\n- hodnota: řekl, co zákazník dostane, a ne jen kolik to stojí?\n- další krok: skončil hovor něčím konkrétním?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Kvalita podpory",
+      "system": "Posuzujete, jak pracovník podpory vedl telefonní hovor. Posuzujete jen to, co ukazuje přepis, a víc než na příjemnost hovoru hledíte na to, zda se zákazníkův problém opravdu vyřešil.",
+      "body": "Posuďte naši stranu tohoto hovoru — operátora — podle těchto kritérií a žádných jiných:\n- pozdrav: představil se a ověřil, s kým mluví?\n- porozumění: zjistil, co je doopravdy špatně, než začal odpovídat?\n- vyřešení: vyřešil se problém, nebo padl konkrétní další krok?\n- tón: zůstal klidný a zdvořilý, zvlášť tam, kde zákazník ne?\n- závěr: ověřil, že je zákazník spokojený, než hovor ukončil?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Titulky",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Překlad",
+      "system": "Překládáš řeč, jak probíhá. Odpovídáš pouze překladem — bez úvodu, bez uvozovek, bez vysvětlení — a jména, čísla a ceny necháváš přesně tak, jak byly řečeny.",
+      "body": "Přelož do {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Prodej",
+      "system": "Pomáháte člověku, který prodává po telefonu. Odpovídáte několika krátkými řádky, které lze číst při poslechu, nikdy odstavci, a nikdy nic neslibujete jeho jménem.",
+      "body": "Druhá strana právě řekla:\n\n{{reply}}\n\nDříve v tomto rozhovoru:\n\n{{conversation}}\n\nJedním řádkem pojmenujte, co se děje — námitka, nezodpovězená otázka, známka toho, že jsou připraveni koupit — a jedním řádkem, co říct dál. Není-li co říct, napište jen „—“.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Pomoc při pohovoru",
+      "system": "Pomáháte člověku, se kterým se vede pohovor. Odpovídáte několika krátkými řádky, které lze číst při poslechu, nikdy odstavci, a nikdy si o něm nevymýšlíte fakta.",
+      "body": "Druhá strana právě řekla:\n\n{{reply}}\n\nDříve v tomto rozhovoru:\n\n{{conversation}}\n\nVe třech krátkých řádcích řekněte, na co se skutečně ptá a co by měla dobrá odpověď obsahovat.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Přepsat každý hovor"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Shrnout ho"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Zkrátit ho na jeden řádek"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Zařadit ho do kategorie"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Označit ho"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Zvednout, co stojí za pohled"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Posoudit ho, pokud šlo o prodej"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Posoudit ho, pokud šlo o podporu"
+    }
+  ]
+}

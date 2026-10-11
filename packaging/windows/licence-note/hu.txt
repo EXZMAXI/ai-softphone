@@ -1,0 +1,7 @@
+﻿MIT JELENT EZ A LICENC
+
+Ez a program szabad szoftver. Használhatja, másolhatja és módosíthatja, és bárkinek
+továbbadhatja — feltéve, hogy aki megkapja, ugyanazt a szabadságot kapja meg, és vele a
+forráskódot is. Semmilyen garancia nincs rá.
+
+Maga a licenc az alábbi angol szöveg, és az az irányadó. Ez a jegyzet csak elmagyarázza.

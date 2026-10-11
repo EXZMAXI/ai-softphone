@@ -1,0 +1,7 @@
+﻿ŠTO ZNAČI OVA LICENCA
+
+Ovaj program je slobodan softver. Možete ga koristiti, kopirati i mijenjati te ga proslijediti
+bilo kome — pod uvjetom da onaj tko ga dobije dobije istu slobodu, a s njom i izvorni kod.
+Nema nikakvog jamstva.
+
+Sama licenca je engleski tekst ispod i on je mjerodavan. Ova bilješka ga samo objašnjava.

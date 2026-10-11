@@ -1,0 +1,8 @@
+﻿WAT DEZE LICENTIE BETEKENT
+
+Dit programma is vrije software. U mag het gebruiken, kopiëren en wijzigen, en aan
+iedereen doorgeven — zolang die dezelfde vrijheid krijgt, en de broncode erbij. Er is
+geen enkele garantie.
+
+De licentie zelf is de Engelse tekst hieronder, en die is bepalend. Deze notitie legt
+hem alleen uit.

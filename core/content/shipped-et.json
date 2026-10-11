@@ -1,0 +1,359 @@
+{
+  "language": "et",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Müük",
+      "description": "Müümine, pakkumine, läbirääkimine või ostu järelkõne — sealhulgas klient, kes küsib, mis miski maksab."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Tugi",
+      "description": "Abi kellelegi toote või teenusega, mis tal juba on: rike, küsimus kasutamise kohta, kaebus selle töö üle."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Isiklik",
+      "description": "Üldse mitte tööasi — eravestlus, mis juhtus toimuma sellel liinil."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Muu",
+      "description": "Tööasi, kuid ei müük ega tugi: tarnija, kolleeg, tarne, vale number. Valige see, selle asemel et teiste vahel oletada."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Lubatud tagasihelistamine",
+      "description": "Keegi selles kõnes lubas tagasi helistada või palus, et talle tagasi helistataks."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Kaebus",
+      "description": "Teine pool väljendas rahulolematust, olenemata sellest, kas see lahenes."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Antud edasi",
+      "description": "Kõne anti kellelegi teisele või teine pool palus seda."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "VIP-klient",
+      "description": "Teist poolt koheldi tähtsa kliendina või ta ise ütles, et on selline."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Vihane klient",
+      "description": "Oli kuulda, et teine pool on vihane, solvab või ähvardab lahkuda."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Lahkumise oht",
+      "description": "Jutuks tuli lõpetamine, pikendamata jätmine või kellegi teise juurde minek, olgu kui rahulikult tahes."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Antud lubadus",
+      "description": "Meie pool võttis kohustuse millegi kindla suhtes — kuupäev, hind, parandus, raha tagastamine."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Tundlikud andmed",
+      "description": "Valjusti loeti ette kaardinumber, parool, dokumendi number või miski muu, mida salvestises olla ei tohiks."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Konkurent",
+      "description": "Teine pool nimetas kedagi teist, kes pakub sedasama, või võrdles meid temaga."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Proosa",
+      "description": "Vastake lihtsas proosas. Ärge kasutage JSON-i, loendeid ega pealkirju."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Punktid",
+      "description": "Vastake ainult JSON-iga, täpselt sellisel kujul:\n{\"items\": [{\"text\": \"mis on teha\", \"owner\": \"kes, või tühi\", \"due\": \"millal, või tühi\"}]}\nKui loetleda pole midagi, kasutage tühja massiivi. Ärge kirjutage midagi väljapoole JSON-i."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Sildid",
+      "description": "Vastake ainult JSON-iga, täpselt sellisel kujul:\n{\"labels\": [{\"code\": \"kood antud loendist\", \"confidence\": 0.0}]}\nKasutage ainult loendis olevaid koode. Kui ükski ei sobi, kasutage tühja\nmassiivi. Ärge koodi välja mõelge ja ärge kirjutage midagi väljapoole JSON-i."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Hinne",
+      "description": "Vastake ainult JSON-iga, täpselt sellisel kujul:\n{\"score\": 3, \"rationale\": \"miks see arv ja mitte ühe võrra kõrgem\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"sõnad, millel see põhineb\"}]}\nHinne on täisarv 1-st 5-ni. Ärge kirjutage midagi väljapoole JSON-i."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Kriteeriumid",
+      "description": "Vastake ainult JSON-iga, täpselt sellisel kujul:\n{\"overall\": 3, \"rationale\": \"miks see arv ja mitte ühe võrra kõrgem\",\n \"criteria\": [{\"name\": \"kriteerium nii, nagu see teile anti\",\n               \"verdict\": \"pass\" või \"weak\" või \"fail\" või \"n/a\",\n               \"note\": \"üks lause\"}]}\nHinnake iga antud kriteeriumi ja mitte ühtki muud. Üldhinne on täisarv\n1-st 5-ni. Ärge kirjutage midagi väljapoole JSON-i."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Signaalid",
+      "description": "Vastake ainult JSON-iga, täpselt sellisel kujul:\n{\"flags\": [{\"code\": \"kood antud loendist\",\n            \"severity\": \"low\" või \"medium\" või \"high\",\n            \"evidence\": \"sõnad, millel see põhineb\",\n            \"at_ms\": 0}]}\nKasutage ainult loendis olevaid koode ja tõstke igaüht kõige rohkem üks kord.\nKui miski ei sobi, kasutage tühja massiivi. Ärge kirjutage midagi väljapoole JSON-i."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Vastus",
+      "description": "Vastake ainult JSON-iga, täpselt sellisel kujul:\n{\"answer\": \"teie vastus või otse see, et vestlus seda ei ütle\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"sõnad, millel vastus seisab\"}]}\nÄrge vastake millestki muust kui vestlusest. Ärge kirjutage midagi väljapoole JSON-i."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Vastake ainult JSON-iga, ülal palutud kujul. Ärge kirjutage midagi väljapoole JSON-i."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Nagu räägiti",
+      "description": "Kirjutage vastus samas keeles, milles vestlus oli."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Nagu räägiti, nimetatult",
+      "description": "Kirjutage vastus samas keeles, milles vestlus oli, ja see on {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Nimetatud keel",
+      "description": "Kirjutage vastus selles keeles: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Kokkuvõte",
+      "system": "Loete telefonikõnede üleskirjutusi ja kirjutate neist lühikesi, asjalikke kokkuvõtteid. Te ei oleta kunagi seda, mida ei öeldud, ega lisa kunagi nõuandeid.",
+      "body": "Võtke see telefonikõne kokku ühes lühikeses lõigus: millest see oli, mis otsustati ja mis edasi saab. See kestis {{duration}} ja oli {{direction}}, kellega {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Ühereakokkuvõte",
+      "system": "Loete telefonikõnede üleskirjutusi ja taandate igaühe üheks väljendiks. Te ei oleta kunagi ega lisa kunagi nõuandeid.",
+      "body": "Taandage see telefonikõne üheks väljendiks, kõige rohkem kaheteistkümne sõnaga — selliseks, mis seisaks tabelis helistaja nime kõrval. Punktita, jutumärkideta.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Ülesanded",
+      "system": "Loete telefonikõnede üleskirjutusi ja loetlete, mida keegi lubas teha. Loetlete ainult seda, mida tõesti öeldi; te ei mõtle kunagi välja ülesannet, tegijat ega tähtaega.",
+      "body": "Loetlege, mida keegi selles kõnes lubas teha. Nimetage, kes seda tegema peab, kui see öeldi, ja mis ajaks, kui see öeldi. Kui keegi ei lubanud midagi, vastake tühja loendiga.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Teemad",
+      "system": "Loete telefonikõnede üleskirjutusi ja nimetate, millest need olid.",
+      "body": "Loetlege, mida see kõne tegelikult puudutas, kõige rohkem kuus asja, igaüks paari sõnaga. Jätke tegija ja tähtaeg tühjaks — siin ei tähenda need midagi.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Nimed ja numbrid",
+      "system": "Loete telefonikõnede üleskirjutusi ja noppite neist välja, mida neis nimetati. Te ei oleta kunagi kirjapilti ega lisa kunagi seda, mida ei öeldud.",
+      "body": "Noppige välja, mida selles kõnes nimetati, JSON-ina täpselt sellisel kujul:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nIgaüks on sõnede loend, kirjutatud nii, nagu need öeldi. Jätke loend pigem tühjaks, kui hakkate oletama.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Kategooria",
+      "system": "Liigitate telefonikõnesid ühte antud kategooriatest. Valite loendist ja mitte millestki muust.",
+      "body": "Liigitage see kõne täpselt ühte neist kategooriatest. Vastake selle koodiga.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Sildid",
+      "system": "Märgistate telefonikõnesid antud siltidega. Valite loendist ja mitte millestki muust ning jätate sildi pigem panemata, kui hakkate seda venitama.",
+      "body": "Millised neist käivad selle kõne kohta? Vastake nende koodidega või tühja loendiga, kui ükski ei käi.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Hoiatussignaalid",
+      "system": "Loete telefonikõnede üleskirjutusi ja tõstate esile ainult seda, mida teil paluti otsida. Tsiteerite sõnu, millel igaüks põhineb, ega tõsta esile midagi, mida te tsiteerida ei oska.",
+      "body": "Tõstke esile need neist, mida see kõne näitab. Iga puhul tsiteerige sõnu, millel see seisab, ja andke hetk millisekundites, mil need öeldi. Pigem ärge tõstke esile midagi, kui hakkate määratlust venitama.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Küsimus selle kõne kohta",
+      "system": "Vastate küsimustele ühe telefonikõne kohta, selle üleskirjutuse põhjal ja mitte millegi muu põhjal. Seal, kus vestlus seda ei ütle, ütlete seda otse, selle asemel et oletada.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Müügi kvaliteet",
+      "system": "Hindate, kuidas müüja telefonikõnet pidas. Otsustate ainult selle põhjal, mida üleskirjutus näitab, ei eelda kunagi, mis oli enne või pärast seda, ja olete hästi läinud kõne suhtes sama range kui halvasti läinu suhtes.",
+      "body": "Hinnake meie poolt selles kõnes — operaatorit — nende kriteeriumide järgi ja mitte ühegi muu järgi:\n- tervitus: kas ta tutvustas ennast ja ettevõtet?\n- väljaselgitamine: kas ta sai teada, mida klient tegelikult tahtis?\n- vastuväited: kas ta vastas sellele, mille klient tõstatas, selle asemel et mööda rääkida?\n- väärtus: kas ta ütles, mida klient saab, mitte ainult seda, mis see maksab?\n- järgmine samm: kas kõne lõppes millegi kindla kokkuleppimisega?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Toe kvaliteet",
+      "system": "Hindate, kuidas tugitöötaja telefonikõnet pidas. Otsustate ainult selle põhjal, mida üleskirjutus näitab, ja peate tähtsamaks seda, kas kliendi mure sai tõesti lahendatud, kui seda, kui meeldiv vestlus oli.",
+      "body": "Hinnake meie poolt selles kõnes — operaatorit — nende kriteeriumide järgi ja mitte ühegi muu järgi:\n- tervitus: kas ta tutvustas ennast ja veendus, kellega ta räägib?\n- arusaamine: kas ta selgitas välja, mis tegelikult viga on, enne kui vastas?\n- lahendus: kas mure sai lahendatud või anti kindel järgmine samm?\n- toon: kas ta jäi rahulikuks ja viisakaks, eriti seal, kus klient ei jäänud?\n- lõpetus: kas ta kontrollis, et klient on rahul, enne kui lõpetas?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Subtiitrid",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Tõlge",
+      "system": "Tõlgid kõnet selle toimumise ajal. Vastad ainult tõlkega — ei sissejuhatust, ei jutumärke, ei selgitust — ja jätad nimed, numbrid ja hinnad täpselt nii, nagu need öeldi.",
+      "body": "Tõlgi keelde {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Müük",
+      "system": "Aitate inimest, kes müüb telefoni teel. Vastate mõne lühikese reaga, mida saab kuulamise ajal lugeda, mitte kunagi lõikudena, ja te ei luba kunagi midagi tema nimel.",
+      "body": "Vestluskaaslane ütles just:\n\n{{reply}}\n\nVarem selles vestluses:\n\n{{conversation}}\n\nÖelge ühe reaga, mis toimub — vastuväide, vastuseta küsimus, märk ostuvalmidusest — ja ühe reaga, mida edasi öelda. Kui öelda pole midagi, kirjutage ainult „—“.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Abi vestlusel",
+      "system": "Aitate inimest, kellega peetakse töövestlust. Vastate mõne lühikese reaga, mida saab kuulamise ajal lugeda, mitte kunagi lõikudena, ja te ei mõtle temast kunagi fakte välja.",
+      "body": "Vestluskaaslane ütles just:\n\n{{reply}}\n\nVarem selles vestluses:\n\n{{conversation}}\n\nÖelge kolme lühikese reaga, mida ta tegelikult küsib ja mida hea vastus peaks katma.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Kirjuta iga vestlus üles"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Võta see kokku"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Taanda see üheks reaks"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Liigita see kategooriasse"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Märgista see"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Tõsta esile, mis väärib pilku"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Hinda seda, kui oli müük"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Hinda seda, kui oli tugi"
+    }
+  ]
+}

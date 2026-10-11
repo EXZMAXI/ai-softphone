@@ -1,0 +1,8 @@
+﻿CE ÎNSEAMNĂ ACEASTĂ LICENȚĂ
+
+Acest program este software liber. Îl puteți folosi, copia și modifica și îl puteți da
+mai departe oricui — cu condiția ca cel care îl primește să obțină aceeași libertate și,
+odată cu ea, codul sursă. Nu există nicio garanție.
+
+Licența propriu-zisă este textul în engleză de mai jos, iar el este cel care se aplică.
+Această notă doar îl explică.

@@ -1,0 +1,6 @@
+﻿KAJ POMENI TA LICENCA
+
+Ta program je prosto programje. Lahko ga uporabljate, kopirate in spreminjate ter ga daste
+komur koli naprej — če ta dobi enako svobodo in z njo izvorno kodo. Nobenega jamstva ni.
+
+Sama licenca je angleško besedilo spodaj in prav to velja. Ta zapis ga samo pojasnjuje.

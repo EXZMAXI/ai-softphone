@@ -1,0 +1,359 @@
+{
+  "language": "pl",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Sprzedaż",
+      "description": "Sprzedawanie, wycenianie, negocjowanie albo dopilnowanie zakupu — w tym pytanie klienta o cenę."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Wsparcie",
+      "description": "Pomoc komuś z produktem lub usługą, którą już ma: usterka, pytanie o obsługę, skarga na działanie."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Prywatna",
+      "description": "Wcale nie służbowa — prywatna rozmowa, która akurat odbyła się na tej linii."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Inne",
+      "description": "Służbowa, ale ani sprzedaż, ani wsparcie: dostawca, współpracownik, dostawa, pomyłka. Wybierz to zamiast zgadywać między pozostałymi."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Obiecane oddzwonienie",
+      "description": "Ktoś w tej rozmowie obiecał oddzwonić albo poprosił, żeby do niego oddzwonić."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Skarga",
+      "description": "Druga strona wyraziła niezadowolenie, niezależnie od tego, czy sprawę załatwiono."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Przekazana wyżej",
+      "description": "Rozmowę przekazano komuś innemu albo druga strona o to poprosiła."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "Klient VIP",
+      "description": "Drugą stronę potraktowano jako ważnego klienta albo sama tak o sobie powiedziała."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Rozgniewany klient",
+      "description": "Słychać było, że druga strona jest zła, obraża albo grozi odejściem."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Ryzyko odejścia",
+      "description": "Padło rezygnowanie, nieprzedłużanie albo przejście do kogoś innego, choćby spokojnie."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Złożona obietnica",
+      "description": "Nasza strona zobowiązała się do czegoś konkretnego — terminu, ceny, naprawy, zwrotu."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Dane wrażliwe",
+      "description": "Odczytano numer karty, hasło, numer dokumentu albo cokolwiek innego, czego w nagraniu być nie powinno."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Konkurent",
+      "description": "Druga strona wymieniła kogoś innego oferującego to samo albo nas z nim porównała."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Proza",
+      "description": "Odpowiedz zwykłą prozą. Nie używaj JSON-a, list ani nagłówków."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Pozycje",
+      "description": "Odpowiedz wyłącznie JSON-em, dokładnie takiej postaci:\n{\"items\": [{\"text\": \"co ma zostać zrobione\", \"owner\": \"kto, albo pusto\", \"due\": \"kiedy, albo pusto\"}]}\nGdy nie ma czego wymienić, użyj pustej tablicy. Nie pisz nic poza JSON-em."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Etykiety",
+      "description": "Odpowiedz wyłącznie JSON-em, dokładnie takiej postaci:\n{\"labels\": [{\"code\": \"kod z podanej listy\", \"confidence\": 0.0}]}\nUżywaj tylko kodów z listy. Gdy żaden nie pasuje, użyj pustej tablicy. Nie\nwymyślaj kodu i nie pisz nic poza JSON-em."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Ocena",
+      "description": "Odpowiedz wyłącznie JSON-em, dokładnie takiej postaci:\n{\"score\": 3, \"rationale\": \"dlaczego ta liczba, a nie o jedną wyższa\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"słowa, na których to oparto\"}]}\nOcena jest liczbą całkowitą od 1 do 5. Nie pisz nic poza JSON-em."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Kryteria",
+      "description": "Odpowiedz wyłącznie JSON-em, dokładnie takiej postaci:\n{\"overall\": 3, \"rationale\": \"dlaczego ta liczba, a nie o jedną wyższa\",\n \"criteria\": [{\"name\": \"kryterium tak, jak je podano\",\n               \"verdict\": \"pass\" albo \"weak\" albo \"fail\" albo \"n/a\",\n               \"note\": \"jedno zdanie\"}]}\nOceń każde podane kryterium i żadne inne. Ocena łączna jest liczbą całkowitą\nod 1 do 5. Nie pisz nic poza JSON-em."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Sygnały",
+      "description": "Odpowiedz wyłącznie JSON-em, dokładnie takiej postaci:\n{\"flags\": [{\"code\": \"kod z podanej listy\",\n            \"severity\": \"low\" albo \"medium\" albo \"high\",\n            \"evidence\": \"słowa, na których to oparto\",\n            \"at_ms\": 0}]}\nUżywaj tylko kodów z listy i podnoś każdy najwyżej raz. Gdy nic nie pasuje,\nużyj pustej tablicy. Nie pisz nic poza JSON-em."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Odpowiedź",
+      "description": "Odpowiedz wyłącznie JSON-em, dokładnie takiej postaci:\n{\"answer\": \"twoja odpowiedź albo wprost, że rozmowa tego nie mówi\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"słowa, na których opiera się odpowiedź\"}]}\nNie odpowiadaj z niczego poza rozmową. Nie pisz nic poza JSON-em."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Odpowiedz wyłącznie JSON-em, w postaci opisanej wyżej. Nie pisz nic poza JSON-em."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Jak mówiono",
+      "description": "Napisz odpowiedź w tym samym języku, w którym była rozmowa."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Jak mówiono, z nazwy",
+      "description": "Napisz odpowiedź w tym samym języku, w którym była rozmowa, czyli po: {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Wskazany język",
+      "description": "Napisz odpowiedź w tym języku: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Podsumowanie",
+      "system": "Czytasz zapisy rozmów telefonicznych i piszesz krótkie, rzeczowe podsumowania. Nigdy nie zgadujesz tego, czego nie powiedziano, i nigdy nie dodajesz porad.",
+      "body": "Podsumuj tę rozmowę telefoniczną w jednym krótkim akapicie: o co chodziło, co ustalono i co dalej. Trwała {{duration}} i była {{direction}}, z {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Podsumowanie w jednym zdaniu",
+      "system": "Czytasz zapisy rozmów telefonicznych i sprowadzasz każdą do jednego zwrotu. Nigdy nie zgadujesz i nigdy nie dodajesz porad.",
+      "body": "Sprowadź tę rozmowę telefoniczną do jednego zwrotu, najwyżej dwunastu słów — takiego, który trafiłby do tabeli obok nazwiska dzwoniącego. Bez kropki, bez cudzysłowów.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Zadania",
+      "system": "Czytasz zapisy rozmów telefonicznych i wypisujesz, do czego ktoś się zobowiązał. Wypisujesz tylko to, co naprawdę powiedziano; nigdy nie wymyślasz zadania, osoby ani terminu.",
+      "body": "Wypisz, do czego ktokolwiek w tej rozmowie się zobowiązał. Podaj, kto ma to zrobić, jeśli to padło, i do kiedy, jeśli to padło. Jeśli nikt się do niczego nie zobowiązał, odpowiedz pustą listą.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Tematy",
+      "system": "Czytasz zapisy rozmów telefonicznych i nazywasz, o czym były.",
+      "body": "Wypisz sprawy, które ta rozmowa naprawdę poruszyła, najwyżej sześć, każdą w kilku słowach. Zostaw osobę i termin puste — nic tu nie znaczą.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Nazwy i liczby",
+      "system": "Czytasz zapisy rozmów telefonicznych i wyławiasz to, co w nich nazwano. Nigdy nie zgadujesz pisowni i nigdy nie dodajesz tego, czego nie powiedziano.",
+      "body": "Wyłów to, co nazwano w tej rozmowie, jako JSON dokładnie takiej postaci:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nKażde to lista napisów, zapisanych tak, jak je wypowiedziano. Zostaw listę pustą, zamiast zgadywać.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Kategoria",
+      "system": "Przypisujesz rozmowy telefoniczne do jednej z podanych kategorii. Wybierasz z listy i z niczego więcej.",
+      "body": "Przypisz tę rozmowę do dokładnie jednej z tych kategorii. Odpowiedz jej kodem.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Etykiety",
+      "system": "Oznaczasz rozmowy telefoniczne podanymi etykietami. Wybierasz z listy i z niczego więcej, a etykietę raczej pomijasz, niż naciągasz.",
+      "body": "Które z nich są prawdziwe o tej rozmowie? Odpowiedz ich kodami albo pustą listą, jeśli żadna.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Sygnały ostrzegawcze",
+      "system": "Czytasz zapisy rozmów telefonicznych i podnosisz tylko to, czego kazano ci szukać. Cytujesz słowa, na których każdy sygnał oparto, i nie podnosisz niczego, czego nie umiesz zacytować.",
+      "body": "Podnieś te z nich, które ta rozmowa pokazuje. Przy każdym zacytuj słowa, na których się opiera, i podaj moment w milisekundach, w którym padły. Raczej nie podnoś nic, niż naciągaj definicję.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Pytanie o tę rozmowę",
+      "system": "Odpowiadasz na pytania o jedną rozmowę telefoniczną, z jej zapisu i z niczego więcej. Tam, gdzie rozmowa nie mówi, mówisz to wprost, zamiast zgadywać.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Jakość sprzedaży",
+      "system": "Oceniasz, jak sprzedawca poprowadził rozmowę telefoniczną. Oceniasz tylko to, co pokazuje zapis, nigdy nie zakładasz, co było przed nią ani po niej, i jesteś tak samo surowy wobec rozmowy udanej, jak nieudanej.",
+      "body": "Oceń naszą stronę tej rozmowy — operatora — według tych kryteriów i żadnych innych:\n- powitanie: czy przedstawił siebie i firmę?\n- rozpoznanie: czy ustalił, czego klient naprawdę chce?\n- zastrzeżenia: czy odpowiedział na to, co klient podniósł, zamiast mówić obok?\n- wartość: czy powiedział, co klient dostaje, a nie tylko ile to kosztuje?\n- następny krok: czy rozmowa skończyła się czymś konkretnym?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Jakość wsparcia",
+      "system": "Oceniasz, jak konsultant wsparcia poprowadził rozmowę telefoniczną. Oceniasz tylko to, co pokazuje zapis, i wyżej stawiasz to, czy problem klienta naprawdę załatwiono, niż to, jak miła była rozmowa.",
+      "body": "Oceń naszą stronę tej rozmowy — operatora — według tych kryteriów i żadnych innych:\n- powitanie: czy przedstawił siebie i upewnił się, z kim rozmawia?\n- zrozumienie: czy ustalił, co jest naprawdę nie tak, zanim odpowiedział?\n- rozwiązanie: czy problem załatwiono albo podano konkretny następny krok?\n- ton: czy zachował spokój i uprzejmość, zwłaszcza gdy klient nie?\n- zakończenie: czy sprawdził, że klient jest zadowolony, zanim zakończył?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Napisy",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Tłumaczenie",
+      "system": "Tłumaczysz mowę na bieżąco. Odpowiadasz tylko tłumaczeniem — bez wstępu, bez cudzysłowów, bez wyjaśnień — a nazwy, liczby i ceny zostawiasz dokładnie tak, jak zostały powiedziane.",
+      "body": "Przetłumacz na {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Sprzedaż",
+      "system": "Pomagasz osobie, która sprzedaje przez telefon. Odpowiadasz kilkoma krótkimi wierszami, które można przeczytać podczas słuchania, nigdy akapitami, i nigdy niczego nie obiecujesz w jej imieniu.",
+      "body": "Rozmówca właśnie powiedział:\n\n{{reply}}\n\nWcześniej w tej rozmowie:\n\n{{conversation}}\n\nJednym wierszem nazwij, co się dzieje — zastrzeżenie, pytanie bez odpowiedzi, sygnał gotowości do zakupu — i jednym wierszem, co powiedzieć dalej. Jeśli nie ma czego powiedzieć, napisz tylko „—”.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Pomoc na rozmowie",
+      "system": "Pomagasz osobie, z którą prowadzona jest rozmowa kwalifikacyjna. Odpowiadasz kilkoma krótkimi wierszami, które można przeczytać podczas słuchania, nigdy akapitami, i nigdy nie wymyślasz faktów na jej temat.",
+      "body": "Rozmówca właśnie powiedział:\n\n{{reply}}\n\nWcześniej w tej rozmowie:\n\n{{conversation}}\n\nW trzech krótkich wierszach powiedz, o co naprawdę pyta i co powinna objąć dobra odpowiedź.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Zapisz każdą rozmowę"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Podsumuj ją"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Sprowadź ją do jednego zdania"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Przypisz ją do kategorii"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Oznacz ją"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Podnieś, co warte uwagi"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Oceń ją, jeśli to była sprzedaż"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Oceń ją, jeśli to było wsparcie"
+    }
+  ]
+}

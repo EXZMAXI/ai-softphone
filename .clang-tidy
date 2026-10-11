@@ -1,0 +1,50 @@
+# AI Softphone - a cross-platform desktop SIP softphone with an AI enrichment layer.
+# https://ai-softphone.com
+#
+# SPDX-FileCopyrightText: Copyright (C) 2026 AI-Softphone Developers Team
+# SPDX-FileCopyrightText: Copyright (C) 2026 Ilya Pleshchinskiy
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# This file is part of AI Softphone. There is NO WARRANTY, to the extent
+# permitted by law. See the file LICENSE for the full terms.
+
+---
+Checks: >
+  -*,
+  bugprone-*,
+  concurrency-*,
+  cppcoreguidelines-avoid-goto,
+  cppcoreguidelines-pro-type-member-init,
+  cppcoreguidelines-slicing,
+  cppcoreguidelines-special-member-functions,
+  misc-*,
+  modernize-*,
+  performance-*,
+  readability-*,
+  -bugprone-easily-swappable-parameters,
+  -misc-non-private-member-variables-in-classes,
+  -modernize-use-trailing-return-type,
+  -readability-identifier-length,
+  -readability-magic-numbers
+
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*/(core|ui|cli)/.*'
+FormatStyle: file
+
+CheckOptions:
+  - key: readability-identifier-naming.NamespaceCase
+    value: lower_case
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.FunctionCase
+    value: camelBack
+  - key: readability-identifier-naming.VariableCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateMemberSuffix
+    value: '_'
+  - key: readability-identifier-naming.ConstexprVariablePrefix
+    value: 'k'

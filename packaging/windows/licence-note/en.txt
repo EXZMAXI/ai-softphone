@@ -1,0 +1,8 @@
+﻿WHAT THIS LICENCE MEANS
+
+This program is free software. You may use it, copy it and change it, and pass it on to
+anybody — as long as they get the same freedom, and the source code with it. There is no
+warranty of any kind.
+
+The licence itself is the English text below, and that is what governs. This note only
+explains it.

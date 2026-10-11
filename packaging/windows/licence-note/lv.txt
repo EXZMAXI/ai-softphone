@@ -1,0 +1,8 @@
+﻿KO NOZĪMĒ ŠĪ LICENCE
+
+Šī programma ir brīva programmatūra. Jūs varat to lietot, kopēt un mainīt, kā arī nodot
+tālāk jebkuram — ar nosacījumu, ka saņēmējs iegūst to pašu brīvību un līdz ar to arī
+pirmkodu. Nekāda garantija netiek dota.
+
+Pati licence ir zemāk esošais teksts angļu valodā, un tieši tas ir saistošs. Šī piezīme
+to tikai paskaidro.

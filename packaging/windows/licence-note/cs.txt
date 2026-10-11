@@ -1,0 +1,8 @@
+﻿CO TATO LICENCE ZNAMENÁ
+
+Tento program je svobodný software. Můžete jej používat, kopírovat a měnit a předat komu
+chcete — pokud ten, kdo jej dostane, získá stejnou svobodu a s ní i zdrojový kód. Žádná
+záruka se neposkytuje.
+
+Samotnou licencí je anglický text níže a právě ten je závazný. Tato poznámka jej jen
+vysvětluje.

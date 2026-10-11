@@ -1,0 +1,359 @@
+{
+  "language": "sr_Latn",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Prodaja",
+      "description": "Prodaja, ponuda, pregovaranje ili dovršavanje kupovine — uključujući i kupca koji pita koliko nešto košta."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Podrška",
+      "description": "Pomoć nekome oko proizvoda ili usluge koju već ima: kvar, pitanje o upotrebi, pritužba na to kako radi."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Privatan",
+      "description": "Nimalo poslovni — privatan razgovor koji se slučajno vodio na ovoj liniji."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Drugo",
+      "description": "Poslovni, ali ni prodaja ni podrška: dobavljač, kolega, isporuka, pogrešan broj. Izaberite ovo umesto da nagađate između ostalih."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Obećan povratni poziv",
+      "description": "Neko u ovom pozivu obećao je da će uzvratiti poziv ili je tražio da ga pozovu."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Pritužba",
+      "description": "Druga strana je iskazala nezadovoljstvo, bilo da je rešeno ili nije."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Prosleđeno više",
+      "description": "Poziv je predat nekom drugom, ili je druga strana to tražila."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "Kupac VIP",
+      "description": "Prema drugoj strani se postupalo kao prema važnom kupcu, ili je ona sama tako rekla za sebe."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Ljutit kupac",
+      "description": "Čulo se da je druga strana ljuta, da vređa ili da preti odlaskom."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Opasnost od odlaska",
+      "description": "Pominjali su se raskid, neobnavljanje ili prelazak kod nekog drugog, ma koliko smireno."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Dato obećanje",
+      "description": "Naša strana se obavezala na nešto određeno — datum, cenu, popravku, povraćaj novca."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Osetljivi podaci",
+      "description": "Naglas je pročitan broj kartice, lozinka, broj dokumenta ili bilo šta drugo čemu u snimku nije mesto."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Konkurent",
+      "description": "Druga strana je imenovala nekog drugog ko nudi isto, ili nas s njim uporedila."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Proza",
+      "description": "Odgovorite običnom prozom. Ne koristite JSON, spiskove ni naslove."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Stavke",
+      "description": "Odgovorite samo JSON-om, tačno ovog oblika:\n{\"items\": [{\"text\": \"šta treba uraditi\", \"owner\": \"ko, ili prazno\", \"due\": \"do kada, ili prazno\"}]}\nKada nema šta da se nabroji, upotrebite prazan niz. Ne pišite ništa izvan JSON-a."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Oznake",
+      "description": "Odgovorite samo JSON-om, tačno ovog oblika:\n{\"labels\": [{\"code\": \"kod sa spiska koji ste dobili\", \"confidence\": 0.0}]}\nKoristite samo kodove sa spiska. Kada nijedan ne odgovara, upotrebite prazan\nniz. Ne izmišljajte kod i ne pišite ništa izvan JSON-a."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Ocena",
+      "description": "Odgovorite samo JSON-om, tačno ovog oblika:\n{\"score\": 3, \"rationale\": \"zašto taj broj, a ne za jedan veći\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"reči na kojima to počiva\"}]}\nOcena je ceo broj od 1 do 5. Ne pišite ništa izvan JSON-a."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Merila",
+      "description": "Odgovorite samo JSON-om, tačno ovog oblika:\n{\"overall\": 3, \"rationale\": \"zašto taj broj, a ne za jedan veći\",\n \"criteria\": [{\"name\": \"merilo onako kako vam je dato\",\n               \"verdict\": \"pass\" ili \"weak\" ili \"fail\" ili \"n/a\",\n               \"note\": \"jedna rečenica\"}]}\nOcenite svako dato merilo i nijedno drugo. Ukupna ocena je ceo broj\nod 1 do 5. Ne pišite ništa izvan JSON-a."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Znaci",
+      "description": "Odgovorite samo JSON-om, tačno ovog oblika:\n{\"flags\": [{\"code\": \"kod sa spiska koji ste dobili\",\n            \"severity\": \"low\" ili \"medium\" ili \"high\",\n            \"evidence\": \"reči na kojima to počiva\",\n            \"at_ms\": 0}]}\nKoristite samo kodove sa spiska i svaki podignite najviše jednom. Kada ništa ne\nodgovara, upotrebite prazan niz. Ne pišite ništa izvan JSON-a."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Odgovor",
+      "description": "Odgovorite samo JSON-om, tačno ovog oblika:\n{\"answer\": \"vaš odgovor, ili otvoreno to da razgovor ne kaže\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"reči na kojima odgovor počiva\"}]}\nNe odgovarajte ni iz čega osim iz razgovora. Ne pišite ništa izvan JSON-a."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Odgovorite samo JSON-om, u obliku traženom iznad. Ne pišite ništa izvan JSON-a."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Kako se govorilo",
+      "description": "Napišite svoj odgovor na istom jeziku na kome je bio razgovor."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Kako se govorilo, imenovano",
+      "description": "Napišite svoj odgovor na istom jeziku na kome je bio razgovor, a to je {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Određen jezik",
+      "description": "Napišite svoj odgovor na ovom jeziku: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Sažetak",
+      "system": "Čitate prepise telefonskih razgovora i pišete o njima kratke, činjenične sažetke. Nikada ne nagađate ono što nije rečeno i nikada ne dodajete savete.",
+      "body": "Sažmite ovaj telefonski razgovor u jedan kratak pasus: o čemu je bio, šta je odlučeno i šta sledi. Trajao je {{duration}} i bio je {{direction}}, sa {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Sažetak u jednom redu",
+      "system": "Čitate prepise telefonskih razgovora i svaki svodite na jedan jedini izraz. Nikada ne nagađate i nikada ne dodajete savete.",
+      "body": "Svedite ovaj telefonski razgovor na jedan izraz od najviše dvanaest reči — takav kakav bi stajao u tabeli pored imena pozivaoca. Bez tačke, bez navodnika.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Zadaci",
+      "system": "Čitate prepise telefonskih razgovora i nabrajate na šta se ko obavezao. Nabrajate samo ono što je zaista rečeno; nikada ne izmišljate zadatak, nosioca ni rok.",
+      "body": "Nabrojte na šta se bilo ko u ovom pozivu obavezao. Navedite ko to treba da uradi tamo gde je rečeno, i do kada tamo gde je rečeno. Ako se niko ni na šta nije obavezao, odgovorite praznim spiskom.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Teme",
+      "system": "Čitate prepise telefonskih razgovora i imenujete o čemu su bili.",
+      "body": "Nabrojte ono što je ovaj poziv zaista obuhvatio, najviše šest stvari, svaka u nekoliko reči. Nosioca i rok ostavite prazne — ovde ne znače ništa.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Imena i brojevi",
+      "system": "Čitate prepise telefonskih razgovora i izdvajate ono što je u njima imenovano. Nikada ne nagađate pisanje i nikada ne dodajete ono što nije rečeno.",
+      "body": "Izdvojte ono što je u ovom pozivu imenovano, kao JSON tačno ovog oblika:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nSvako je spisak niski, zapisanih onako kako su izgovorene. Radije ostavite spisak prazan nego da nagađate.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Kategorija",
+      "system": "Svrstavate telefonske pozive u jednu od zadatih kategorija. Birate sa spiska i ni iz čega drugog.",
+      "body": "Svrstajte ovaj poziv u tačno jednu od ovih kategorija. Odgovorite njenim kodom.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Oznake",
+      "system": "Označavate telefonske pozive zadatim oznakama. Birate sa spiska i ni iz čega drugog, a oznaku radije izostavljate nego što je natežete.",
+      "body": "Koje od ovih važe za ovaj poziv? Odgovorite njihovim kodovima, ili praznim spiskom ako nijedna.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Upozorenja",
+      "system": "Čitate prepise telefonskih razgovora i podižete samo ono što vam je zadato da tražite. Navodite reči na kojima svako počiva i ne podižete ništa što ne možete da navedete.",
+      "body": "Podignite ona od ovih koja ovaj poziv pokazuje. Za svako navedite reči na kojima počiva i trenutak u milisekundama kada su izgovorene. Radije ne podignite ništa nego da natežete odrednicu.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Pitanje o ovom pozivu",
+      "system": "Odgovarate na pitanja o jednom telefonskom pozivu, iz njegovog prepisa i ni iz čega drugog. Tamo gde razgovor ne kaže, to kažete otvoreno umesto da nagađate.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Kvalitet prodaje",
+      "system": "Ocenjujete kako je prodavac vodio telefonski razgovor. Sudite samo po onome što prepis pokazuje, nikada ne pretpostavljate šta je bilo pre ili posle njega, i podjednako ste strogi prema razgovoru koji je prošao dobro kao i prema onom koji nije.",
+      "body": "Ocenite našu stranu u ovom pozivu — operatera — po ovim merilima i ni po jednom drugom:\n- pozdrav: da li se predstavio i imenovao firmu?\n- ispitivanje: da li je saznao šta je kupac zapravo hteo?\n- prigovori: da li je odgovorio na ono što je kupac izneo, umesto da priča mimo toga?\n- vrednost: da li je rekao šta kupac dobija, a ne samo koliko košta?\n- sledeći korak: da li se poziv završio nečim određenim dogovorenim?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Kvalitet podrške",
+      "system": "Ocenjujete kako je radnik podrške vodio telefonski razgovor. Sudite samo po onome što prepis pokazuje, i više vagate da li je kupčev problem zaista rešen nego koliko je razgovor bio prijatan.",
+      "body": "Ocenite našu stranu u ovom pozivu — operatera — po ovim merilima i ni po jednom drugom:\n- pozdrav: da li se predstavio i potvrdio s kim razgovara?\n- razumevanje: da li je utvrdio šta zapravo nije u redu pre nego što je odgovorio?\n- rešenje: da li je problem rešen ili je dat određen sledeći korak?\n- ton: da li je ostao smiren i učtiv, naročito tamo gde kupac nije?\n- završetak: da li je proverio da je kupac zadovoljan pre nego što je završio?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Titlovi",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Prevod",
+      "system": "Prevodiš govor dok se odvija. Odgovaraš samo prevodom — bez uvoda, bez navodnika, bez objašnjenja — a imena, brojeve i cene ostavljaš tačno onako kako su izgovoreni.",
+      "body": "Prevedi na {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Prodaja",
+      "system": "Pomažete osobi koja prodaje telefonom. Odgovarate s nekoliko kratkih redova koji se mogu čitati tokom slušanja, nikada pasusima, i nikada ništa ne obećavate u njeno ime.",
+      "body": "Sagovornik je upravo rekao:\n\n{{reply}}\n\nRanije u ovom razgovoru:\n\n{{conversation}}\n\nJednim redom recite šta se dešava — primedba, neodgovoreno pitanje, znak da su spremni da kupe — i jednim redom šta reći dalje. Ako nema šta da se kaže, napišite samo „—“.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Pomoć na razgovoru",
+      "system": "Pomažete osobi s kojom se vodi razgovor za posao. Odgovarate s nekoliko kratkih redova koji se mogu čitati tokom slušanja, nikada pasusima, i nikada ne izmišljate činjenice o njoj.",
+      "body": "Sagovornik je upravo rekao:\n\n{{reply}}\n\nRanije u ovom razgovoru:\n\n{{conversation}}\n\nU tri kratka reda recite šta zapravo pita i šta bi dobar odgovor trebalo da obuhvati.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Prepiši svaki razgovor"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Sažmi ga"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Svedi ga na jedan red"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Svrstaj ga u kategoriju"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Označi ga"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Podigni ono što vredi pogledati"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Oceni ga, ako je bila prodaja"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Oceni ga, ako je bila podrška"
+    }
+  ]
+}

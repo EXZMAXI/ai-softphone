@@ -1,0 +1,8 @@
+﻿BU LİSANS NE ANLAMA GELİYOR
+
+Bu program özgür yazılımdır. Kullanabilir, kopyalayabilir ve değiştirebilirsiniz; dilediğiniz
+kişiye de verebilirsiniz — yeter ki alan kişi aynı özgürlüğü ve onunla birlikte kaynak kodu
+elde etsin. Hiçbir garanti verilmez.
+
+Lisansın kendisi aşağıdaki İngilizce metindir ve geçerli olan odur. Bu not yalnızca onu
+açıklar.

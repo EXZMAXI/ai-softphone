@@ -1,0 +1,41 @@
+# AI Softphone - a cross-platform desktop SIP softphone with an AI enrichment layer.
+# https://ai-softphone.com
+#
+# SPDX-FileCopyrightText: Copyright (C) 2026 AI-Softphone Developers Team
+# SPDX-FileCopyrightText: Copyright (C) 2026 Ilya Pleshchinskiy
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# This file is part of AI Softphone. There is NO WARRANTY, to the extent
+# permitted by law. See the file LICENSE for the full terms.
+
+---
+Language: Cpp
+BasedOnStyle: LLVM
+
+ColumnLimit: 100
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: Empty
+AlwaysBreakTemplateDeclarations: Yes
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: false
+  AfterControlStatement: false
+  AfterEnum: false
+  AfterFunction: true
+  AfterNamespace: false
+  AfterStruct: false
+  AfterUnion: false
+  BeforeCatch: false
+  BeforeElse: false
+  SplitEmptyFunction: false
+FixNamespaceComments: true
+IncludeBlocks: Preserve
+NamespaceIndentation: None
+PointerAlignment: Right
+SeparateDefinitionBlocks: Always
+SortIncludes: CaseSensitive
+SpaceAfterTemplateKeyword: false

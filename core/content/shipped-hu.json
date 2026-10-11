@@ -1,0 +1,359 @@
+{
+  "language": "hu",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Értékesítés",
+      "description": "Eladás, árajánlat, tárgyalás vagy egy vásárlás utánkövetése — beleértve azt is, amikor az ügyfél az árra kérdez rá."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Támogatás",
+      "description": "Segítség valakinek egy termékkel vagy szolgáltatással, ami már megvan neki: hiba, kérdés a használatról, panasz a működésre."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Magán",
+      "description": "Egyáltalán nem munka — magánbeszélgetés, ami történetesen ezen a vonalon zajlott."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Egyéb",
+      "description": "Munka, de sem eladás, sem támogatás: beszállító, kolléga, szállítmány, téves hívás. Ezt válaszd, ahelyett hogy a többi között találgatnál."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Ígért visszahívás",
+      "description": "Valaki ebben a hívásban visszahívást ígért, vagy azt kérte, hogy hívják vissza."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Panasz",
+      "description": "A másik fél elégedetlenségét fejezte ki, akár megoldódott, akár nem."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Továbbadva",
+      "description": "A hívás máshoz került, vagy a másik fél ezt kérte."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "VIP-ügyfél",
+      "description": "A másik felet fontos ügyfélként kezelték, vagy ő maga mondta magáról."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Dühös ügyfél",
+      "description": "Hallhatóan dühös volt a másik fél, sértegetett, vagy távozással fenyegetett."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Lemorzsolódás veszélye",
+      "description": "Szóba került a felmondás, a meg nem hosszabbítás vagy a máshoz átállás, bármilyen higgadtan is."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Adott ígéret",
+      "description": "A mi oldalunk elkötelezte magát valami konkrét mellett — időpont, ár, javítás, visszatérítés."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Érzékeny adat",
+      "description": "Kártyaszám, jelszó, okmányszám vagy bármi más elhangzott, aminek nem volna szabad felvételen lennie."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Versenytárs",
+      "description": "A másik fél megnevezett valaki mást, aki ugyanezt kínálja, vagy hozzá hasonlított minket."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Próza",
+      "description": "Válaszolj egyszerű prózában. Ne használj JSON-t, listát vagy címsort."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Tételek",
+      "description": "Csak JSON-nal válaszolj, pontosan ilyen alakban:\n{\"items\": [{\"text\": \"mit kell elvégezni\", \"owner\": \"ki, vagy üres\", \"due\": \"mikorra, vagy üres\"}]}\nHa nincs mit felsorolni, használj üres tömböt. A JSON-on kívül ne írj semmit."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Címkék",
+      "description": "Csak JSON-nal válaszolj, pontosan ilyen alakban:\n{\"labels\": [{\"code\": \"egy kód a kapott listáról\", \"confidence\": 0.0}]}\nCsak a listán szereplő kódokat használd. Ha egyik sem illik, használj üres\ntömböt. Ne találj ki kódot, és a JSON-on kívül ne írj semmit."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Pontszám",
+      "description": "Csak JSON-nal válaszolj, pontosan ilyen alakban:\n{\"score\": 3, \"rationale\": \"miért ez a szám, és miért nem eggyel több\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"a szavak, amikre alapoztad\"}]}\nA pontszám 1 és 5 közötti egész szám. A JSON-on kívül ne írj semmit."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Szempontok",
+      "description": "Csak JSON-nal válaszolj, pontosan ilyen alakban:\n{\"overall\": 3, \"rationale\": \"miért ez a szám, és miért nem eggyel több\",\n \"criteria\": [{\"name\": \"a szempont úgy, ahogy kaptad\",\n               \"verdict\": \"pass\" vagy \"weak\" vagy \"fail\" vagy \"n/a\",\n               \"note\": \"egy mondat\"}]}\nMinden kapott szempontot ítélj meg, és mást egyet sem. Az összpontszám 1 és 5\nközötti egész szám. A JSON-on kívül ne írj semmit."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Jelzések",
+      "description": "Csak JSON-nal válaszolj, pontosan ilyen alakban:\n{\"flags\": [{\"code\": \"egy kód a kapott listáról\",\n            \"severity\": \"low\" vagy \"medium\" vagy \"high\",\n            \"evidence\": \"a szavak, amikre alapoztad\",\n            \"at_ms\": 0}]}\nCsak a listán szereplő kódokat használd, és mindegyiket legfeljebb egyszer emeld\nki. Ha semmi sem illik, használj üres tömböt. A JSON-on kívül ne írj semmit."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Válasz",
+      "description": "Csak JSON-nal válaszolj, pontosan ilyen alakban:\n{\"answer\": \"a válaszod, vagy nyíltan az, hogy a beszélgetés nem mondja meg\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"a szavak, amikre a válasz épül\"}]}\nA beszélgetésen kívül semmiből ne válaszolj. A JSON-on kívül ne írj semmit."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Csak JSON-nal válaszolj, a fent kért alakban. A JSON-on kívül ne írj semmit."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Ahogy elhangzott",
+      "description": "A választ azon a nyelven írd, amelyen a beszélgetés folyt."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Ahogy elhangzott, megnevezve",
+      "description": "A választ azon a nyelven írd, amelyen a beszélgetés folyt, ez pedig: {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Megadott nyelv",
+      "description": "A választ ezen a nyelven írd: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Összefoglaló",
+      "system": "Telefonbeszélgetések leiratait olvasod, és rövid, tényszerű összefoglalót írsz róluk. Sosem találgatsz olyat, ami nem hangzott el, és sosem adsz tanácsot.",
+      "body": "Foglald össze ezt a telefonbeszélgetést egy rövid bekezdésben: miről szólt, mi dőlt el, és mi következik. {{duration}} hosszú volt, {{direction}}, a másik fél {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Egysoros összefoglaló",
+      "system": "Telefonbeszélgetések leiratait olvasod, és mindegyiket egyetlen fordulatra szűköd. Sosem találgatsz, és sosem adsz tanácsot.",
+      "body": "Szűkítsd ezt a telefonbeszélgetést egyetlen, legfeljebb tizenkét szavas fordulatra — olyanra, ami egy táblázatban állna a hívó neve mellett. Pont nélkül, idézőjel nélkül.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Teendők",
+      "system": "Telefonbeszélgetések leiratait olvasod, és felsorolod, mire vállalkozott valaki. Csak azt sorolod fel, ami tényleg elhangzott; sosem találsz ki feladatot, felelőst vagy határidőt.",
+      "body": "Sorold fel, mire vállalkozott bárki ebben a hívásban. Nevezd meg, kinek kell elvégeznie, ahol ez elhangzott, és mikorra, ahol ez elhangzott. Ha senki nem vállalt semmit, válaszolj üres listával.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Témák",
+      "system": "Telefonbeszélgetések leiratait olvasod, és megnevezed, miről szóltak.",
+      "body": "Sorold fel, milyen tárgyakat érintett valóban ez a hívás, legfeljebb hatot, mindegyiket néhány szóban. A felelőst és a határidőt hagyd üresen — itt semmit nem jelentenek.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Nevek és számok",
+      "system": "Telefonbeszélgetések leiratait olvasod, és kiszeded belőlük, mit neveztek meg bennük. Sosem találgatod a helyesírást, és sosem teszel hozzá olyat, ami nem hangzott el.",
+      "body": "Szedd ki, mit neveztek meg ebben a hívásban, pontosan ilyen alakú JSON-ként:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nMindegyik szövegek listája, úgy leírva, ahogy elhangzottak. Inkább hagyj egy listát üresen, mint hogy találgass.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Kategória",
+      "system": "Telefonhívásokat sorolsz be a kapott kategóriák egyikébe. A listáról választasz, és semmi másból.",
+      "body": "Sorold be ezt a hívást pontosan az egyik kategóriába. A kódjával válaszolj.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Címkék",
+      "system": "Telefonhívásokat címkézel a kapott címkékkel. A listáról választasz, és semmi másból, és inkább elhagysz egy címkét, mint hogy ráhúzd.",
+      "body": "Melyik igaz ezek közül erre a hívásra? A kódjaikkal válaszolj, vagy üres listával, ha egyik sem.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Figyelmeztető jelek",
+      "system": "Telefonbeszélgetések leiratait olvasod, és csak azt emeled ki, amit keresni kaptál. Idézed a szavakat, amikre mindegyiket alapoztad, és semmit nem emelsz ki, amit nem tudsz idézni.",
+      "body": "Emeld ki ezek közül azokat, amiket ez a hívás mutat. Mindegyiknél idézd a szavakat, amikre épül, és add meg a pillanatot ezredmásodpercben, amikor elhangzottak. Inkább ne emelj ki semmit, mint hogy egy meghatározást ráhúzz.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Kérdés erről a hívásról",
+      "system": "Egyetlen telefonhívásról válaszolsz kérdésekre, a leiratából és semmi másból. Ahol a beszélgetés nem mondja meg, ezt nyíltan kimondod, ahelyett hogy találgatnál.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Értékesítés minősége",
+      "system": "Azt ítéled meg, hogyan kezelt egy értékesítő egy telefonhívást. Csak azt ítéled meg, amit a leirat mutat, sosem feltételezed, mi történt előtte vagy utána, és ugyanolyan szigorú vagy a jól sikerült hívással, mint a rosszul sikerülttel.",
+      "body": "Ítéld meg a mi oldalunkat ebben a hívásban — az operátort — ezek szerint a szempontok szerint, és semmi más szerint:\n- köszönés: bemutatkozott, és megnevezte a céget?\n- feltárás: kiderítette, mit akart valójában az ügyfél?\n- ellenvetések: válaszolt arra, amit az ügyfél felvetett, ahelyett hogy elbeszélt volna mellette?\n- érték: elmondta, mit kap az ügyfél, nem csak azt, mennyibe kerül?\n- következő lépés: valami konkrétban állapodtak meg a hívás végén?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Támogatás minősége",
+      "system": "Azt ítéled meg, hogyan kezelt egy támogatási munkatárs egy telefonhívást. Csak azt ítéled meg, amit a leirat mutat, és többre tartod azt, hogy az ügyfél gondját valóban megoldották-e, mint azt, milyen kellemes volt a beszélgetés.",
+      "body": "Ítéld meg a mi oldalunkat ebben a hívásban — az operátort — ezek szerint a szempontok szerint, és semmi más szerint:\n- köszönés: bemutatkozott, és megbizonyosodott róla, kivel beszél?\n- megértés: tisztázta, mi a baj valójában, mielőtt válaszolt volna?\n- megoldás: megoldódott a gond, vagy konkrét következő lépést kapott az ügyfél?\n- hangnem: higgadt és udvarias maradt, különösen ott, ahol az ügyfél nem?\n- lezárás: ellenőrizte, hogy az ügyfél elégedett-e, mielőtt befejezte?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Feliratok",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Fordítás",
+      "system": "Beszédet fordítasz, miközben elhangzik. Csak a fordítással válaszolsz — bevezető nélkül, idézőjelek nélkül, magyarázat nélkül —, a neveket, számokat és árakat pedig pontosan úgy hagyod, ahogy elhangzottak.",
+      "body": "Fordítsd le erre: {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Értékesítés",
+      "system": "Olyan embernek segít, aki telefonon ad el. Néhány rövid sorban válaszol, amit hallgatás közben el tud olvasni, soha nem bekezdésekben, és soha nem ígér semmit a nevében.",
+      "body": "A másik fél most ezt mondta:\n\n{{reply}}\n\nKorábban ebben a beszélgetésben:\n\n{{conversation}}\n\nMondja el egy sorban, mi történik — ellenvetés, megválaszolatlan kérdés, a vásárlási szándék jele —, és egy sorban, mit mondjon ezután. Ha nincs mit mondani, csak ezt írja: „—”.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Segítség az interjún",
+      "system": "Olyan embernek segít, akivel interjút folytatnak. Néhány rövid sorban válaszol, amit hallgatás közben el tud olvasni, soha nem bekezdésekben, és soha nem talál ki róla tényeket.",
+      "body": "A másik fél most ezt mondta:\n\n{{reply}}\n\nKorábban ebben a beszélgetésben:\n\n{{conversation}}\n\nHárom rövid sorban mondja meg, mit kérdez valójában, és mit kellene egy jó válasznak érintenie.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Minden beszélgetés leírása"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Összefoglalás"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Egy sorra szűkítés"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Besorolás kategóriába"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Címkézés"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Ami figyelmet érdemel, kiemelése"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Értékelés, ha értékesítés volt"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Értékelés, ha támogatás volt"
+    }
+  ]
+}

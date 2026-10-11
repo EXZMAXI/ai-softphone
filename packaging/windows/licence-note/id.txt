@@ -1,0 +1,8 @@
+﻿APA ARTI LISENSI INI
+
+Program ini adalah perangkat lunak bebas. Anda boleh memakainya, menyalinnya, dan
+mengubahnya, serta meneruskannya kepada siapa pun — asalkan penerimanya mendapat kebebasan
+yang sama, beserta kode sumbernya. Tidak ada jaminan apa pun.
+
+Lisensinya sendiri adalah teks bahasa Inggris di bawah ini, dan itulah yang berlaku.
+Catatan ini hanya menjelaskannya.

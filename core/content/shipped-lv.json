@@ -1,0 +1,359 @@
+{
+  "language": "lv",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Pārdošana",
+      "description": "Pārdošana, piedāvājums, sarunas vai pirkuma noslēgšana — arī klients, kas jautā, cik kaut kas maksā."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Atbalsts",
+      "description": "Palīdzība kādam ar preci vai pakalpojumu, kas viņam jau ir: bojājums, jautājums par lietošanu, sūdzība par to, kā tas strādā."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Personisks",
+      "description": "Nemaz nav darba — privāta saruna, kas gadījās notikt uz šīs līnijas."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Cits",
+      "description": "Darbs, bet ne pārdošana, ne atbalsts: piegādātājs, kolēģis, piegāde, nepareizs numurs. Izvēlieties šo, nevis minot starp pārējiem."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Solīts atzvanīt",
+      "description": "Kāds šajā sarunā solīja atzvanīt vai lūdza, lai viņam atzvana."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Sūdzība",
+      "description": "Otra puse pauda neapmierinātību neatkarīgi no tā, vai tas tika atrisināts."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Nodots tālāk",
+      "description": "Zvans tika nodots kādam citam vai otra puse to lūdza."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "VIP klients",
+      "description": "Pret otru pusi izturējās kā pret svarīgu klientu vai viņa pati to par sevi teica."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Dusmīgs klients",
+      "description": "Bija dzirdams, ka otra puse ir dusmīga, apvaino vai draud aiziet."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Aiziešanas risks",
+      "description": "Tika pieminēta atteikšanās, nepagarināšana vai pāreja pie kāda cita, lai cik mierīgi."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Dots solījums",
+      "description": "Mūsu puse apņēmās kaut ko noteiktu — datumu, cenu, labojumu, naudas atmaksu."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Sensitīvi dati",
+      "description": "Skaļi tika nolasīts kartes numurs, parole, dokumenta numurs vai kas cits, kam ierakstā nebūtu jābūt."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Konkurents",
+      "description": "Otra puse nosauca kādu citu, kas piedāvā to pašu, vai salīdzināja mūs ar viņu."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Proza",
+      "description": "Atbildiet vienkāršā prozā. Nelietojiet JSON, sarakstus vai virsrakstus."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Punkti",
+      "description": "Atbildiet tikai ar JSON, tieši šādā veidolā:\n{\"items\": [{\"text\": \"kas ir jāizdara\", \"owner\": \"kurš, vai tukšs\", \"due\": \"kad, vai tukšs\"}]}\nJa nav ko uzskaitīt, lietojiet tukšu masīvu. Neko nerakstiet ārpus JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Birkas",
+      "description": "Atbildiet tikai ar JSON, tieši šādā veidolā:\n{\"labels\": [{\"code\": \"kods no dotā saraksta\", \"confidence\": 0.0}]}\nLietojiet tikai sarakstā esošos kodus. Ja neviens neder, lietojiet tukšu masīvu.\nNeizdomājiet kodu un neko nerakstiet ārpus JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Vērtējums",
+      "description": "Atbildiet tikai ar JSON, tieši šādā veidolā:\n{\"score\": 3, \"rationale\": \"kāpēc šis skaitlis, nevis par vienu lielāks\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"vārdi, uz kuriem tas balstās\"}]}\nVērtējums ir vesels skaitlis no 1 līdz 5. Neko nerakstiet ārpus JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Kritēriji",
+      "description": "Atbildiet tikai ar JSON, tieši šādā veidolā:\n{\"overall\": 3, \"rationale\": \"kāpēc šis skaitlis, nevis par vienu lielāks\",\n \"criteria\": [{\"name\": \"kritērijs tāds, kāds jums tika dots\",\n               \"verdict\": \"pass\" vai \"weak\" vai \"fail\" vai \"n/a\",\n               \"note\": \"viens teikums\"}]}\nNovērtējiet katru doto kritēriju un nevienu citu. Kopvērtējums ir vesels\nskaitlis no 1 līdz 5. Neko nerakstiet ārpus JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Signāli",
+      "description": "Atbildiet tikai ar JSON, tieši šādā veidolā:\n{\"flags\": [{\"code\": \"kods no dotā saraksta\",\n            \"severity\": \"low\" vai \"medium\" vai \"high\",\n            \"evidence\": \"vārdi, uz kuriem tas balstās\",\n            \"at_ms\": 0}]}\nLietojiet tikai sarakstā esošos kodus un katru izceliet ne vairāk kā vienreiz.\nJa nekas neder, lietojiet tukšu masīvu. Neko nerakstiet ārpus JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Atbilde",
+      "description": "Atbildiet tikai ar JSON, tieši šādā veidolā:\n{\"answer\": \"jūsu atbilde vai tieši tas, ka saruna to nepasaka\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"vārdi, uz kuriem atbilde balstās\"}]}\nNeatbildiet ne no kā cita kā no sarunas. Neko nerakstiet ārpus JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Atbildiet tikai ar JSON, augstāk prasītajā veidolā. Neko nerakstiet ārpus JSON."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Kā runāts",
+      "description": "Rakstiet atbildi tajā pašā valodā, kādā bija saruna."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Kā runāts, nosaukta",
+      "description": "Rakstiet atbildi tajā pašā valodā, kādā bija saruna, un tā ir {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Nosaukta valoda",
+      "description": "Rakstiet atbildi šajā valodā: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Kopsavilkums",
+      "system": "Jūs lasāt telefona sarunu atšifrējumus un rakstāt par tiem īsus, lietišķus kopsavilkumus. Jūs nekad neminat to, kas netika pateikts, un nekad nepievienojat padomus.",
+      "body": "Apkopojiet šo telefona sarunu vienā īsā rindkopā: par ko tā bija, kas tika izlemts un kas notiek tālāk. Tā ilga {{duration}} un bija {{direction}}, ar {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Kopsavilkums vienā rindā",
+      "system": "Jūs lasāt telefona sarunu atšifrējumus un katru sašaurināt līdz vienam izteicienam. Jūs nekad neminat un nekad nepievienojat padomus.",
+      "body": "Sašauriniet šo telefona sarunu līdz vienam izteicienam, ne vairāk kā divpadsmit vārdos — tādam, kāds stāvētu tabulā blakus zvanītāja vārdam. Bez punkta, bez pēdiņām.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Uzdevumi",
+      "system": "Jūs lasāt telefona sarunu atšifrējumus un uzskaitāt, ko kāds apņēmās izdarīt. Jūs uzskaitāt tikai to, kas tiešām tika pateikts; jūs nekad neizdomājat uzdevumu, atbildīgo vai termiņu.",
+      "body": "Uzskaitiet, ko jebkurš šajā sarunā apņēmās izdarīt. Nosauciet, kam tas jādara, ja tas tika pateikts, un līdz kuram laikam, ja tas tika pateikts. Ja neviens neko neapņēmās, atbildiet ar tukšu sarakstu.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Temati",
+      "system": "Jūs lasāt telefona sarunu atšifrējumus un nosaucat, par ko tie bija.",
+      "body": "Uzskaitiet, ko šī saruna tiešām skāra, ne vairāk kā sešas lietas, katru dažos vārdos. Atbildīgo un termiņu atstājiet tukšus — šeit tie neko nenozīmē.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Vārdi un skaitļi",
+      "system": "Jūs lasāt telefona sarunu atšifrējumus un izceļat no tiem to, kas tajos tika nosaukts. Jūs nekad neminat rakstību un nekad nepievienojat to, kas netika pateikts.",
+      "body": "Izceliet, kas šajā sarunā tika nosaukts, kā JSON tieši šādā veidolā:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nKatrs ir virkņu saraksts, pierakstīts tā, kā tas tika izrunāts. Labāk atstājiet sarakstu tukšu, nekā minat.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Kategorija",
+      "system": "Jūs iedalāt telefona zvanus vienā no dotajām kategorijām. Jūs izvēlaties no saraksta un ne no kā cita.",
+      "body": "Iedaliet šo zvanu tieši vienā no šīm kategorijām. Atbildiet ar tās kodu.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Birkas",
+      "system": "Jūs apzīmējat telefona zvanus ar dotajām birkām. Jūs izvēlaties no saraksta un ne no kā cita, un birku labāk izlaižat, nekā izstiepjat.",
+      "body": "Kuras no tām ir patiesas par šo zvanu? Atbildiet ar to kodiem vai ar tukšu sarakstu, ja neviena.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Brīdinājuma signāli",
+      "system": "Jūs lasāt telefona sarunu atšifrējumus un izceļat tikai to, ko jums uzdeva meklēt. Jūs citējat vārdus, uz kuriem katrs balstās, un neizceļat neko, ko nevarat nocitēt.",
+      "body": "Izceliet tos no tiem, ko šī saruna rāda. Katram nocitējiet vārdus, uz kuriem tas balstās, un norādiet brīdi milisekundēs, kad tie tika izrunāti. Labāk neizceliet neko, nekā izstiepjat definīciju.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Jautājums par šo zvanu",
+      "system": "Jūs atbildat uz jautājumiem par vienu telefona zvanu, no tā atšifrējuma un ne no kā cita. Tur, kur saruna to nepasaka, jūs to sakāt tieši, nevis minat.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Pārdošanas kvalitāte",
+      "system": "Jūs vērtējat, kā pārdevējs vadīja telefona sarunu. Jūs spriežat tikai pēc tā, ko rāda atšifrējums, nekad nepieņemat, kas bija pirms vai pēc tās, un esat vienlīdz prasīgs pret sarunu, kas izdevās, un pret to, kas neizdevās.",
+      "body": "Novērtējiet mūsu pusi šajā sarunā — operatoru — pēc šiem kritērijiem un ne pēc kādiem citiem:\n- sveiciens: vai viņš nosauca sevi un uzņēmumu?\n- noskaidrošana: vai viņš uzzināja, ko klients patiesībā gribēja?\n- iebildumi: vai viņš atbildēja uz to, ko klients izvirzīja, nevis runāja garām?\n- vērtība: vai viņš pateica, ko klients iegūst, ne tikai to, cik tas maksā?\n- nākamais solis: vai saruna beidzās ar kaut ko noteiktu norunātu?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Atbalsta kvalitāte",
+      "system": "Jūs vērtējat, kā atbalsta darbinieks vadīja telefona sarunu. Jūs spriežat tikai pēc tā, ko rāda atšifrējums, un vairāk sverat to, vai klienta problēma tiešām tika atrisināta, nekā to, cik patīkama bija saruna.",
+      "body": "Novērtējiet mūsu pusi šajā sarunā — operatoru — pēc šiem kritērijiem un ne pēc kādiem citiem:\n- sveiciens: vai viņš nosauca sevi un pārliecinājās, ar ko runā?\n- izpratne: vai viņš noskaidroja, kas patiesībā nav kārtībā, pirms atbildēja?\n- risinājums: vai problēma tika atrisināta vai tika dots noteikts nākamais solis?\n- tonis: vai viņš palika mierīgs un pieklājīgs, jo īpaši tur, kur klients nepalika?\n- noslēgums: vai viņš pārliecinājās, ka klients ir apmierināts, pirms beidza?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Subtitri",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Tulkojums",
+      "system": "Tu tulko runu tās norises laikā. Tu atbildi tikai ar tulkojumu — bez ievada, bez pēdiņām, bez skaidrojuma — un vārdus, skaitļus un cenas atstāj tieši tādus, kādi tie tika pateikti.",
+      "body": "Pārtulko uz {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Pārdošana",
+      "system": "Jūs palīdzat cilvēkam, kurš pārdod pa telefonu. Jūs atbildat ar dažām īsām rindām, ko var lasīt klausoties, nekad ar rindkopām, un nekad neko neapsolāt viņa vārdā.",
+      "body": "Sarunu partneris tikko teica:\n\n{{reply}}\n\nIepriekš šajā sarunā:\n\n{{conversation}}\n\nVienā rindā pasakiet, kas notiek — iebildums, neatbildēts jautājums, pazīme, ka viņi ir gatavi pirkt — un vienā rindā, ko teikt tālāk. Ja teikt nav nekā, rakstiet tikai „—“.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Palīdzība intervijā",
+      "system": "Jūs palīdzat cilvēkam, ar kuru notiek darba intervija. Jūs atbildat ar dažām īsām rindām, ko var lasīt klausoties, nekad ar rindkopām, un nekad neizdomājat par viņu faktus.",
+      "body": "Sarunu partneris tikko teica:\n\n{{reply}}\n\nIepriekš šajā sarunā:\n\n{{conversation}}\n\nTrīs īsās rindās sakiet, ko viņš patiesībā jautā un kas labā atbildē būtu jāaptver.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Atšifrēt katru sarunu"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Apkopot to"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Sašaurināt to līdz vienai rindai"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Iedalīt to kategorijā"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Apzīmēt to"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Izcelt to, kas vērts ieskata"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Novērtēt to, ja bija pārdošana"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Novērtēt to, ja bija atbalsts"
+    }
+  ]
+}

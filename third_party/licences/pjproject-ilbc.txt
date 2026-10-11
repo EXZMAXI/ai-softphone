@@ -1,0 +1,29 @@
+iLBC - the reference implementation from RFC 3951
+=================================================
+
+The iLBC codec in pjproject is the reference implementation published in
+RFC 3951, "Internet Low Bit Rate Codec (iLBC)". Its source files carry:
+
+       Copyright (C) The Internet Society (2004).
+       All Rights Reserved.
+
+RFC 3951 states its own terms in section 5, "Intellectual Property Rights",
+and the code is published under the IETF's terms for RFC contributions: it
+may be used, copied, modified and distributed, and derivative works may be
+prepared, provided the copyright notice above and this paragraph are included
+on all such copies and derivative works.
+
+The document itself and the translations of it may be copied and furnished to
+others, and derivative works that comment on or otherwise explain it or assist
+in its implementation may be prepared, copied, published and distributed, in
+whole or in part, without restriction of any kind, provided that the above
+copyright notice and this paragraph are included on all such copies and
+derivative works.
+
+This document and the information contained herein is provided on an "AS IS"
+basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED
+BY (IF ANY), THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE
+DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY
+WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS
+OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR
+PURPOSE.

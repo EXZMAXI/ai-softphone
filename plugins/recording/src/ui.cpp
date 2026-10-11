@@ -1,0 +1,46 @@
+// AI Softphone - a cross-platform desktop SIP softphone with an AI enrichment layer.
+// https://ai-softphone.com
+//
+// SPDX-FileCopyrightText: Copyright (C) 2026 AI-Softphone Developers Team
+// SPDX-FileCopyrightText: Copyright (C) 2026 Ilya Pleshchinskiy
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// This file is part of AI Softphone. There is NO WARRANTY, to the extent
+// permitted by law. See the file LICENSE for the full terms.
+
+#include <softphone/plugins/recording/plugin.hpp>
+#include <softphone/plugins/recording/ui.hpp>
+
+#include <softphone/shell/ui_loading.hpp>
+
+#include <QCoreApplication>
+#include <QString>
+#include <QUrl>
+
+namespace softphone::plugins::recording {
+namespace {
+
+constexpr auto kContext = "Recording";
+
+const auto kComponents = QStringLiteral("qrc:/qt/qml/Softphone/Recording/qml/");
+
+}
+
+void contributeInterface(shell::UiRegistry &registry)
+{
+    const auto owner = QString::fromUtf8(kOwner.data(), static_cast<qsizetype>(kOwner.size()));
+
+    registry.addSettingsSection(
+        "recording", shell::settingsBand::kTelephone, 50, owner,
+        [] {
+            return QCoreApplication::translate(kContext,
+                                               QT_TRANSLATE_NOOP("Recording", "Recording"));
+        },
+        QUrl{kComponents + QStringLiteral("SettingsRecording.qml")});
+
+    registry.addCatalogue(owner, QStringLiteral(":/i18n/recording"), QStringLiteral("recording_"));
+}
+
+}
+
+SOFTPHONE_PLUGIN_UI("recording", ::softphone::plugins::recording::contributeInterface)

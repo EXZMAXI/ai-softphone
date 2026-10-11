@@ -1,0 +1,359 @@
+{
+  "language": "fi",
+  "taxonomy": [
+    {
+      "kind": "category",
+      "code": "sales",
+      "title": "Myynti",
+      "description": "Myyminen, tarjoaminen, neuvotteleminen tai ostoon palaaminen — myös asiakkaan kysymys siitä, paljonko jokin maksaa."
+    },
+    {
+      "kind": "category",
+      "code": "support",
+      "title": "Tuki",
+      "description": "Jonkun auttaminen tuotteen tai palvelun kanssa, joka hänellä jo on: vika, käyttöä koskeva kysymys, valitus siitä miten se toimii."
+    },
+    {
+      "kind": "category",
+      "code": "personal",
+      "title": "Yksityinen",
+      "description": "Ei lainkaan työasia — yksityinen keskustelu, joka sattui kulkemaan tätä linjaa."
+    },
+    {
+      "kind": "category",
+      "code": "other",
+      "title": "Muu",
+      "description": "Työasia, mutta ei myyntiä eikä tukea: toimittaja, kollega, toimitus, väärä numero. Valitse tämä sen sijaan että arvaisit muiden väliltä."
+    },
+    {
+      "kind": "tag",
+      "code": "callback",
+      "title": "Takaisinsoitto luvattu",
+      "description": "Joku tässä puhelussa lupasi soittaa takaisin tai pyysi, että hänelle soitetaan."
+    },
+    {
+      "kind": "tag",
+      "code": "complaint",
+      "title": "Valitus",
+      "description": "Vastapuoli ilmaisi tyytymättömyyttä, ratkesipa se tai ei."
+    },
+    {
+      "kind": "tag",
+      "code": "escalation",
+      "title": "Siirretty eteenpäin",
+      "description": "Puhelu annettiin jollekulle toiselle, tai vastapuoli pyysi sitä."
+    },
+    {
+      "kind": "tag",
+      "code": "vip",
+      "title": "Tärkeä asiakas",
+      "description": "Vastapuolta kohdeltiin tärkeänä asiakkaana, tai hän sanoi olevansa sellainen."
+    },
+    {
+      "kind": "red_flag",
+      "code": "angry-customer",
+      "severity": "high",
+      "title": "Vihainen asiakas",
+      "description": "Vastapuoli oli kuultavasti vihainen, loukkaava tai uhkasi lähteä."
+    },
+    {
+      "kind": "red_flag",
+      "code": "churn-risk",
+      "severity": "high",
+      "title": "Lähtemisen riski",
+      "description": "Irtisanominen, uusimatta jättäminen tai toiselle siirtyminen tuli puheeksi, kuinka rauhallisesti tahansa."
+    },
+    {
+      "kind": "red_flag",
+      "code": "promise-made",
+      "severity": "medium",
+      "title": "Lupaus annettu",
+      "description": "Meidän puolemme sitoutui johonkin täsmälliseen — päivään, hintaan, korjaukseen, hyvitykseen."
+    },
+    {
+      "kind": "red_flag",
+      "code": "sensitive-data",
+      "severity": "high",
+      "title": "Arkaluontoiset tiedot",
+      "description": "Korttinumero, salasana, asiakirjan numero tai mikä tahansa muu, joka ei kuulu tallenteeseen, luettiin ääneen."
+    },
+    {
+      "kind": "red_flag",
+      "code": "competitor",
+      "severity": "low",
+      "title": "Kilpailija",
+      "description": "Vastapuoli nimesi jonkun muun, joka tarjoaa samaa, tai vertasi meitä siihen."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-plain",
+      "title": "Proosa",
+      "description": "Vastaa proosana. Älä käytä JSONia, listoja tai otsikoita."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-list",
+      "title": "Kohdat",
+      "description": "Vastaa vain JSONilla, tarkalleen tässä muodossa:\n{\"items\": [{\"text\": \"mitä on tehtävä\", \"owner\": \"kuka, tai tyhjä\", \"due\": \"milloin, tai tyhjä\"}]}\nPalauta tyhjä taulukko, kun luetteloitavaa ei ole. Älä kirjoita mitään JSONin ulkopuolelle."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-labels",
+      "title": "Tunnisteet",
+      "description": "Vastaa vain JSONilla, tarkalleen tässä muodossa:\n{\"labels\": [{\"code\": \"koodi saamastasi listasta\", \"confidence\": 0.0}]}\nKäytä vain listan koodeja. Palauta tyhjä taulukko, kun mikään ei sovi.\nÄlä keksi koodia äläkä kirjoita mitään JSONin ulkopuolelle."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-score",
+      "title": "Arvosana",
+      "description": "Vastaa vain JSONilla, tarkalleen tässä muodossa:\n{\"score\": 3, \"rationale\": \"miksi tuo luku eikä yhtä korkeampi\",\n \"evidence\": [{\"at_ms\": 0, \"quote\": \"sanat joihin nojaat\"}]}\nArvosana on kokonaisluku 1–5. Älä kirjoita mitään JSONin ulkopuolelle."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-rubric",
+      "title": "Kriteerit",
+      "description": "Vastaa vain JSONilla, tarkalleen tässä muodossa:\n{\"overall\": 3, \"rationale\": \"miksi tuo luku eikä yhtä korkeampi\",\n \"criteria\": [{\"name\": \"kriteeri sellaisena kuin se sinulle annettiin\",\n               \"verdict\": \"pass\" tai \"weak\" tai \"fail\" tai \"n/a\",\n               \"note\": \"yksi lause\"}]}\nArvioi jokainen saamasi kriteeri eikä muita. Kokonaisarvosana on kokonaisluku\n1–5. Älä kirjoita mitään JSONin ulkopuolelle."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-flags",
+      "title": "Merkit",
+      "description": "Vastaa vain JSONilla, tarkalleen tässä muodossa:\n{\"flags\": [{\"code\": \"koodi saamastasi listasta\",\n            \"severity\": \"low\" tai \"medium\" tai \"high\",\n            \"evidence\": \"sanat joihin nojaat\",\n            \"at_ms\": 0}]}\nKäytä vain listan koodeja, ja nosta kukin enintään kerran. Palauta tyhjä\ntaulukko, kun mikään ei päde. Älä kirjoita mitään JSONin ulkopuolelle."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-qa",
+      "title": "Vastaus",
+      "description": "Vastaa vain JSONilla, tarkalleen tässä muodossa:\n{\"answer\": \"vastauksesi, tai sano suoraan ettei keskustelu kerro sitä\",\n \"citations\": [{\"at_ms\": 0, \"quote\": \"sanat joihin vastauksesi nojaa\"}]}\nÄlä vastaa mistään muusta kuin keskustelusta. Älä kirjoita mitään\nJSONin ulkopuolelle."
+    },
+    {
+      "kind": "instruction",
+      "code": "shape-json",
+      "title": "JSON",
+      "description": "Vastaa vain JSONilla, yllä pyydetyssä muodossa. Älä kirjoita mitään JSONin ulkopuolelle."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken",
+      "title": "Kuten puhuttiin",
+      "description": "Kirjoita vastauksesi samalla kielellä, jolla keskustelu käytiin."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-as-spoken-named",
+      "title": "Kuten puhuttiin, nimettynä",
+      "description": "Kirjoita vastauksesi samalla kielellä, jolla keskustelu käytiin, eli kielellä {language}."
+    },
+    {
+      "kind": "instruction",
+      "code": "language-named",
+      "title": "Nimetty kieli",
+      "description": "Kirjoita vastauksesi tällä kielellä: {language}."
+    }
+  ],
+  "prompts": [
+    {
+      "code": "summary",
+      "kind": "summary",
+      "shape": "plain",
+      "name": "Tiivistelmä",
+      "system": "Luet puheluiden litterointeja ja kirjoitat niistä lyhyitä, asiallisia tiivistelmiä. Et koskaan arvaa mitään, mitä ei sanottu, etkä koskaan lisää neuvoja.",
+      "body": "Tiivistä tämä puhelu yhteen lyhyeen kappaleeseen: mistä siinä oli kyse, mitä päätettiin ja mitä tapahtuu seuraavaksi. Se kesti {{duration}} ja oli {{direction}}, osapuolena {{party}}.\n\n{{transcript}}"
+    },
+    {
+      "code": "super-summary",
+      "kind": "super_summary",
+      "shape": "plain",
+      "name": "Yhden rivin tiivistelmä",
+      "system": "Luet puheluiden litterointeja ja tiivistät jokaisen yhdeksi ilmaukseksi. Et koskaan arvaa etkä koskaan lisää neuvoja.",
+      "body": "Tiivistä tämä puhelu yhdeksi enintään kahdentoista sanan ilmaukseksi — sellaiseksi riviksi, joka kävisi taulukkoon soittajan nimen viereen. Ei pistettä, ei lainausmerkkejä.\n\n{{artifact:summary}}\n\n{{transcript}}"
+    },
+    {
+      "code": "action-items",
+      "kind": "action_items",
+      "shape": "list",
+      "name": "Tehtävät",
+      "system": "Luet puheluiden litterointeja ja luettelet, mitä joku on sitoutunut tekemään. Luettelet vain sen, mitä todella sanottiin; et koskaan keksi tehtävää, vastuuhenkilöä tai päivämäärää.",
+      "body": "Luettele, mitä kukin tässä puhelussa on sitoutunut tekemään. Nimeä, kenen se on tehtävä, siellä missä se sanottiin, ja mihin mennessä, siellä missä se sanottiin. Jos kukaan ei sitoutunut mihinkään, vastaa tyhjällä listalla.\n\n{{transcript}}"
+    },
+    {
+      "code": "topics",
+      "kind": "topics",
+      "shape": "list",
+      "name": "Aiheet",
+      "system": "Luet puheluiden litterointeja ja nimeät, mistä niissä oli kyse.",
+      "body": "Luettele aiheet, joita tämä puhelu todella käsitteli, enintään kuusi, kukin muutamalla sanalla. Jätä vastuuhenkilö ja päivämäärä tyhjiksi — ne eivät merkitse tässä mitään.\n\n{{transcript}}"
+    },
+    {
+      "code": "entities",
+      "kind": "entities",
+      "shape": "json",
+      "name": "Nimet ja numerot",
+      "system": "Luet puheluiden litterointeja ja poimit niistä sen, mitä niissä nimettiin. Et koskaan arvaa kirjoitusasua etkä koskaan lisää sitä, mitä ei sanottu.",
+      "body": "Poimi, mitä tässä puhelussa nimettiin, JSONina tarkalleen tässä muodossa:\n{\"people\": [], \"companies\": [], \"places\": [], \"dates\": [], \"amounts\": [], \"references\": []}\nKukin on lista merkkijonoja, kirjoitettuina sellaisina kuin ne sanottiin. Jätä lista mieluummin tyhjäksi kuin arvaa.\n\n{{transcript}}"
+    },
+    {
+      "code": "categorise",
+      "kind": "categorise",
+      "shape": "labels",
+      "name": "Luokka",
+      "system": "Lajittelet puhelut johonkin saamaasi luokkaan. Valitset listalta etkä mistään muualta.",
+      "body": "Lajittele tämä puhelu tarkalleen yhteen näistä luokista. Vastaa sen koodilla.\n\n{{categories}}\n{{transcript}}"
+    },
+    {
+      "code": "tags",
+      "kind": "tags",
+      "shape": "labels",
+      "name": "Tunnisteet",
+      "system": "Merkitset puhelut saamillasi tunnisteilla. Valitset listalta etkä mistään muualta, ja jätät tunnisteen mieluummin pois kuin venytät sitä.",
+      "body": "Mitkä näistä pitävät paikkansa tästä puhelusta? Vastaa niiden koodeilla, tai tyhjällä listalla jos yksikään ei pidä.\n\n{{tags}}\n{{transcript}}"
+    },
+    {
+      "code": "red-flags",
+      "kind": "red_flags",
+      "shape": "flags",
+      "name": "Merkit",
+      "system": "Luet puheluiden litterointeja ja nostat esiin vain sen, mitä sinun on annettu etsiä. Lainaat sanat, joihin kunkin osalta nojaat, etkä nosta esiin mitään, mitä et voi lainata.",
+      "body": "Nosta esiin ne näistä, jotka tämä puhelu osoittaa. Lainaa kunkin osalta sanat, joihin se nojaa, ja anna hetki millisekunteina, jolloin ne sanottiin. Jätä mieluummin nostamatta kuin venytä määritelmää.\n\n{{red_flags}}\n{{transcript}}"
+    },
+    {
+      "code": "qa",
+      "kind": "qa",
+      "shape": "qa",
+      "name": "Kysymys tästä puhelusta",
+      "system": "Vastaat yhtä puhelua koskeviin kysymyksiin sen litteroinnin pohjalta etkä minkään muun. Kun puhelu ei kerro sitä, sanot sen suoraan sen sijaan että arvaisit.",
+      "body": "{{question}}\n\n{{transcript}}"
+    },
+    {
+      "code": "sales-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Myynnin laatu",
+      "system": "Arvioit, miten myyjä hoiti puhelun. Arvioit vain sitä, mitä litterointi osoittaa, et koskaan oleta mitä ennen tai jälkeen tapahtui, ja olet yhtä tiukka hyvin menneelle puhelulle kuin huonollekin.",
+      "body": "Arvioi meidän puolemme tästä puhelusta — puhelimessa ollutta henkilöä — näiden kriteerien ja ei muiden mukaan:\n- tervehdys: esittelikö hän itsensä ja yrityksen?\n- kartoitus: selvittikö hän, mitä asiakas todella halusi?\n- vastaväitteet: vastasiko hän siihen, mitä asiakas otti esiin, sen sijaan että olisi puhunut ohi?\n- hyöty: kertoiko hän, mitä asiakas saa, eikä vain mitä se maksaa?\n- seuraava askel: päättyikö puhelu johonkin täsmälliseen?\n\n{{transcript}}"
+    },
+    {
+      "code": "support-quality",
+      "kind": "score",
+      "shape": "rubric",
+      "name": "Tuen laatu",
+      "system": "Arvioit, miten tukihenkilö hoiti puhelun. Arvioit vain sitä, mitä litterointi osoittaa, ja painotat enemmän sitä, hoidettiinko asiakkaan ongelma todella, kuin sitä, kuinka miellyttävä keskustelu oli.",
+      "body": "Arvioi meidän puolemme tästä puhelusta — puhelimessa ollutta henkilöä — näiden kriteerien ja ei muiden mukaan:\n- tervehdys: esittelikö hän itsensä ja varmistiko, kenen kanssa puhui?\n- ymmärrys: selvittikö hän, mikä todella oli vialla, ennen kuin vastasi?\n- ratkaisu: ratkesiko ongelma, vai annettiinko täsmällinen seuraava askel?\n- sävy: pysyikö hän rauhallisena ja kohteliaana, varsinkin siellä missä asiakas ei ollut?\n- lopetus: tarkistiko hän, että asiakas oli tyytyväinen, ennen kuin lopetti?\n\n{{transcript}}"
+    },
+    {
+      "code": "rt-subtitles",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Tekstitykset",
+      "system": "",
+      "body": "",
+      "realtimeMode": "subtitles",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-translate",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Käännös",
+      "system": "Käännät puhetta sitä mukaa kuin sitä puhutaan. Vastaat pelkällä käännöksellä — ei alkusanoja, ei lainausmerkkejä, ei selitystä — ja jätät nimet, luvut ja hinnat täsmälleen sellaisiksi kuin ne sanottiin.",
+      "body": "Käännä kielelle {{language}}:\n\n{{reply}}",
+      "realtimeMode": "translate",
+      "turnPolicy": "provider",
+      "languagePolicy": "interface"
+    },
+    {
+      "code": "rt-objections",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Myynti",
+      "system": "Autat henkilöä, joka myy puhelimessa. Vastaat muutamalla lyhyellä rivillä, jotka hän voi lukea kuunnellessaan, et koskaan kappaleina, etkä koskaan lupaa mitään hänen puolestaan.",
+      "body": "Toinen osapuoli sanoi juuri:\n\n{{reply}}\n\nAiemmin tässä keskustelussa:\n\n{{conversation}}\n\nKerro yhdellä rivillä, mitä on meneillään — vastaväite, vastaamaton kysymys, merkki ostovalmiudesta — ja yhdellä rivillä, mitä sanoa seuraavaksi. Jos sanottavaa ei ole, kirjoita vain ”—”.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    },
+    {
+      "code": "rt-interview",
+      "kind": "realtime",
+      "shape": "plain",
+      "name": "Apua työhaastattelussa",
+      "system": "Autat henkilöä, jota haastatellaan. Vastaat muutamalla lyhyellä rivillä, jotka hän voi lukea kuunnellessaan, et koskaan kappaleina, etkä koskaan keksi hänestä tietoja.",
+      "body": "Toinen osapuoli sanoi juuri:\n\n{{reply}}\n\nAiemmin tässä keskustelussa:\n\n{{conversation}}\n\nSano kolmella lyhyellä rivillä, mitä hän todella kysyy ja mitä hyvän vastauksen pitäisi kattaa.",
+      "realtimeMode": "prompt",
+      "realtimeNear": true,
+      "turnPolicy": "provider"
+    }
+  ],
+  "automations": [
+    {
+      "code": "transcribe",
+      "action": "transcribe",
+      "ordinal": 0,
+      "name": "Litteroi jokainen keskustelu"
+    },
+    {
+      "code": "summary",
+      "action": "generate",
+      "ordinal": 10,
+      "prompt": "summary",
+      "name": "Tiivistä se"
+    },
+    {
+      "code": "super-summary",
+      "action": "generate",
+      "ordinal": 20,
+      "prompt": "super-summary",
+      "name": "Tiivistä se yhdeksi riviksi"
+    },
+    {
+      "code": "categorise",
+      "action": "generate",
+      "ordinal": 30,
+      "prompt": "categorise",
+      "name": "Lajittele se luokkaan"
+    },
+    {
+      "code": "tags",
+      "action": "generate",
+      "ordinal": 40,
+      "prompt": "tags",
+      "name": "Merkitse se"
+    },
+    {
+      "code": "red-flags",
+      "action": "generate",
+      "ordinal": 50,
+      "prompt": "red-flags",
+      "name": "Nosta esiin kaikki, mikä ansaitsee katseen"
+    },
+    {
+      "code": "sales-quality",
+      "action": "generate",
+      "ordinal": 60,
+      "prompt": "sales-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "sales"
+        }
+      ],
+      "name": "Arvioi se, jos kyse oli myynnistä"
+    },
+    {
+      "code": "support-quality",
+      "action": "generate",
+      "ordinal": 70,
+      "prompt": "support-quality",
+      "conditions": [
+        {
+          "field": "category",
+          "op": "is",
+          "value": "support"
+        }
+      ],
+      "name": "Arvioi se, jos kyse oli tuesta"
+    }
+  ]
+}
