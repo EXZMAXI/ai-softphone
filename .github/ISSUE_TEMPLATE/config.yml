@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/incoplax/ai-softphone/discussions
+    about: Ask questions and share ideas here, not in issues.
+  - name: Documentation
+    url: https://docs.ai-softphone.com
+    about: Setup guides, troubleshooting and integration docs.

@@ -1,0 +1,61 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Remove personal data before posting:** SIP passwords, phone numbers, contact names,
+        recordings and transcripts of real conversations. Security issues go to SECURITY.md, not here.
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      placeholder: e.g. 1.2.0
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options: [Windows, macOS, Linux (AppImage), Linux (.deb), Other]
+    validations:
+      required: true
+  - type: input
+    id: os_version
+    attributes:
+      label: OS version
+      placeholder: e.g. Windows 11 23H2, macOS 15.1, Ubuntu 24.04
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [Calls / SIP, Recording, Meeting capture, Transcription, Write-ups / summaries, Live prompter, Integrations (API, webhooks), Installation, Other]
+    validations:
+      required: true
+  - type: input
+    id: pbx
+    attributes:
+      label: PBX or SIP provider (for call problems)
+      placeholder: e.g. Asterisk 20, FreePBX 17, 3CX, provider name
+  - type: input
+    id: ai
+    attributes:
+      label: Speech recognition and language model in use
+      placeholder: e.g. local Whisper + Ollama llama3.1, or Deepgram + OpenAI
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened and what you expected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. …\n2. …\n3. …"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (with personal data removed)
+      render: text
