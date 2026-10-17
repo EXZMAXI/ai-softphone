@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <mutex>
 
 namespace softphone::core {
 namespace {
@@ -58,6 +59,12 @@ struct RehearsalFeed::Held {
     std::uint64_t clock{0};
 
     std::uint64_t skipped{0};
+
+    std::size_t in{0};
+
+    bool oneRoom{false};
+
+    std::mutex holding;
 };
 
 RehearsalFeed::RehearsalFeed(unsigned rate)
@@ -79,9 +86,84 @@ RealtimeRing *RehearsalFeed::farListening() noexcept
     return held_->farRing.get();
 }
 
+void RehearsalFeed::loadSides(std::vector<std::int16_t> &&near, std::vector<std::int16_t> &&far)
+{
+    const std::lock_guard<std::mutex> held{held_->holding};
+
+    held_->nearAudio.clear();
+    held_->farAudio.clear();
+    held_->sent = 0;
+    held_->clock = 0;
+    held_->skipped = 0;
+    held_->nearRing->restart();
+    held_->farRing->restart();
+
+    if (far.empty()) {
+
+        held_->farAudio = std::move(near);
+        held_->nearAudio.assign(held_->farAudio.size(), 0);
+        held_->in = held_->farAudio.size();
+        return;
+    }
+
+    held_->nearAudio = std::move(near);
+    held_->farAudio = std::move(far);
+    held_->in = held_->farAudio.size();
+}
+
+void RehearsalFeed::expect(std::chrono::milliseconds length, bool oneRoom)
+{
+    const std::lock_guard<std::mutex> held{held_->holding};
+
+    held_->sent = 0;
+    held_->clock = 0;
+    held_->skipped = 0;
+    held_->in = 0;
+    held_->oneRoom = oneRoom;
+    held_->nearRing->restart();
+    held_->farRing->restart();
+
+    const auto frames =
+        length.count() <= 0
+            ? std::size_t{0}
+            : static_cast<std::size_t>(length.count() * static_cast<std::int64_t>(rate_) / 1000);
+
+    held_->nearAudio.assign(frames, 0);
+    held_->farAudio.assign(frames, 0);
+}
+
+void RehearsalFeed::feedSides(std::span<const std::int16_t> near, std::span<const std::int16_t> far)
+{
+    const std::lock_guard<std::mutex> held{held_->holding};
+
+    const auto room = held_->farAudio.size() - std::min(held_->in, held_->farAudio.size());
+    if (room == 0) {
+        return;
+    }
+
+    const auto theirs = held_->oneRoom || far.empty() ? near : far;
+    const auto mine = held_->oneRoom ? std::span<const std::int16_t>{} : near;
+
+    const auto count = std::min(room, theirs.size());
+    if (count == 0) {
+        return;
+    }
+
+    std::copy_n(theirs.begin(), count,
+                held_->farAudio.begin() + static_cast<std::ptrdiff_t>(held_->in));
+    if (!mine.empty()) {
+        std::copy_n(mine.begin(), std::min(count, mine.size()),
+                    held_->nearAudio.begin() + static_cast<std::ptrdiff_t>(held_->in));
+    }
+
+    held_->in += count;
+}
+
 void RehearsalFeed::load(const std::vector<std::int16_t> &interleaved, unsigned channels,
                          unsigned rate, Sides sides)
 {
+    const std::lock_guard<std::mutex> held{held_->holding};
+
     held_->nearAudio.clear();
     held_->farAudio.clear();
     held_->sent = 0;
@@ -99,35 +181,38 @@ void RehearsalFeed::load(const std::vector<std::int16_t> &interleaved, unsigned 
     if (sides == Sides::NearAndFar && channels >= 2) {
         channelAt(held_->nearAudio, interleaved, channels, fileRate, rate_, 0);
         channelAt(held_->farAudio, interleaved, channels, fileRate, rate_, 1);
+        held_->in = held_->farAudio.size();
         return;
     }
 
     channelAt(held_->farAudio, interleaved, channels, fileRate, rate_, 0);
     held_->nearAudio.assign(held_->farAudio.size(), 0);
+    held_->in = held_->farAudio.size();
 }
 
-bool RehearsalFeed::ready() const noexcept
+bool RehearsalFeed::ready() const
 {
-    return !held_->farAudio.empty();
+    const std::lock_guard<std::mutex> held{held_->holding};
+    return held_->in > 0;
 }
 
-std::chrono::milliseconds RehearsalFeed::length() const noexcept
+std::chrono::milliseconds RehearsalFeed::length() const
 {
-    if (held_->farAudio.empty()) {
-        return std::chrono::milliseconds::zero();
-    }
-    return std::chrono::milliseconds{static_cast<std::int64_t>(held_->farAudio.size()) * 1000 /
+    const std::lock_guard<std::mutex> held{held_->holding};
+    return std::chrono::milliseconds{static_cast<std::int64_t>(held_->in) * 1000 /
                                      static_cast<std::int64_t>(rate_)};
 }
 
 void RehearsalFeed::upTo(std::chrono::milliseconds position)
 {
-    if (held_->farAudio.empty() || position.count() < 0) {
+    const std::lock_guard<std::mutex> held{held_->holding};
+
+    if (held_->in == 0 || position.count() < 0) {
         return;
     }
 
     const auto wanted = std::min<std::size_t>(
-        held_->farAudio.size(),
+        held_->in,
         static_cast<std::size_t>(position.count() * static_cast<std::int64_t>(rate_) / 1000));
 
     if (wanted <= held_->sent) {
@@ -158,6 +243,8 @@ void RehearsalFeed::upTo(std::chrono::milliseconds position)
 
 void RehearsalFeed::rewind()
 {
+    const std::lock_guard<std::mutex> held{held_->holding};
+
     held_->sent = 0;
     held_->clock = 0;
     held_->skipped = 0;
@@ -165,13 +252,15 @@ void RehearsalFeed::rewind()
     held_->farRing->restart();
 }
 
-std::uint64_t RehearsalFeed::sentSamples() const noexcept
+std::uint64_t RehearsalFeed::sentSamples() const
 {
+    const std::lock_guard<std::mutex> held{held_->holding};
     return held_->clock;
 }
 
-std::uint64_t RehearsalFeed::skippedSamples() const noexcept
+std::uint64_t RehearsalFeed::skippedSamples() const
 {
+    const std::lock_guard<std::mutex> held{held_->holding};
     return held_->skipped;
 }
 

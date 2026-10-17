@@ -38,9 +38,9 @@ public:
 
         std::function<void()> listening;
 
-        std::function<void(core::Voice, std::string)> partial;
+        std::function<void(core::Voice, std::string, std::chrono::milliseconds)> partial;
 
-        std::function<void(core::AsrTurn)> turn;
+        std::function<void(core::AsrTurn, std::size_t where)> turn;
 
         std::function<void(std::string answer, std::size_t from, std::size_t to,
                            std::chrono::milliseconds at)>

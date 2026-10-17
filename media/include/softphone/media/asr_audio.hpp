@@ -13,8 +13,11 @@
 #include <softphone/core/asr_plan.hpp>
 #include <softphone/core/streamed_transcription.hpp>
 
+#include <chrono>
 #include <cstdint>
 #include <filesystem>
+#include <functional>
+#include <span>
 #include <vector>
 
 namespace softphone::media {
@@ -28,5 +31,15 @@ namespace softphone::media {
                                  std::vector<std::int16_t> &mono);
 
 [[nodiscard]] core::PcmReader makePcmReader();
+
+[[nodiscard]] bool readSidesForRehearsal(
+    const std::filesystem::path &file, unsigned rate,
+    const std::function<bool(std::span<const std::int16_t>, std::span<const std::int16_t>)>
+        &taking);
+
+[[nodiscard]] std::vector<core::SpeechSpan> speechSpansIn(const std::filesystem::path &file,
+                                                          std::chrono::milliseconds duration);
+
+[[nodiscard]] core::SpeechFinder makeSpeechFinder();
 
 }

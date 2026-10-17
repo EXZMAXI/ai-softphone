@@ -15,6 +15,7 @@
 #include <chrono>
 #include <cstdint>
 #include <memory>
+#include <span>
 #include <vector>
 
 namespace softphone::core {
@@ -50,17 +51,23 @@ public:
     void load(const std::vector<std::int16_t> &interleaved, unsigned channels, unsigned rate,
               Sides sides);
 
-    [[nodiscard]] bool ready() const noexcept;
+    void loadSides(std::vector<std::int16_t> &&near, std::vector<std::int16_t> &&far);
 
-    [[nodiscard]] std::chrono::milliseconds length() const noexcept;
+    void expect(std::chrono::milliseconds length, bool oneRoom);
+
+    void feedSides(std::span<const std::int16_t> near, std::span<const std::int16_t> far);
+
+    [[nodiscard]] bool ready() const;
+
+    [[nodiscard]] std::chrono::milliseconds length() const;
 
     void upTo(std::chrono::milliseconds position);
 
     void rewind();
 
-    [[nodiscard]] std::uint64_t sentSamples() const noexcept;
+    [[nodiscard]] std::uint64_t sentSamples() const;
 
-    [[nodiscard]] std::uint64_t skippedSamples() const noexcept;
+    [[nodiscard]] std::uint64_t skippedSamples() const;
 
 private:
     struct Held;

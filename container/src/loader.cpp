@@ -27,10 +27,22 @@
 
 namespace softphone::container {
 
-std::string dynamic::lastError()
+namespace {
+
+struct Failure {
+    std::string text{"nothing has been opened yet"};
+    bool mismatch{false};
+};
+
+[[nodiscard]] Failure &lastFailure()
 {
+    static thread_local Failure failure;
+    return failure;
+}
+
 #if defined(_WIN32)
-    const auto code = ::GetLastError();
+[[nodiscard]] std::string whatWindowsSaid(DWORD code)
+{
     char *text = nullptr;
     const auto length = ::FormatMessageA(
         FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -44,19 +56,70 @@ std::string dynamic::lastError()
         message.pop_back();
     }
     return message;
-#else
-    const char *const text = ::dlerror();
-    return text != nullptr ? std::string{text} : std::string{"the system did not say why"};
+}
 #endif
+
+}
+
+std::string dynamic::lastError()
+{
+    return lastFailure().text;
+}
+
+bool dynamic::lastFailureIsAMismatch()
+{
+    return lastFailure().mismatch;
+}
+
+std::string dynamic::whyItWouldNotOpen()
+{
+    auto why = lastError();
+    if (lastFailureIsAMismatch()) {
+
+        while (!why.empty() && (why.back() == '.' || why.back() == ' ')) {
+            why.pop_back();
+        }
+
+        why += ". The libraries of this installation are not all from one build, which is what an "
+               "update that did not finish leaves behind — installing this version again is what "
+               "puts it right";
+    }
+    return why;
 }
 
 void *dynamic::open(const std::filesystem::path &file)
 {
+    auto &failure = lastFailure();
+
 #if defined(_WIN32)
-    return ::LoadLibraryW(file.wstring().c_str());
+
+    const auto before = ::SetErrorMode(SEM_FAILCRITICALERRORS);
+    auto *const handle = ::LoadLibraryW(file.wstring().c_str());
+    const auto code = ::GetLastError();
+    static_cast<void>(::SetErrorMode(before));
+
+    failure.text = handle != nullptr ? std::string{} : whatWindowsSaid(code);
+
+    std::error_code ignored;
+    failure.mismatch = handle == nullptr &&
+                       (code == ERROR_PROC_NOT_FOUND || code == ERROR_MOD_NOT_FOUND) &&
+                       std::filesystem::exists(file, ignored);
+    return handle;
 #else
 
-    return ::dlopen(file.c_str(), RTLD_NOW | RTLD_LOCAL);
+    static_cast<void>(::dlerror());
+    auto *const handle = ::dlopen(file.c_str(), RTLD_NOW | RTLD_LOCAL);
+    const char *const said = ::dlerror();
+
+    failure.text = handle != nullptr ? std::string{}
+                   : said != nullptr ? std::string{said}
+                                     : std::string{"the system did not say why"};
+
+    std::error_code ignored;
+    failure.mismatch = handle == nullptr &&
+                       failure.text.find("undefined symbol") != std::string::npos &&
+                       std::filesystem::exists(file, ignored);
+    return handle;
 #endif
 }
 
@@ -221,7 +284,7 @@ Loader::Made Loader::make(const std::filesystem::path &where, const Manifest &ma
 
     void *const handle = dynamic::open(library);
     if (handle == nullptr) {
-        return refuse(Refused::CannotOpen, dynamic::lastError());
+        return refuse(Refused::CannotOpen, dynamic::whyItWouldNotOpen());
     }
 
     const auto ask = reinterpret_cast<EntryPoint>(dynamic::symbol(handle, kEntryPoint));

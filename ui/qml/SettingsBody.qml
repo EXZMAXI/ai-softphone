@@ -494,12 +494,18 @@ Item {
                         model: card.page.offeredModels
 
                         function showTheDraft() {
+                            const at = card.page.offeredModels.indexOf(card.page.model)
+                            if (at >= 0) {
+                                modelPicker.currentIndex = at
+                            } else if (!modelPicker.activeFocus) {
+                                modelPicker.currentIndex = -1
+                            }
                             if (modelPicker.editText !== card.page.model) {
                                 modelPicker.editText = card.page.model
                             }
                         }
 
-                        Component.onCompleted: modelPicker.editText = card.page.model
+                        Component.onCompleted: modelPicker.showTheDraft()
                         onModelChanged: Qt.callLater(modelPicker.showTheDraft)
 
                         onActivated: (chosen) => {
@@ -524,6 +530,16 @@ Item {
                             }
                         }
                     }
+
+                    Label {
+                        Layout.fillWidth: true
+                        visible: modelPicker.visible && card.page.modelAnswersWithoutTimes
+
+                        text: qsTr("This model answers with the words and no times: the transcript can be read, but it is not divided into lines and nothing lights up as it is played.")
+                        wrapMode: Text.WordWrap
+                        font.pixelSize: 12
+                        opacity: 0.6
+                    }
                 }
 
                 ColumnLayout {
@@ -543,13 +559,19 @@ Item {
                         model: card.page.offeredRealtimeModels
 
                         function showTheDraft() {
+                            const at = card.page.offeredRealtimeModels.indexOf(
+                                card.page.realtimeModel)
+                            if (at >= 0) {
+                                realtimeModelPicker.currentIndex = at
+                            } else if (!realtimeModelPicker.activeFocus) {
+                                realtimeModelPicker.currentIndex = -1
+                            }
                             if (realtimeModelPicker.editText !== card.page.realtimeModel) {
                                 realtimeModelPicker.editText = card.page.realtimeModel
                             }
                         }
 
-                        Component.onCompleted:
-                            realtimeModelPicker.editText = card.page.realtimeModel
+                        Component.onCompleted: realtimeModelPicker.showTheDraft()
                         onModelChanged: Qt.callLater(realtimeModelPicker.showTheDraft)
 
                         onActivated: (chosen) => {
@@ -723,6 +745,8 @@ Item {
                                     case "turn_idle_ms": return qsTr("End a reply after")
 
                                     case "turn_join_ms": return qsTr("Join short replies within")
+
+                                    case "turn_longest_words": return qsTr("Longest reply")
                                     }
                                     return name
                                 }
@@ -737,6 +761,9 @@ Item {
                                     case "turn_join_ms":
 
                                         return qsTr("Some recognisers cut one sentence into several short replies. A short reply waits this long to see whether the next one belongs with it, and the two are shown as one. Empty shows each as it arrives.")
+                                    case "turn_longest_words":
+
+                                        return qsTr("A recogniser that decides its own phrases can run several minutes of a meeting together. Past this many words the prompter ends the reply at the next pause. Empty waits for the recogniser however long it takes.")
                                     case "temperature":
                                         return qsTr("How much the model may vary its wording. Nought is the same answer to the same conversation every time, which is what a summary somebody may check wants. Leave it empty for a model that will not take one.")
                                     case "max_output":
@@ -751,7 +778,7 @@ Item {
                                     case "max_bytes":
                                         return qsTr("The largest file this phone will send, in bytes. A recording over it is refused before the upload rather than after it.")
                                     case "max_duration":
-                                        return qsTr("The longest recording this phone will send, in seconds. Nought is no limit of ours, and whatever the provider allows is what applies.")
+                                        return qsTr("The longest recording this phone will send, in seconds. Nought asks this phone to work it out: some models state a limit of their own, and a longer recording goes up in pieces.")
                                     case "turn_gap_ms":
                                         return qsTr("This one is the phone's own. A recogniser that hands back words with a speaker on each and no turns leaves somebody to decide how long a silence ends one, and this is that number, in milliseconds.")
                                     case "operating_point":

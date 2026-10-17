@@ -1795,10 +1795,6 @@ Recomeçar cria uma vazia: cada contacto e cada chamada do histórico desaparece
         <translation>O maior ficheiro que este telefone envia, em bytes. Uma gravação acima disso é recusada antes do envio e não depois.</translation>
     </message>
     <message>
-        <source>The longest recording this phone will send, in seconds. Nought is no limit of ours, and whatever the provider allows is what applies.</source>
-        <translation>A gravação mais longa que este telefone envia, em segundos. Zero não é limite nosso, e aplica-se o que o fornecedor permitir.</translation>
-    </message>
-    <message>
         <source>This one is the phone&apos;s own. A recogniser that hands back words with a speaker on each and no turns leaves somebody to decide how long a silence ends one, and this is that number, in milliseconds.</source>
         <translation>Este é do próprio telefone. Um reconhecedor que devolve palavras com um falante em cada uma e nenhuma vez deixa a alguém decidir quanto silêncio termina uma, e esse número é este, em milissegundos.</translation>
     </message>
@@ -2393,6 +2389,25 @@ A tick on the Yandex recogniser card: numbers, dates and sums written as they ar
         <source>After this long with no new words, the prompter ends the reply: the only boundary there is on a recogniser that marks none of its own, and a backstop on one that marks them and then stops. Empty uses the prompter&apos;s own shorter default.</source>
         <extracomment>Under the idle timer on a recogniser&apos;s card. It has to cover both of the things this number does, because on a recogniser with no end-of-reply of its own it is the only boundary there is — and *empty* is then the prompter&apos;s own default rather than an off switch.</extracomment>
         <translation>Se durante este tempo não chegarem palavras novas, o ponto termina a resposta: num reconhecedor sem limites próprios é o único limite e, num que os marca e depois deixa de o fazer, uma rede de segurança. Vazio — o ponto usa o seu próprio valor predefinido, mais curto.</translation>
+    </message>
+    <message>
+        <source>This model answers with the words and no times: the transcript can be read, but it is not divided into lines and nothing lights up as it is played.</source>
+        <extracomment>Under the model field on a recogniser&apos;s card, for a model that answers with the words and nothing else. *lights up* is the same word the word-timestamps switch uses, two controls down.</extracomment>
+        <translation>Este modelo responde com as palavras e sem tempos: a transcrição lê-se, mas não está dividida em linhas e nada se acende enquanto toca.</translation>
+    </message>
+    <message>
+        <source>Longest reply</source>
+        <extracomment>The label over how many words a reply may grow to before this phone ends it at the next pause.</extracomment>
+        <translation>Resposta mais longa</translation>
+    </message>
+    <message>
+        <source>A recogniser that decides its own phrases can run several minutes of a meeting together. Past this many words the prompter ends the reply at the next pause. Empty waits for the recogniser however long it takes.</source>
+        <extracomment>Under the longest-reply count on a recogniser&apos;s card. A recogniser that never finishes a sentence is the case this is for.</extracomment>
+        <translation>Um reconhecedor que decide as suas próprias frases pode juntar vários minutos de uma reunião numa só resposta. Passadas estas palavras, o ponto termina a resposta na pausa seguinte. Vazio espera pelo reconhecedor o tempo que for preciso.</translation>
+    </message>
+    <message>
+        <source>The longest recording this phone will send, in seconds. Nought asks this phone to work it out: some models state a limit of their own, and a longer recording goes up in pieces.</source>
+        <translation>A gravação mais longa que este telefone envia, em segundos. Zero pede ao telefone que o decida: alguns modelos indicam um limite próprio, e uma gravação mais longa sobe em partes.</translation>
     </message>
 </context>
 <context>
@@ -3595,11 +3610,6 @@ What a rule does, with the tag it puts on: &quot;put a tag on it: vip&quot;.</ex
     <message>
         <source>Unknown</source>
         <translation>Desconhecido</translation>
-    </message>
-    <message>
-        <source>%1 · %2 · %3:%4</source>
-        <extracomment>One conversation in the list a rehearsal may be pointed at: who it was with, when it happened, and how long it is.</extracomment>
-        <translation>%1 · %2 · %3:%4</translation>
     </message>
     <message>
         <source>No suggestion came back this time. The words are still arriving.</source>

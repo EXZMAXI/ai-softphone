@@ -1756,10 +1756,6 @@ Starting again makes an empty one: every contact and every call in the history g
         <translation>[Thé làrgéšt fílé thíš phöñé wíll šéñd, íñ bytéš. À réçördíñg övér ít íš réfüšéd béföré thé üplöàd ràthér thàñ àftér ít.·········································]</translation>
     </message>
     <message>
-        <source>The longest recording this phone will send, in seconds. Nought is no limit of ours, and whatever the provider allows is what applies.</source>
-        <translation>[Thé löñgéšt réçördíñg thíš phöñé wíll šéñd, íñ šéçöñdš. Ñöüght íš ñö límít öf öürš, àñd whàtévér thé prövídér àllöwš íš whàt àpplíéš.··············································]</translation>
-    </message>
-    <message>
         <source>This one is the phone&apos;s own. A recogniser that hands back words with a speaker on each and no turns leaves somebody to decide how long a silence ends one, and this is that number, in milliseconds.</source>
         <translation>[Thíš öñé íš thé phöñé&apos;š öwñ. À réçögñíšér thàt hàñdš bàçk wördš wíth à špéàkér öñ éàçh àñd ñö türñš léàvéš šömébödy tö déçídé höw löñg à šíléñçé éñdš öñé, àñd thíš íš thàt ñümbér, íñ míllíšéçöñdš.····································································]</translation>
     </message>
@@ -2393,6 +2389,25 @@ A tick on the Yandex recogniser card: numbers, dates and sums written as they ar
         <source>After this long with no new words, the prompter ends the reply: the only boundary there is on a recogniser that marks none of its own, and a backstop on one that marks them and then stops. Empty uses the prompter&apos;s own shorter default.</source>
         <extracomment>Under the idle timer on a recogniser&apos;s card. It has to cover both of the things this number does, because on a recogniser with no end-of-reply of its own it is the only boundary there is — and *empty* is then the prompter&apos;s own default rather than an off switch.</extracomment>
         <translation>[Àftér thíš löñg wíth ñö ñéw wördš, thé prömptér éñdš thé réply: thé öñly böüñdàry théré íš öñ à réçögñíšér thàt màrkš ñöñé öf ítš öwñ, àñd à bàçkštöp öñ öñé thàt màrkš thém àñd théñ štöpš. Émpty üšéš thé prömptér&apos;š öwñ šhörtér défàült.··················································································]</translation>
+    </message>
+    <message>
+        <source>This model answers with the words and no times: the transcript can be read, but it is not divided into lines and nothing lights up as it is played.</source>
+        <extracomment>Under the model field on a recogniser&apos;s card, for a model that answers with the words and nothing else. *lights up* is the same word the word-timestamps switch uses, two controls down.</extracomment>
+        <translation>[Thíš mödél àñšwérš wíth thé wördš àñd ñö tíméš: thé tràñšçrípt çàñ bé réàd, büt ít íš ñöt dívídéd íñtö líñéš àñd ñöthíñg líghtš üp àš ít íš plàyéd.···················································]</translation>
+    </message>
+    <message>
+        <source>Longest reply</source>
+        <extracomment>The label over how many words a reply may grow to before this phone ends it at the next pause.</extracomment>
+        <translation>[Löñgéšt réply····]</translation>
+    </message>
+    <message>
+        <source>A recogniser that decides its own phrases can run several minutes of a meeting together. Past this many words the prompter ends the reply at the next pause. Empty waits for the recogniser however long it takes.</source>
+        <extracomment>Under the longest-reply count on a recogniser&apos;s card. A recogniser that never finishes a sentence is the case this is for.</extracomment>
+        <translation>[À réçögñíšér thàt déçídéš ítš öwñ phràšéš çàñ rüñ šévéràl míñütéš öf à méétíñg tögéthér. Pàšt thíš màñy wördš thé prömptér éñdš thé réply àt thé ñéxt pàüšé. Émpty wàítš för thé réçögñíšér höwévér löñg ít tàkéš.·········································································]</translation>
+    </message>
+    <message>
+        <source>The longest recording this phone will send, in seconds. Nought asks this phone to work it out: some models state a limit of their own, and a longer recording goes up in pieces.</source>
+        <translation>[Thé löñgéšt réçördíñg thíš phöñé wíll šéñd, íñ šéçöñdš. Ñöüght àškš thíš phöñé tö wörk ít öüt: šömé mödélš štàté à límít öf théír öwñ, àñd à löñgér réçördíñg göéš üp íñ píéçéš.·····························································]</translation>
     </message>
 </context>
 <context>
@@ -3595,11 +3610,6 @@ What a rule does, with the tag it puts on: &quot;put a tag on it: vip&quot;.</ex
     <message>
         <source>Unknown</source>
         <translation>[Üñkñöwñ··]</translation>
-    </message>
-    <message>
-        <source>%1 · %2 · %3:%4</source>
-        <extracomment>One conversation in the list a rehearsal may be pointed at: who it was with, when it happened, and how long it is.</extracomment>
-        <translation>[%1 · %2 · %3:%4·····]</translation>
     </message>
     <message>
         <source>No suggestion came back this time. The words are still arriving.</source>

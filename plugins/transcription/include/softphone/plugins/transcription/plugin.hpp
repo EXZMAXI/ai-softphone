@@ -69,7 +69,9 @@ inline constexpr std::string_view kJobStore = "transcription.jobs";
 
             realtime_price_micros INTEGER NOT NULL DEFAULT 0,
 
-            language TEXT NOT NULL DEFAULT ''
+            language TEXT NOT NULL DEFAULT '',
+
+            models_seen TEXT NOT NULL DEFAULT ''
         );
 
         CREATE TABLE IF NOT EXISTS jobs (

@@ -67,4 +67,35 @@ std::vector<std::pair<std::string, std::string>> decodeParams(std::string_view t
     return params;
 }
 
+std::string encodeNames(const std::vector<std::string> &names)
+{
+    if (names.empty()) {
+        return {};
+    }
+    nlohmann::ordered_json list = nlohmann::ordered_json::array();
+    for (const auto &one : names) {
+        list.push_back(one);
+    }
+    return list.dump();
+}
+
+std::vector<std::string> decodeNames(std::string_view text)
+{
+    std::vector<std::string> names;
+    if (text.empty()) {
+        return names;
+    }
+    const auto parsed = nlohmann::ordered_json::parse(text, nullptr, false);
+    if (parsed.is_discarded() || !parsed.is_array()) {
+        return names;
+    }
+    for (const auto &entry : parsed) {
+        if (!entry.is_string()) {
+            return {};
+        }
+        names.push_back(entry.get<std::string>());
+    }
+    return names;
+}
+
 }

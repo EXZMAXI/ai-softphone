@@ -123,6 +123,11 @@ bool Engine::stopRegistration(const std::string &accountId)
     return true;
 }
 
+void Engine::addressesChanged()
+{
+    backend_.addressesChanged();
+}
+
 void Engine::stopAll()
 {
     for (auto &[id, controller] : accounts_) {

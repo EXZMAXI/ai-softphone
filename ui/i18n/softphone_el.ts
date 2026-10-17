@@ -1485,10 +1485,6 @@ A tick on a prompt&apos;s card: whether it may be run at all.</extracomment>
         <translation>Το μεγαλύτερο αρχείο που θα στείλει αυτό το τηλέφωνο, σε bytes. Μια εγγραφή πάνω από αυτό απορρίπτεται πριν από την αποστολή και όχι μετά.</translation>
     </message>
     <message>
-        <source>The longest recording this phone will send, in seconds. Nought is no limit of ours, and whatever the provider allows is what applies.</source>
-        <translation>Η μεγαλύτερη εγγραφή που θα στείλει αυτό το τηλέφωνο, σε δευτερόλεπτα. Μηδέν σημαίνει κανένα δικό μας όριο, και ισχύει ό,τι επιτρέπει ο πάροχος.</translation>
-    </message>
-    <message>
         <source>This one is the phone&apos;s own. A recogniser that hands back words with a speaker on each and no turns leaves somebody to decide how long a silence ends one, and this is that number, in milliseconds.</source>
         <translation>Αυτό είναι δικό του τηλεφώνου. Ένας αναγνωριστής που επιστρέφει λέξεις με έναν ομιλητή στην καθεμία και καμία σειρά αφήνει σε κάποιον να αποφασίσει πόση σιωπή τελειώνει μία, και αυτός είναι ο αριθμός, σε χιλιοστά του δευτερολέπτου.</translation>
     </message>
@@ -2393,6 +2389,25 @@ A tick on the Yandex recogniser card: numbers, dates and sums written as they ar
         <source>After this long with no new words, the prompter ends the reply: the only boundary there is on a recogniser that marks none of its own, and a backstop on one that marks them and then stops. Empty uses the prompter&apos;s own shorter default.</source>
         <extracomment>Under the idle timer on a recogniser&apos;s card. It has to cover both of the things this number does, because on a recogniser with no end-of-reply of its own it is the only boundary there is — and *empty* is then the prompter&apos;s own default rather than an off switch.</extracomment>
         <translation>Αν για τόση ώρα δεν έρθουν νέες λέξεις, ο υποβολέας τερματίζει την απάντηση: σε έναν αναγνωριστή χωρίς δικά του όρια είναι το μόνο όριο, και σε έναν που τα σημειώνει και μετά σταματά, δικλείδα ασφαλείας. Κενό — ο υποβολέας χρησιμοποιεί τη δική του μικρότερη προεπιλογή.</translation>
+    </message>
+    <message>
+        <source>This model answers with the words and no times: the transcript can be read, but it is not divided into lines and nothing lights up as it is played.</source>
+        <extracomment>Under the model field on a recogniser&apos;s card, for a model that answers with the words and nothing else. *lights up* is the same word the word-timestamps switch uses, two controls down.</extracomment>
+        <translation>Αυτό το μοντέλο απαντά με τις λέξεις και χωρίς χρόνους: η απομαγνητοφώνηση διαβάζεται, αλλά δεν χωρίζεται σε γραμμές και τίποτα δεν φωτίζεται καθώς παίζει.</translation>
+    </message>
+    <message>
+        <source>Longest reply</source>
+        <extracomment>The label over how many words a reply may grow to before this phone ends it at the next pause.</extracomment>
+        <translation>Μεγαλύτερη απάντηση</translation>
+    </message>
+    <message>
+        <source>A recogniser that decides its own phrases can run several minutes of a meeting together. Past this many words the prompter ends the reply at the next pause. Empty waits for the recogniser however long it takes.</source>
+        <extracomment>Under the longest-reply count on a recogniser&apos;s card. A recogniser that never finishes a sentence is the case this is for.</extracomment>
+        <translation>Ένας αναγνωριστής που αποφασίζει μόνος του τις φράσεις του μπορεί να ενώσει πολλά λεπτά μιας συνάντησης σε μία απάντηση. Μετά από τόσες λέξεις ο υποβολέας τερματίζει την απάντηση στην επόμενη παύση. Κενό περιμένει τον αναγνωριστή όσο χρειαστεί.</translation>
+    </message>
+    <message>
+        <source>The longest recording this phone will send, in seconds. Nought asks this phone to work it out: some models state a limit of their own, and a longer recording goes up in pieces.</source>
+        <translation>Η μεγαλύτερη εγγραφή που θα στείλει αυτό το τηλέφωνο, σε δευτερόλεπτα. Το μηδέν ζητά από το τηλέφωνο να το κρίνει μόνο του: ορισμένα μοντέλα δηλώνουν δικό τους όριο, και μια μεγαλύτερη εγγραφή ανεβαίνει σε κομμάτια.</translation>
     </message>
 </context>
 <context>
@@ -3595,11 +3610,6 @@ What a rule does, with the tag it puts on: &quot;put a tag on it: vip&quot;.</ex
     <message>
         <source>Unknown</source>
         <translation>Άγνωστο</translation>
-    </message>
-    <message>
-        <source>%1 · %2 · %3:%4</source>
-        <extracomment>One conversation in the list a rehearsal may be pointed at: who it was with, when it happened, and how long it is.</extracomment>
-        <translation>%1 · %2 · %3:%4</translation>
     </message>
     <message>
         <source>No suggestion came back this time. The words are still arriving.</source>

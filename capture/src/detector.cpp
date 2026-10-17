@@ -23,11 +23,17 @@ void ConversationGate::setSettings(DetectorSettings settings)
     settings_ = std::move(settings);
 }
 
-ConversationGate::Move ConversationGate::saw(bool held, bool playing,
+ConversationGate::Move ConversationGate::saw(bool held, bool duplex, bool audible,
                                              std::chrono::steady_clock::time_point now)
 {
 
-    const bool conversing = held && playing;
+    const bool conversing = held && duplex;
+
+    if (!conversing) {
+        heard_ = false;
+    } else if (audible) {
+        heard_ = true;
+    }
 
     if (conversing == talking_) {
 
@@ -43,6 +49,10 @@ ConversationGate::Move ConversationGate::saw(bool held, bool playing,
 
     const auto wanted = talking_ ? settings_.holdOff : settings_.settle;
     if (now - since_ < wanted) {
+        return Move::Nothing;
+    }
+
+    if (conversing && !heard_) {
         return Move::Nothing;
     }
 

@@ -60,6 +60,8 @@ struct AsrCapabilities {
     std::chrono::seconds maxDuration{0};
 
     unsigned maxConcurrent{1};
+
+    bool answersWithTimes{true};
 };
 
 struct AsrInput {
@@ -114,6 +116,24 @@ inline constexpr auto kAsrTimeoutCeiling = std::chrono::hours{4};
     const auto ceiling = std::chrono::duration_cast<std::chrono::seconds>(kAsrTimeoutCeiling);
     return std::min(ceiling, std::max(floor, scaled));
 }
+
+enum class AsrAnswerShape {
+
+    Rich,
+
+    Diarised,
+
+    Plain,
+};
+
+[[nodiscard]] constexpr bool timesComeBack(AsrAnswerShape shape) noexcept
+{
+    return shape != AsrAnswerShape::Plain;
+}
+
+[[nodiscard]] AsrAnswerShape answerShapeFor(std::string_view type, std::string_view model);
+
+[[nodiscard]] std::chrono::seconds longestAtOnceFor(std::string_view type, std::string_view model);
 
 struct AsrOptions {
 
@@ -187,6 +207,10 @@ struct AsrResult {
     std::int64_t costMicros{0};
 
     std::string model;
+
+    std::vector<std::pair<std::string, std::string>> learnt;
+
+    bool timed{true};
 };
 
 using AsrCancel = std::function<bool()>;

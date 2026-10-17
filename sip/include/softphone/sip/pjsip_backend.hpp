@@ -94,6 +94,7 @@ public:
     void requestUnregistration(const std::string &accountId) override;
 
     void forgetAccount(const std::string &accountId) override;
+    void addressesChanged() override;
 
     void setCallObserver(core::ICallBackend::Observer *observer) override;
 

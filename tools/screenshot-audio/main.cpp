@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
     if (argc != 2) {
         std::cerr << "Usage: screenshot-audio <file.mp3> < plan\n\n"
                      "One turn a line: `near <ms>`, `far <ms>` or `quiet <ms>`.\n"
-                     "See scripts/screenshots/world.py, which writes the plan.\n";
+                     "Written in order as two channels, near on the left and far on the right.\n";
         return EXIT_FAILURE;
     }
 

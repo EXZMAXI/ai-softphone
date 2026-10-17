@@ -16,10 +16,45 @@
 #include <cstdint>
 #include <filesystem>
 #include <functional>
+#include <optional>
+#include <span>
 #include <string>
 #include <vector>
 
 namespace softphone::core {
+
+struct SpeechSpan {
+
+    std::optional<unsigned> channel;
+
+    std::chrono::milliseconds from{0};
+    std::chrono::milliseconds to{0};
+
+    [[nodiscard]] std::chrono::milliseconds length() const noexcept
+    {
+        return to > from ? to - from : std::chrono::milliseconds::zero();
+    }
+
+    [[nodiscard]] bool operator==(const SpeechSpan &) const = default;
+};
+
+inline constexpr int kSpeechAboveFloor = 25;
+
+inline constexpr auto kPhraseSilence = std::chrono::milliseconds{600};
+
+inline constexpr auto kPhrasePadding = std::chrono::milliseconds{200};
+
+inline constexpr auto kShortestPiece = std::chrono::milliseconds{1200};
+
+inline constexpr auto kLongestPiece = std::chrono::seconds{20};
+
+[[nodiscard]] std::vector<SpeechSpan> speechIn(std::span<const std::uint8_t> loudness,
+                                               std::chrono::milliseconds over,
+                                               std::optional<unsigned> channel);
+
+[[nodiscard]] std::vector<SpeechSpan> piecesOfSpeech(std::span<const SpeechSpan> phrases,
+                                                     std::chrono::milliseconds longest,
+                                                     std::chrono::milliseconds endOfRecording);
 
 struct AsrSubject {
     std::filesystem::path file;
@@ -42,9 +77,13 @@ struct AsrSubject {
         std::uint64_t bytes{0};
 
         bool present{true};
+
+        std::vector<SpeechSpan> speech;
     };
 
     std::vector<Stem> stems;
+
+    std::vector<SpeechSpan> speech;
 };
 
 struct AsrStep {
@@ -54,6 +93,8 @@ struct AsrStep {
 
 struct AsrPlan {
     std::vector<AsrStep> steps;
+
+    bool cutAtSilences{false};
 
     std::string refusal;
 
@@ -70,6 +111,9 @@ struct PreparedAudio {
 
     std::string error;
 };
+
+using SpeechFinder = std::function<std::vector<SpeechSpan>(const std::filesystem::path &,
+                                                           std::chrono::milliseconds)>;
 
 using AudioPreparer = std::function<PreparedAudio(const AsrInput &)>;
 

@@ -349,6 +349,15 @@ Screenshots::Screenshots(QStringList wanted, QString into, QString capturing, QS
     }
 }
 
+void Screenshots::thePhoneIsBuilt()
+{
+    if (phoneBuilt_) {
+        return;
+    }
+    phoneBuilt_ = true;
+    Q_EMIT phoneBuiltChanged();
+}
+
 bool Screenshots::take(const QString &name, QQuickWindow *window)
 {
     if (into_.isEmpty()) {

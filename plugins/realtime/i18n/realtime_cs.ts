@@ -214,7 +214,7 @@
     </message>
     <message>
         <source>%1 / %2</source>
-        <extracomment>The rehearsal&apos;s player: where the playhead is, out of how long the recording is. Both are minutes and seconds.</extracomment>
+        <extracomment>The rehearsal&apos;s player: where the playhead is, out of how long the recording is. Both are minutes and seconds, with hours in front of them where the recording runs that long.</extracomment>
         <translation>%1 / %2</translation>
     </message>
     <message>
@@ -225,6 +225,14 @@
     <message>
         <source>Back to listening to calls</source>
         <translation>Zpět k poslouchání hovorů</translation>
+    </message>
+</context>
+<context>
+    <name>RehearsalChooser</name>
+    <message>
+        <source>%1 · %2 · %3</source>
+        <extracomment>One conversation in the list a rehearsal may be pointed at: who it was with, when it happened, and how long it is.</extracomment>
+        <translation>%1 · %2 · %3</translation>
     </message>
 </context>
 <context>

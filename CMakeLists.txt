@@ -20,7 +20,7 @@ if(APPLE)
 endif()
 
 project(ai-softphone
-    VERSION 1.1.5
+    VERSION 1.1.7
     DESCRIPTION "Cross-platform desktop AI softphone"
     LANGUAGES CXX)
 

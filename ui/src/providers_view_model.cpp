@@ -10,6 +10,7 @@
 
 #include "providers_view_model.hpp"
 
+#include <softphone/core/asr.hpp>
 #include <softphone/core/http.hpp>
 #include <softphone/core/llm_dialect.hpp>
 #include <softphone/core/streaming_asr.hpp>
@@ -61,7 +62,7 @@ constexpr Kind kModels[] = {
 
     {"xai", "https://api.x.ai/v1", "grok-4.6", false, ""},
 
-    {"yandex", "https://llm.api.cloud.yandex.net/v1", "yandexgpt/latest", false, kYandexCountries},
+    {"yandex", "https://ai.api.cloud.yandex.net/v1", "yandexgpt/latest", false, kYandexCountries},
 };
 
 [[nodiscard]] bool offeredIn(const Kind &kind, const QString &country)
@@ -656,6 +657,11 @@ void ProvidersViewModel::openOn(const core::ProviderConfig *row)
             }
         }
         draft_.params = paramsText(extrasOnly(row->params, core::knobsFor(kind_, row->type)));
+
+        draft_.modelsSeen.clear();
+        for (const auto &one : row->modelsSeen) {
+            draft_.modelsSeen.push_back(QString::fromStdString(one));
+        }
         draft_.hasSecret = row->hasSecret;
         draft_.isDefault = row->isDefault;
         draft_.isRealtimeDefault = row->isRealtimeDefault;
@@ -709,12 +715,32 @@ QString ProvidersViewModel::liveAddress(const QString &type) const
 
 QStringList ProvidersViewModel::offeredModels() const
 {
+
+    const auto seen = testModels_.isEmpty() ? draft_.modelsSeen : testModels_;
+
     if (kind_ != core::ProviderKind::Asr) {
-        return testModels_;
+        if (!seen.isEmpty()) {
+            return seen;
+        }
+        QStringList documented;
+        for (const auto &one : core::knownChatModels(draft_.type.toStdString())) {
+            documented.push_back(QString::fromStdString(one));
+        }
+        return documented;
     }
 
-    if (!testModels_.isEmpty()) {
-        return testModels_;
+    if (!seen.isEmpty()) {
+
+        QStringList forFiles;
+        for (const auto &one : seen) {
+            if (!core::listensLive(one.toStdString())) {
+                forFiles.push_back(one);
+            }
+        }
+        if (!forFiles.isEmpty()) {
+            return forFiles;
+        }
+
     }
 
     QStringList offered;
@@ -731,8 +757,17 @@ QStringList ProvidersViewModel::offeredRealtimeModels() const
     }
 
     QStringList offered;
+    const auto seen = testModels_.isEmpty() ? draft_.modelsSeen : testModels_;
+    for (const auto &one : seen) {
+        if (core::listensLive(one.toStdString())) {
+            offered.push_back(one);
+        }
+    }
     for (const auto &one : core::knownModels(draft_.type.toStdString(), true)) {
-        offered.push_back(QString::fromStdString(one));
+        const auto documented = QString::fromStdString(one);
+        if (!offered.contains(documented)) {
+            offered.push_back(documented);
+        }
     }
     return offered;
 }
@@ -782,6 +817,15 @@ bool ProvidersViewModel::canTranscribe() const
     return kind_ == core::ProviderKind::Asr && core::canTranscribeType(draft_.type.toStdString());
 }
 
+bool ProvidersViewModel::modelAnswersWithoutTimes() const
+{
+    if (kind_ != core::ProviderKind::Asr) {
+        return false;
+    }
+    return !core::timesComeBack(
+        core::answerShapeFor(draft_.type.toStdString(), draft_.model.trimmed().toStdString()));
+}
+
 core::ProviderConfig ProvidersViewModel::asRow() const
 {
     core::ProviderConfig row;
@@ -808,6 +852,11 @@ core::ProviderConfig ProvidersViewModel::asRow() const
     }
     for (auto &extra : paramsFrom(draft_.params)) {
         row.params.push_back(std::move(extra));
+    }
+
+    row.modelsSeen.clear();
+    for (const auto &one : draft_.modelsSeen) {
+        row.modelsSeen.push_back(one.toStdString());
     }
     row.hasSecret = draft_.hasSecret || !draft_.token.isEmpty();
     row.enabled = draft_.enabled;
@@ -910,6 +959,11 @@ void ProvidersViewModel::setTestResult(const core::AsrProbe &probe)
     testModels_.clear();
     for (const auto &model : probe.models) {
         testModels_.push_back(QString::fromStdString(model));
+    }
+
+    if (probe.reachable && !testModels_.isEmpty()) {
+        draft_.modelsSeen = testModels_;
+        Q_EMIT draftChanged();
     }
 
     if (probe.reachable) {

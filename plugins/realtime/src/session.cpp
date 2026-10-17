@@ -39,15 +39,22 @@ public:
 
     void partial(const core::AsrPartial &said) override
     {
+
+        auto began = said.start;
+
+        auto line = core::tidiedLine(said.text);
         {
             const std::lock_guard<std::mutex> held{session_.lock_};
             if (session_.engine_) {
                 session_.engine_->heard(said);
+                began = session_.engine_->lineBeganAt(said.voice);
+                line = session_.engine_->lineInHand(said.voice);
             }
         }
         if (session_.listener_.partial) {
 
-            session_.listener_.partial(said.voice, core::tidiedLine(said.text));
+            session_.listener_.partial(said.voice, std::move(line),
+                                       began + session_.opening_.since);
         }
     }
 
@@ -115,7 +122,7 @@ Session::Session(Opening opening, std::unique_ptr<core::IStreamingAsr> recognise
 
     engine_ = std::make_unique<core::TurnEngine>(
         opening_.turns, [this](const core::AskedTurns &asked) { heard(asked); },
-        [this](const core::AsrTurn &said, std::size_t) {
+        [this](const core::AsrTurn &said, std::size_t where) {
 
             if (said.boundary != core::AsrTurn::Boundary::Provider &&
                 !leaving_.load(std::memory_order_acquire)) {
@@ -130,7 +137,7 @@ Session::Session(Opening opening, std::unique_ptr<core::IStreamingAsr> recognise
                 auto onTheConversation = said;
                 onTheConversation.start += opening_.since;
                 onTheConversation.end += opening_.since;
-                listener_.turn(onTheConversation);
+                listener_.turn(onTheConversation, where);
             }
         },
         [this](core::Voice voice) {
@@ -217,6 +224,8 @@ Session::Session(Opening opening, std::unique_ptr<core::IStreamingAsr> recognise
 
         const auto idle = std::to_string(opening_.turns.providerIdle.count());
         const auto join = std::to_string(opening_.turns.join.count());
+
+        const auto joinWords = std::to_string(opening_.turns.joinShortestWords);
         const core::LogAttribute fields[] = {
             {"assistant", opening_.prompt.name},
             {"turns", policy},
@@ -224,6 +233,7 @@ Session::Session(Opening opening, std::unique_ptr<core::IStreamingAsr> recognise
             {"silence_ms", silence},
             {"idle_ms", idle},
             {"join_ms", join},
+            {"join_words", joinWords},
             {"asks_a_model", opening_.turns.asksAModel ? "yes" : "no"},
             {"sides", ourStream_ != nullptr ? "near+far" : "far"},
         };

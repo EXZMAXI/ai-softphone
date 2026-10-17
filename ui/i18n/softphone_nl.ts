@@ -1485,10 +1485,6 @@ A tick on a prompt&apos;s card: whether it may be run at all.</extracomment>
         <translation>Het grootste bestand dat deze telefoon verzendt, in bytes. Een opname daarboven wordt geweigerd vóór het uploaden in plaats van erna.</translation>
     </message>
     <message>
-        <source>The longest recording this phone will send, in seconds. Nought is no limit of ours, and whatever the provider allows is what applies.</source>
-        <translation>De langste opname die deze telefoon verzendt, in seconden. Nul is geen grens van ons, en wat de aanbieder toestaat geldt.</translation>
-    </message>
-    <message>
         <source>This one is the phone&apos;s own. A recogniser that hands back words with a speaker on each and no turns leaves somebody to decide how long a silence ends one, and this is that number, in milliseconds.</source>
         <translation>Deze is van de telefoon zelf. Een herkenner die woorden teruggeeft met een spreker op elk en geen beurten laat iemand beslissen hoe lang een stilte er een afsluit, en dat getal is dit, in milliseconden.</translation>
     </message>
@@ -2393,6 +2389,25 @@ A tick on the Yandex recogniser card: numbers, dates and sums written as they ar
         <source>After this long with no new words, the prompter ends the reply: the only boundary there is on a recogniser that marks none of its own, and a backstop on one that marks them and then stops. Empty uses the prompter&apos;s own shorter default.</source>
         <extracomment>Under the idle timer on a recogniser&apos;s card. It has to cover both of the things this number does, because on a recogniser with no end-of-reply of its own it is the only boundary there is — and *empty* is then the prompter&apos;s own default rather than an off switch.</extracomment>
         <translation>Komen er zo lang geen nieuwe woorden, dan beëindigt de souffleur het antwoord: bij een herkenner zonder eigen grenzen is dat de enige grens, en bij een die ze wel zet en er dan mee ophoudt een vangnet. Leeg — de souffleur gebruikt zijn eigen kortere standaardwaarde.</translation>
+    </message>
+    <message>
+        <source>This model answers with the words and no times: the transcript can be read, but it is not divided into lines and nothing lights up as it is played.</source>
+        <extracomment>Under the model field on a recogniser&apos;s card, for a model that answers with the words and nothing else. *lights up* is the same word the word-timestamps switch uses, two controls down.</extracomment>
+        <translation>Dit model antwoordt met de woorden en zonder tijden: de transcriptie is te lezen, maar is niet in regels verdeeld en er licht niets op tijdens het afspelen.</translation>
+    </message>
+    <message>
+        <source>Longest reply</source>
+        <extracomment>The label over how many words a reply may grow to before this phone ends it at the next pause.</extracomment>
+        <translation>Langste antwoord</translation>
+    </message>
+    <message>
+        <source>A recogniser that decides its own phrases can run several minutes of a meeting together. Past this many words the prompter ends the reply at the next pause. Empty waits for the recogniser however long it takes.</source>
+        <extracomment>Under the longest-reply count on a recogniser&apos;s card. A recogniser that never finishes a sentence is the case this is for.</extracomment>
+        <translation>Een herkenner die zelf zijn zinnen bepaalt, kan meerdere minuten van een vergadering tot één antwoord samenvoegen. Na dit aantal woorden beëindigt de souffleur het antwoord bij de volgende pauze. Leeg wacht op de herkenner zolang het duurt.</translation>
+    </message>
+    <message>
+        <source>The longest recording this phone will send, in seconds. Nought asks this phone to work it out: some models state a limit of their own, and a longer recording goes up in pieces.</source>
+        <translation>De langste opname die deze telefoon verzendt, in seconden. Nul vraagt de telefoon het zelf uit te zoeken: sommige modellen noemen een eigen grens, en een langere opname gaat in delen omhoog.</translation>
     </message>
 </context>
 <context>
@@ -3595,11 +3610,6 @@ What a rule does, with the tag it puts on: &quot;put a tag on it: vip&quot;.</ex
     <message>
         <source>Unknown</source>
         <translation>Onbekend</translation>
-    </message>
-    <message>
-        <source>%1 · %2 · %3:%4</source>
-        <extracomment>One conversation in the list a rehearsal may be pointed at: who it was with, when it happened, and how long it is.</extracomment>
-        <translation>%1 · %2 · %3:%4</translation>
     </message>
     <message>
         <source>No suggestion came back this time. The words are still arriving.</source>

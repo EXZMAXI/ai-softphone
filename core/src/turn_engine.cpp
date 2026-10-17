@@ -158,6 +158,8 @@ std::string TurnReading::said() const
             return "our silence";
         case AsrTurn::Boundary::Ours:
             return "asked for";
+        case AsrTurn::Boundary::Overlong:
+            return "a line past being a phrase";
         case AsrTurn::Boundary::Provider:
             break;
         }
@@ -165,8 +167,9 @@ std::string TurnReading::said() const
     }();
 
     return std::string{"at "} + std::to_string(at.count()) + " ms, " + boundaryName + " ended a " +
-           std::to_string(words) + "-word reply after " + std::to_string(quietFor.count()) +
-           " ms quiet: " + verdictName +
+           std::to_string(words) + "-word " + voiceText(voice) + " reply of " +
+           std::to_string(from.count()) + ".." + std::to_string(to.count()) + " ms after " +
+           std::to_string(quietFor.count()) + " ms quiet: " + verdictName +
            (pending > 0 ? " (" + std::to_string(pending) + " waiting)" : std::string{});
 }
 
@@ -193,6 +196,101 @@ TurnEngine::Side &TurnEngine::sideOf(Voice voice) noexcept
     return voice == Voice::Near ? ours_ : theirs_;
 }
 
+bool TurnEngine::otherSideTookOver(Voice voice) const noexcept
+{
+    const Side &mine = voice == Voice::Near ? ours_ : theirs_;
+    const Side &theirs = voice == Voice::Near ? theirs_ : ours_;
+
+    return theirs.lastWord > mine.lastWord;
+}
+
+std::string_view TurnEngine::whatIsNewIn(Side &side, std::string_view line)
+{
+    if (side.handedOut.empty()) {
+        return line;
+    }
+
+    if (!line.starts_with(side.handedOut)) {
+
+        const LogAttribute fields[] = {{"drew", side.handedOut}, {"now", line}};
+        Logger::instance().log(LogLevel::Debug, "realtime",
+                               "the line stopped continuing what a boundary of ours drew, so "
+                               "that subtraction is forgotten",
+                               fields);
+        side.handedOut.clear();
+        return line;
+    }
+
+    auto rest = line.substr(side.handedOut.size());
+    while (!rest.empty() && (rest.front() == ' ' || rest.front() == '\t')) {
+        rest.remove_prefix(1);
+    }
+    return rest;
+}
+
+void TurnEngine::tookItOutOfTheLine(Side &side, const AsrTurn &said)
+{
+    if (!said.text.empty()) {
+        side.handedOut = side.handedOut.empty() ? said.text : side.handedOut + " " + said.text;
+        side.handedAt = said.end;
+    }
+    side.provisional.clear();
+}
+
+void TurnEngine::takeWhatIsOwed(Side &side, AsrTurn &said)
+{
+    if (side.owed.empty()) {
+        return;
+    }
+    said.text = said.text.empty() ? side.owed : side.owed + " " + said.text;
+    said.start = side.owedFrom;
+
+    said.ordinal.reset();
+    side.owed.clear();
+}
+
+void TurnEngine::giveBackWhatWasHeld(Side &side, Voice voice)
+{
+    if (side.waiting.text.empty() || clock_ - side.waitingSince >= rules_.join) {
+        return;
+    }
+
+    TurnReading joined;
+    joined.verdict = TurnReading::Verdict::Joined;
+    joined.boundary = side.waiting.boundary;
+    joined.voice = voice;
+    joined.from = side.waiting.start;
+    joined.to = side.started;
+    joined.at = clock_;
+    joined.words = wordsIn(side.waiting.text);
+    joined.quietFor =
+        clock_ > side.waitingSince ? clock_ - side.waitingSince : std::chrono::milliseconds::zero();
+    joined.pending = pending_.size();
+    decided(joined);
+
+    side.owed = side.owed.empty() ? side.waiting.text : side.owed + " " + side.waiting.text;
+    side.owedFrom = side.waiting.start;
+    side.waiting = AsrTurn{};
+}
+
+std::chrono::milliseconds TurnEngine::lineBeganAt(Voice voice) const noexcept
+{
+    const Side &side = voice == Voice::Near ? ours_ : theirs_;
+    if (side.provisional.empty() && side.owed.empty()) {
+        return std::chrono::milliseconds::zero();
+    }
+    return side.owed.empty() ? side.started : side.owedFrom;
+}
+
+std::string TurnEngine::lineInHand(Voice voice) const
+{
+    const Side &side = voice == Voice::Near ? ours_ : theirs_;
+    if (side.owed.empty()) {
+        return side.provisional;
+    }
+    return side.provisional.empty() ? side.owed : side.owed + " " + side.provisional;
+}
+
 bool TurnEngine::soundsLikeEcho(const AsrTurn &mine) const
 {
 
@@ -211,10 +309,18 @@ bool TurnEngine::soundsLikeEcho(const AsrTurn &mine) const
         }
 
         const auto theirsBare = bareWords(one->text);
-        if (theirsBare.empty()) {
+        if (theirsBare.empty() || wordsIn(theirsBare) < kEchoFloor) {
             continue;
         }
-        if (mineBare == theirsBare || mineBare.find(theirsBare) != std::string::npos ||
+        if (mineBare == theirsBare) {
+            return true;
+        }
+        const auto shorter = std::min(mineBare.size(), theirsBare.size());
+        const auto longer = std::max(mineBare.size(), theirsBare.size());
+        if (shorter * 3 < longer * 2) {
+            continue;
+        }
+        if (mineBare.find(theirsBare) != std::string::npos ||
             theirsBare.find(mineBare) != std::string::npos) {
             return true;
         }
@@ -226,25 +332,49 @@ void TurnEngine::heard(const AsrPartial &said)
 {
     clock_ = std::max(clock_, said.end);
 
-    const auto line = tidiedLine(said.text);
+    Side &heardFrom = sideOf(said.voice);
+
+    heardFrom.lastHeard = clock_;
+
+    const auto whole = tidiedLine(said.text);
+    if (whole.empty()) {
+        return;
+    }
+
+    Side &side = heardFrom;
+
+    const std::string line{whatIsNewIn(side, whole)};
     if (line.empty()) {
         return;
     }
 
-    Side &side = sideOf(said.voice);
-
     if (line != side.provisional) {
         if (side.provisional.empty()) {
-            side.started = said.start;
+
+            side.started = std::max(said.end, side.handedAt);
+
+            if (joining()) {
+                giveBackWhatWasHeld(side, said.voice);
+            }
         }
         side.provisional = line;
         side.lastWord = clock_;
+        handTheTurnOver(said.voice);
+    }
+}
+
+void TurnEngine::handTheTurnOver(Voice voice)
+{
+
+    if (joining()) {
+        releaseWaiting(voice == Voice::Near ? Voice::Far : Voice::Near, clock_);
     }
 }
 
 void TurnEngine::heard(const AsrTurn &said)
 {
     clock_ = std::max(clock_, said.end);
+    sideOf(said.voice).lastHeard = clock_;
 
     auto line = said;
     line.text = tidiedLine(line.text);
@@ -263,7 +393,10 @@ void TurnEngine::heard(const AsrTurn &said)
         TurnReading copy;
         copy.verdict = TurnReading::Verdict::Copied;
         copy.boundary = line.boundary;
+        copy.voice = line.voice;
         copy.at = line.end;
+        copy.from = line.start;
+        copy.to = line.end;
         copy.words = wordsIn(line.text);
         copy.quietFor = std::chrono::milliseconds::zero();
         copy.pending = pending_.size();
@@ -271,8 +404,64 @@ void TurnEngine::heard(const AsrTurn &said)
         return;
     }
 
+    if (line.ordinal.has_value() && !side.waiting.text.empty() &&
+        side.waiting.ordinal == line.ordinal) {
+        TurnReading better;
+        better.verdict = TurnReading::Verdict::Revised;
+        better.boundary = line.boundary;
+        better.voice = line.voice;
+        better.at = line.end;
+        better.from = side.waiting.start;
+        better.to = line.end;
+        better.words = wordsIn(line.text);
+        better.quietFor = std::chrono::milliseconds::zero();
+        better.pending = pending_.size();
+        decided(better);
+
+        const auto began = side.waiting.start;
+        side.waiting = line;
+        side.waiting.start = began;
+        return;
+    }
+
+    if (line.ordinal.has_value() && side.trimmed == line.ordinal) {
+        TurnReading cut;
+        cut.verdict = TurnReading::Verdict::Copied;
+        cut.boundary = line.boundary;
+        cut.voice = line.voice;
+        cut.at = line.end;
+        cut.from = line.start;
+        cut.to = line.end;
+        cut.words = wordsIn(line.text);
+        cut.quietFor = std::chrono::milliseconds::zero();
+        cut.pending = pending_.size();
+        decided(cut);
+        return;
+    }
+
+    const bool continued = !side.handedOut.empty() && line.text.starts_with(side.handedOut);
+    line.text = std::string{whatIsNewIn(side, line.text)};
+
+    if (line.boundary == AsrTurn::Boundary::Provider) {
+
+        side.trimmed = continued ? line.ordinal : std::optional<unsigned>{};
+        side.handedOut.clear();
+    }
+
+    if (line.text.empty()) {
+        side.lastWord = clock_;
+        return;
+    }
+
+    if (!side.provisional.empty()) {
+        line.start = std::min(side.started, line.end);
+    }
+
     side.provisional.clear();
+
+    takeWhatIsOwed(side, line);
     side.marks = 0;
+    handTheTurnOver(line.voice);
     close(line, line.end);
     side.lastWord = clock_;
 }
@@ -300,42 +489,55 @@ void TurnEngine::now(std::chrono::milliseconds when)
         }
     }
 
-    if (!watchingForSilence()) {
-
-        if (rules_.policy != TurnPolicy::Manual &&
-            rules_.providerIdle > std::chrono::milliseconds::zero()) {
-            for (const auto voice : {Voice::Far, Voice::Near}) {
-                Side &side = sideOf(voice);
-                if (side.provisional.empty() || clock_ - side.lastWord < rules_.providerIdle) {
-                    continue;
-                }
-                AsrTurn said;
-                said.voice = voice;
-                said.start = side.started;
-                said.end = side.lastWord;
-                said.text = side.provisional;
-                said.boundary = AsrTurn::Boundary::Silence;
-
-                side.provisional.clear();
-                close(said, clock_);
-                side.lastWord = clock_;
-            }
-        }
-        return;
-    }
+    const auto grownPastAPhrase = [this](const Side &side) {
+        return rules_.longestReply > 0 && rules_.policy != TurnPolicy::Manual &&
+               wordsIn(side.owed) + wordsIn(side.provisional) >= rules_.longestReply;
+    };
 
     const auto quiet = quietEndsIt();
     for (const auto voice : {Voice::Far, Voice::Near}) {
         Side &side = sideOf(voice);
-        if (side.provisional.empty() || clock_ - side.lastWord < quiet) {
+
+        if (side.provisional.empty() && side.owed.empty()) {
             continue;
         }
 
-        if (rules_.providerTakesOurBoundary && side.marks == 0) {
+        const auto overlong = grownPastAPhrase(side);
+
+        const auto handedOver = otherSideTookOver(voice);
+        if (!watchingForSilence() && !overlong) {
+
+            if (rules_.policy == TurnPolicy::Manual ||
+                rules_.providerIdle <= std::chrono::milliseconds::zero() ||
+                clock_ - side.lastHeard < rules_.providerIdle) {
+                continue;
+            }
+            AsrTurn said;
+            said.voice = voice;
+            said.start = side.started;
+            said.end = side.lastWord;
+            said.text = side.provisional;
+            said.boundary = AsrTurn::Boundary::Silence;
+
+            tookItOutOfTheLine(side, said);
+            takeWhatIsOwed(side, said);
+            close(said, clock_);
+            side.lastWord = clock_;
+            continue;
+        }
+
+        if (clock_ - side.lastWord < (overlong || handedOver ? rules_.silence : quiet)) {
+            continue;
+        }
+
+        if (rules_.providerTakesOurBoundary && side.marks == 0 && !overlong) {
             TurnReading mark;
             mark.verdict = TurnReading::Verdict::Marked;
             mark.boundary = AsrTurn::Boundary::Silence;
+            mark.voice = voice;
             mark.at = clock_;
+            mark.from = side.started;
+            mark.to = side.lastWord;
             mark.words = wordsIn(side.provisional);
             mark.quietFor = clock_ - side.lastWord;
             mark.pending = pending_.size();
@@ -354,8 +556,9 @@ void TurnEngine::now(std::chrono::milliseconds when)
         said.start = side.started;
         said.end = side.lastWord;
         said.text = side.provisional;
-        said.boundary = AsrTurn::Boundary::Silence;
-        side.provisional.clear();
+        said.boundary = overlong ? AsrTurn::Boundary::Overlong : AsrTurn::Boundary::Silence;
+        tookItOutOfTheLine(side, said);
+        takeWhatIsOwed(side, said);
 
         side.marks = 0;
         side.awaitingCopy = rules_.providerTakesOurBoundary;
@@ -369,14 +572,15 @@ void TurnEngine::askNow()
 
     releaseEverything(clock_);
 
-    if (!ours_.provisional.empty()) {
+    if (!lineInHand(Voice::Near).empty()) {
         AsrTurn mine;
         mine.voice = Voice::Near;
         mine.start = ours_.started;
         mine.end = clock_;
         mine.text = ours_.provisional;
         mine.boundary = AsrTurn::Boundary::Ours;
-        ours_.provisional.clear();
+        tookItOutOfTheLine(ours_, mine);
+        takeWhatIsOwed(ours_, mine);
 
         ours_.marks = 0;
         ours_.awaitingCopy = rules_.providerTakesOurBoundary;
@@ -384,7 +588,7 @@ void TurnEngine::askNow()
         ours_.lastWord = clock_;
     }
 
-    if (theirs_.provisional.empty()) {
+    if (lineInHand(Voice::Far).empty()) {
 
         dispatch();
         return;
@@ -396,7 +600,8 @@ void TurnEngine::askNow()
     said.end = clock_;
     said.text = theirs_.provisional;
     said.boundary = AsrTurn::Boundary::Ours;
-    theirs_.provisional.clear();
+    tookItOutOfTheLine(theirs_, said);
+    takeWhatIsOwed(theirs_, said);
     theirs_.marks = 0;
     theirs_.awaitingCopy = rules_.providerTakesOurBoundary;
     close(said, clock_, true);
@@ -453,6 +658,8 @@ namespace {
         return "silence";
     case AsrTurn::Boundary::Ours:
         return "ours";
+    case AsrTurn::Boundary::Overlong:
+        return "overlong";
     }
     return "unknown";
 }
@@ -467,9 +674,15 @@ void TurnEngine::decided(const TurnReading &reading)
     const auto quiet = std::to_string(reading.quietFor.count());
     const auto words = std::to_string(reading.words);
     const auto pending = std::to_string(reading.pending);
+    const auto span =
+        std::to_string(reading.from.count()) + ".." + std::to_string(reading.to.count());
+
+    const auto side = voiceText(reading.voice);
     const LogAttribute fields[] = {
         {"verdict", nameOf(reading.verdict)},
         {"boundary", nameOf(reading.boundary)},
+        {"side", side},
+        {"span_ms", span},
         {"at_ms", at},
         {"quiet_ms", quiet},
         {"words", words},
@@ -521,6 +734,10 @@ void TurnEngine::close(const AsrTurn &said, std::chrono::milliseconds at, bool a
         TurnReading joined;
         joined.verdict = TurnReading::Verdict::Joined;
         joined.boundary = said.boundary;
+
+        joined.voice = said.voice;
+        joined.from = waiting.waiting.start;
+        joined.to = said.end;
         joined.at = at;
         joined.words = wordsIn(waiting.waiting.text) + wordsIn(said.text);
         joined.quietFor = clock_ > waiting.waitingSince ? clock_ - waiting.waitingSince
@@ -552,6 +769,9 @@ void TurnEngine::close(const AsrTurn &said, std::chrono::milliseconds at, bool a
     TurnReading held;
     held.verdict = TurnReading::Verdict::Waiting;
     held.boundary = said.boundary;
+    held.voice = said.voice;
+    held.from = said.start;
+    held.to = said.end;
     held.at = at;
     held.words = wordsIn(said.text);
     held.quietFor = std::chrono::milliseconds::zero();
@@ -570,7 +790,10 @@ void TurnEngine::settle(const AsrTurn &said, std::chrono::milliseconds at, bool 
 
     TurnReading reading;
     reading.boundary = said.boundary;
+    reading.voice = said.voice;
     reading.at = at;
+    reading.from = said.start;
+    reading.to = said.end;
     reading.words = wordsIn(said.text);
     reading.quietFor = quietFor;
     reading.pending = pending_.size();
@@ -580,9 +803,18 @@ void TurnEngine::settle(const AsrTurn &said, std::chrono::milliseconds at, bool 
             return had.ordinal == said.ordinal && had.voice == said.voice;
         });
         if (already != replies_.end()) {
+
+            const auto began = already->start;
+            const auto where = static_cast<std::size_t>(std::distance(replies_.begin(), already));
             *already = said;
+            already->start = began;
             reading.verdict = TurnReading::Verdict::Revised;
+            reading.from = began;
             decided(reading);
+
+            if (kept_) {
+                kept_(*already, where);
+            }
 
             const auto waiting = std::ranges::find_if(pending_, [&said](const AsrTurn &had) {
                 return had.ordinal == said.ordinal && had.voice == said.voice;

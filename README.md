@@ -338,8 +338,6 @@ component below permits it, and a recipient who needs v3 has it.
 `third_party/components.json`, which is also what the About page and the notices file are held to;
 the versions are not in it on purpose, because the build scripts are where they are pinned.
 
-<!-- components:begin - written by scripts/make-third-party-notices.py -->
-
 | Component                                                                                  | Offered under                                    | Verdict                                                                      |
 | ------------------------------------------------------------------------------------------ | ------------------------------------------------ | ---------------------------------------------------------------------------- |
 | Qt 6 — The interface, and the libraries under it                                           | Commercial **or LGPL-3.0 or GPL-2.0 or GPL-3.0** | both GPL versions are on offer                                               |
@@ -364,8 +362,6 @@ the versions are not in it on purpose, because the build scripts are where they 
 | libsecret — The desktop keyring, where one answers                                         | LGPL-2.1+                                        | compatible                                                                   |
 | ALSA — The sound devices the telephone opens                                               | LGPL-2.1+                                        | compatible                                                                   |
 | PulseAudio (client) — The sound server, where the machine runs one                         | LGPL-2.1+                                        | compatible - the GPL parts of PulseAudio are the server, which is not linked |
-
-<!-- components:end -->
 
 **The constraint that survives.** Nothing **LGPL-v3-only** may ever be linked — LGPL v3 is
 compatible with GPL v3 but not with GPL v2, so linking it would take the "or version 2" half of the

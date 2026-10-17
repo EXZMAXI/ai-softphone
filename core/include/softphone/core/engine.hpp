@@ -63,6 +63,8 @@ public:
     bool stopRegistration(const std::string &accountId);
     void stopAll();
 
+    void addressesChanged();
+
     [[nodiscard]] RegistrationState registrationState(const std::string &accountId) const;
     [[nodiscard]] RegistrationError lastError(const std::string &accountId) const;
     [[nodiscard]] bool retryPending(const std::string &accountId) const;

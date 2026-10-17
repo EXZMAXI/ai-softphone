@@ -302,6 +302,8 @@ public Q_SLOTS:
 
     int reconnectWhatIsDown();
 
+    int theAddressesMoved();
+
     void chooseDialAccount(const QString &accountId);
 
     void moveAccount(const QString &accountId, int by);

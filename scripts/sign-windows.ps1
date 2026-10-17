@@ -53,7 +53,9 @@ if (-not (Test-Path $IdentityFile)) { throw "no ssh key at $IdentityFile" }
 
 function Remote([string]$script) {
     $unix = ("exec 2>&1`n" + $script) -replace "`r`n", "`n"
-    $unix | & $ssh -i $IdentityFile -o BatchMode=yes $SigningHost 'sh -s'
+
+    $packed = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($unix))
+    & $ssh -i $IdentityFile -o BatchMode=yes $SigningHost "echo $packed | base64 -d | sh -s"
 }
 
 $wanted = New-Object System.Collections.ArrayList
@@ -136,7 +138,7 @@ foreach ($file in $wanted) {
     $line = $signOne -replace '__STEM__', $stem -replace '__TIMESTAMP__', $TimestampUrl `
                      -replace '__NAME__', $Description -replace '__URL__', $DescriptionUrl `
                      -replace '__PIN__', $Pin
-    $said = & $ssh -i $IdentityFile -o BatchMode=yes $SigningHost $line
+    $said = & $ssh -i $IdentityFile -o BatchMode=yes $SigningHost "exec 2>&1; $line"
     if ($LASTEXITCODE -ne 0) {
         $said | ForEach-Object { Write-Log "  $_" }
         throw "signing failed for $file"

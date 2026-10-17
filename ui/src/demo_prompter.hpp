@@ -37,6 +37,8 @@ public:
 
 private:
     PrompterViewModel &prompter_;
+
+    qulonglong said_{0};
 };
 
 }

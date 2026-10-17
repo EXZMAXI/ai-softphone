@@ -108,6 +108,8 @@ struct AsrTurn {
         Silence,
 
         Ours,
+
+        Overlong,
     };
     Boundary boundary{Boundary::Provider};
 
@@ -224,6 +226,8 @@ enum class PromptingRefused {
 [[nodiscard]] std::string_view liveModelFor(std::string_view type) noexcept;
 
 [[nodiscard]] std::vector<std::string> knownModels(std::string_view type, bool live);
+
+[[nodiscard]] bool listensLive(std::string_view model);
 
 [[nodiscard]] std::string preferredModelFor(std::string_view type, bool live);
 

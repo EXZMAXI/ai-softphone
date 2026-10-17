@@ -102,7 +102,7 @@ UiLoader::Trouble UiLoader::contribute(const std::filesystem::path &directory, s
 
     void *const handle = container::dynamic::open(library);
     if (handle == nullptr) {
-        return {Refused::CannotOpen, container::dynamic::lastError()};
+        return {Refused::CannotOpen, container::dynamic::whyItWouldNotOpen()};
     }
 
     const auto ask =

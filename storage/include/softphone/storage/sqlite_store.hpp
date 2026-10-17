@@ -34,7 +34,7 @@ struct sqlite3;
 
 namespace softphone::storage {
 
-inline constexpr int kSchemaVersion = 34;
+inline constexpr int kSchemaVersion = 35;
 
 inline constexpr int kOldestUpgradableSchema = 3;
 

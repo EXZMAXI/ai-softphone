@@ -1298,13 +1298,17 @@ ColumnLayout {
 
                     interactive: false
 
-                    model: history.newest
+                    model: history.newestCount
 
                     delegate: ItemDelegate {
                         id: recentRow
 
-                        required property var modelData
                         required property int index
+
+                        readonly property var modelData: {
+                            void history.newestCount;
+                            return history.newestAt(recentRow.index);
+                        }
 
                         width: recentCalls.width
                         height: recentCalls.rowHeight

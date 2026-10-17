@@ -79,12 +79,18 @@ struct ProviderConfig {
 
     bool isRealtimeDefault{false};
 
+    std::vector<std::string> modelsSeen;
+
     std::chrono::system_clock::time_point createdAt{};
     std::chrono::system_clock::time_point updatedAt{};
 };
 
 [[nodiscard]] std::string
 encodeParams(const std::vector<std::pair<std::string, std::string>> &params);
+
+[[nodiscard]] std::string encodeNames(const std::vector<std::string> &names);
+
+[[nodiscard]] std::vector<std::string> decodeNames(std::string_view text);
 
 [[nodiscard]] std::vector<std::pair<std::string, std::string>> decodeParams(std::string_view text);
 

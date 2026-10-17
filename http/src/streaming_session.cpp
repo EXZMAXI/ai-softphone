@@ -384,6 +384,19 @@ void StreamingSession::binary(std::span<const std::byte> payload)
 
 void StreamingSession::deliver(StreamingHeard &heard)
 {
+    {
+
+        const std::lock_guard<std::mutex> held{lock_};
+        const auto shape = heard.shape.empty() ? std::string{"(unnamed)"} : heard.shape;
+        const auto already = std::ranges::find_if(
+            shapesSeen_, [&shape](const auto &one) { return one.first == shape; });
+        if (already == shapesSeen_.end()) {
+            shapesSeen_.emplace_back(shape, 1U);
+        } else {
+            ++already->second;
+        }
+    }
+
     if (heard.remark && !heard.said.empty()) {
 
         const std::lock_guard<std::mutex> held{lock_};
@@ -469,11 +482,11 @@ void StreamingSession::deliver(StreamingHeard &heard)
         }
     }
 
-    for (const auto &said : heard.partials) {
-        sink_.partial(said);
-    }
     for (const auto &said : heard.turns) {
         sink_.turn(said);
+    }
+    for (const auto &said : heard.partials) {
+        sink_.partial(said);
     }
     if (heard.costMicros) {
         sink_.spent(*heard.costMicros);
@@ -540,6 +553,19 @@ void StreamingSession::finish(core::AsrStatus status, std::string why)
         result.model = where_.model;
         result.costMicros = costMicros_;
         result.audio = furthest_;
+
+        if (!shapesSeen_.empty()) {
+            std::string census;
+            for (const auto &[shape, count] : shapesSeen_) {
+                if (!census.empty()) {
+                    census += ", ";
+                }
+                census += shape + "×" + std::to_string(count);
+            }
+            core::Logger::instance().log(core::LogLevel::Debug, "realtime",
+                                         std::string{protocol_->type()} +
+                                             ": what the far end sent — " + census);
+        }
 
         result.segments.reserve(turns_.size());
         for (const auto &said : turns_) {

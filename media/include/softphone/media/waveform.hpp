@@ -40,6 +40,8 @@ inline constexpr unsigned kWaveformBucketsMax = 90000;
 [[nodiscard]] Waveform waveformOf(const std::vector<std::int16_t> &interleaved, unsigned channels,
                                   unsigned sampleRate);
 
+[[nodiscard]] bool cachedWaveform(const std::filesystem::path &file, Waveform &out);
+
 [[nodiscard]] std::filesystem::path waveformCacheFor(const std::filesystem::path &file);
 
 }

@@ -125,6 +125,8 @@ class RecordingsViewModel : public QObject {
     Q_PROPERTY(bool openUnfinished READ openUnfinished NOTIFY openChanged)
 
     Q_PROPERTY(bool playing READ playing NOTIFY playbackChanged)
+
+    Q_PROPERTY(bool starting READ starting NOTIFY playbackChanged)
     Q_PROPERTY(qint64 positionMs READ positionMs NOTIFY playbackChanged)
     Q_PROPERTY(qint64 durationMs READ durationMs NOTIFY playbackChanged)
 
@@ -344,6 +346,11 @@ public:
         return playing_;
     }
 
+    [[nodiscard]] bool starting() const noexcept
+    {
+        return starting_;
+    }
+
     [[nodiscard]] qint64 positionMs() const noexcept
     {
         return positionMs_;
@@ -386,9 +393,10 @@ public:
 
     void setFacets(QStringList categories, QStringList tags, QStringList redFlags);
     void setWaveform(const QString &id, std::vector<double> nearSide, std::vector<double> farSide);
-    void setPlayback(bool playing, qint64 positionMs, qint64 durationMs, bool ended);
 
-    void setActions(Reader refresh, Opener open, Plain stop, Plain pause, Plain resume, Seek seek,
+    void setPlayback(bool playing, qint64 positionMs, qint64 durationMs, bool ended, bool ours);
+
+    void setActions(Reader refresh, Opener open, Action stop, Plain pause, Plain resume, Seek seek,
                     Speed speed, Channels channels, Action remove, Action pin, Export save,
                     Renamer rename);
 
@@ -499,6 +507,11 @@ private:
     bool playerShown_{false};
     bool readingShown_{false};
     bool playing_{false};
+
+    bool starting_{false};
+
+    bool ours_{false};
+
     qint64 positionMs_{0};
     qint64 durationMs_{0};
     double speed_{1.0};
@@ -518,7 +531,7 @@ private:
 
     Reader refresh_;
     Opener open_;
-    Plain stop_;
+    Action stop_;
     Plain pause_;
     Plain resume_;
     Seek seek_;

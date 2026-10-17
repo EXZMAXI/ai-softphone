@@ -533,12 +533,17 @@ void EngineHost::publishPlayback(bool ended)
     where.positionMs = stream_ ? stream_->positionMs() : 0;
     where.durationMs = stream_ ? stream_->durationMs() : 0;
     where.ended = ended;
-    where.file = playing_ || stream_ ? playingFile_ : std::filesystem::path{};
+    where.claim = stream_ ? playingClaim_ : std::string{};
     playbackListener_(where);
 }
 
 void EngineHost::armThePlayhead()
 {
+
+    if (playbackTimer_ != core::IScheduler::TimerId{}) {
+        loop_.cancel(playbackTimer_);
+        playbackTimer_ = core::IScheduler::TimerId{};
+    }
 
     playbackTimer_ = loop_.scheduleAfter(std::chrono::milliseconds{50}, [this]() {
         playbackTimer_ = core::IScheduler::TimerId{};
@@ -553,6 +558,11 @@ void EngineHost::armThePlayhead()
 
             stream_->seek(0);
 
+            const auto standing = standing_.find(playingClaim_);
+            if (standing != standing_.end()) {
+                standing->second.positionMs = 0;
+            }
+
             publishPlayback(true);
             return;
         }
@@ -562,40 +572,103 @@ void EngineHost::armThePlayhead()
     });
 }
 
-void EngineHost::playRecording(const std::filesystem::path &file, bool start)
+void EngineHost::rememberWhereItWas()
 {
-    loop_.post([this, file, start]() {
-        stopPlayingHere();
+    if (!stream_ || playingClaim_.empty() || playingFile_.empty()) {
+        return;
+    }
+    standing_[playingClaim_] = Standing{playingFile_, stream_->positionMs()};
+}
 
-        playingFile_ = file;
-        const unsigned rate = backend_->playbackRate();
-        stream_ = std::make_unique<media::Mp3Stream>(file, rate == 0 ? 16000u : rate);
-        if (!stream_->start()) {
-            core::Logger::instance().log(core::LogLevel::Warning, "ui",
-                                         "the recording would not open: " + core::asUtf8(file));
-            stream_.reset();
-            publishPlayback(false);
+void EngineHost::openHere(const std::filesystem::path &file, bool start, const std::string &claim,
+                          std::uint64_t fromMs)
+{
 
-            if (playbackFailed_) {
-                playbackFailed_(file);
-            }
-            return;
-        }
+    rememberWhereItWas();
+    stopPlayingHere();
 
-        stream_->setSpeed(wantedSpeed_);
-        stream_->setChannels(wantedNear_, wantedFar_);
+    playingFile_ = file;
+    playingClaim_ = claim;
 
-        if (!start) {
+    auto &standing = standing_[claim];
+    standing.file = file;
+    standing.positionMs = fromMs;
 
-            playing_ = false;
-            publishPlayback(false);
-            return;
-        }
-
-        backend_->playFrom(stream_.get());
-        playing_ = true;
+    const unsigned rate = backend_->playbackRate();
+    stream_ = std::make_unique<media::Mp3Stream>(file, rate == 0 ? 16000u : rate);
+    if (!stream_->start()) {
+        core::Logger::instance().log(core::LogLevel::Warning, "ui",
+                                     "the recording would not open: " + core::asUtf8(file));
+        stream_.reset();
+        playingFile_.clear();
+        playingClaim_.clear();
+        standing_.erase(claim);
         publishPlayback(false);
-        armThePlayhead();
+
+        if (playbackFailed_) {
+            playbackFailed_(file);
+        }
+        return;
+    }
+
+    stream_->setSpeed(standing.speed);
+    stream_->setChannels(standing.nearSide, standing.farSide);
+    if (fromMs > 0) {
+        stream_->seek(fromMs);
+    }
+
+    core::Logger::instance().log(
+        core::LogLevel::Info, "ui",
+        "opened for playback: " + core::asUtf8(file.filename()) + ", " +
+            std::to_string(stream_->durationMs()) + " ms, for " +
+            (playingClaim_.empty() ? "nobody" : playingClaim_) +
+            (fromMs > 0 ? ", from " + std::to_string(fromMs) + " ms" : std::string{}) +
+            (start ? ", playing" : ", standing at the beginning"));
+
+    if (!start) {
+
+        playing_ = false;
+        publishPlayback(false);
+        return;
+    }
+
+    backend_->playFrom(stream_.get());
+    playing_ = true;
+    publishPlayback(false);
+    armThePlayhead();
+}
+
+void EngineHost::playRecording(const std::filesystem::path &file, bool start, std::string claim)
+{
+    loop_.post(
+        [this, file, start, claim = std::move(claim)]() { openHere(file, start, claim, 0); });
+}
+
+void EngineHost::resumePlaying(std::string claim)
+{
+    loop_.post([this, claim = std::move(claim)]() {
+        if (stream_ && playingClaim_ == claim) {
+
+            backend_->playFrom(stream_.get());
+            playing_ = true;
+            armThePlayhead();
+            publishPlayback(false);
+            return;
+        }
+
+        const auto standing = standing_.find(claim);
+        if (standing == standing_.end()) {
+
+            core::Logger::instance().log(core::LogLevel::Debug, "ui",
+                                         "nothing is open to play yet for " +
+                                             (claim.empty() ? "nobody" : claim));
+            return;
+        }
+
+        core::Logger::instance().log(core::LogLevel::Info, "ui",
+                                     "the player goes to " + claim + ", from " +
+                                         (playingClaim_.empty() ? "nobody" : playingClaim_));
+        openHere(standing->second.file, true, claim, standing->second.positionMs);
     });
 }
 
@@ -612,43 +685,53 @@ void EngineHost::stopPlayingHere()
     stream_.reset();
     playing_ = false;
     playingFile_.clear();
+    playingClaim_.clear();
 }
 
-void EngineHost::stopPlaying()
+void EngineHost::stopPlaying(std::string claim)
 {
-    loop_.post([this]() {
+    loop_.post([this, claim = std::move(claim)]() {
+
+        standing_.erase(claim);
+
+        if (!stream_ || playingClaim_ != claim) {
+            return;
+        }
         stopPlayingHere();
         publishPlayback(false);
     });
 }
 
-void EngineHost::pausePlaying(bool paused)
+void EngineHost::pausePlaying(std::string claim)
 {
-    loop_.post([this, paused]() {
-        if (!stream_) {
+    loop_.post([this, claim = std::move(claim)]() {
+        if (!stream_ || playingClaim_ != claim) {
+
+            core::Logger::instance().log(core::LogLevel::Debug, "ui",
+                                         "nothing is open to pause for " +
+                                             (claim.empty() ? "nobody" : claim));
             return;
         }
 
-        if (paused) {
-            if (playbackTimer_ != core::IScheduler::TimerId{}) {
-                loop_.cancel(playbackTimer_);
-                playbackTimer_ = core::IScheduler::TimerId{};
-            }
-            backend_->playFrom(nullptr);
-            playing_ = false;
-        } else {
-            backend_->playFrom(stream_.get());
-            playing_ = true;
-            armThePlayhead();
+        if (playbackTimer_ != core::IScheduler::TimerId{}) {
+            loop_.cancel(playbackTimer_);
+            playbackTimer_ = core::IScheduler::TimerId{};
         }
+        backend_->playFrom(nullptr);
+        playing_ = false;
         publishPlayback(false);
     });
 }
 
-void EngineHost::seekPlayback(std::uint64_t positionMs)
+void EngineHost::seekPlayback(std::uint64_t positionMs, std::string claim)
 {
-    loop_.post([this, positionMs]() {
-        if (!stream_) {
+    loop_.post([this, positionMs, claim = std::move(claim)]() {
+        if (!stream_ || playingClaim_ != claim) {
+
+            const auto standing = standing_.find(claim);
+            if (standing != standing_.end()) {
+                standing->second.positionMs = positionMs;
+            }
             return;
         }
 
@@ -662,22 +745,23 @@ void EngineHost::seekPlayback(std::uint64_t positionMs)
     });
 }
 
-void EngineHost::setPlaybackSpeed(double speed)
+void EngineHost::setPlaybackSpeed(double speed, std::string claim)
 {
-    loop_.post([this, speed]() {
-        wantedSpeed_ = speed;
-        if (stream_) {
+    loop_.post([this, speed, claim = std::move(claim)]() {
+
+        standing_[claim].speed = speed;
+        if (stream_ && playingClaim_ == claim) {
             stream_->setSpeed(speed);
         }
     });
 }
 
-void EngineHost::setPlaybackChannels(bool nearSide, bool farSide)
+void EngineHost::setPlaybackChannels(bool nearSide, bool farSide, std::string claim)
 {
-    loop_.post([this, nearSide, farSide]() {
-        wantedNear_ = nearSide;
-        wantedFar_ = farSide;
-        if (stream_) {
+    loop_.post([this, nearSide, farSide, claim = std::move(claim)]() {
+        standing_[claim].nearSide = nearSide;
+        standing_[claim].farSide = farSide;
+        if (stream_ && playingClaim_ == claim) {
             stream_->setChannels(nearSide, farSide);
         }
     });

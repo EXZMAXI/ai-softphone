@@ -46,6 +46,8 @@ class Screenshots : public QObject {
 
     Q_PROPERTY(QVariantMap content READ content CONSTANT)
 
+    Q_PROPERTY(bool phoneBuilt READ phoneBuilt NOTIFY phoneBuiltChanged)
+
 public:
     Screenshots(QStringList wanted, QString into, QString capturing = {}, QString content = {},
                 QObject *parent = nullptr);
@@ -67,7 +69,18 @@ public:
 
     Q_INVOKABLE bool take(const QString &name, QQuickWindow *window);
 
+    [[nodiscard]] bool phoneBuilt() const noexcept
+    {
+        return phoneBuilt_;
+    }
+
+    void thePhoneIsBuilt();
+
+Q_SIGNALS:
+    void phoneBuiltChanged();
+
 private:
+    bool phoneBuilt_{false};
     QStringList wanted_;
     QString into_;
     QString capturing_;

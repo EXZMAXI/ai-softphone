@@ -20,6 +20,8 @@ Frame {
 
     required property string glyphs
 
+    required property bool onScreen
+
     padding: 8
 
     Layout.topMargin: Math.ceil(itsName.height / 2)
@@ -33,6 +35,33 @@ Frame {
     readonly property int shownMs: bar.zoomed
                                    ? bar.windowMs
                                    : Math.max(1, prompter.rehearsalLengthMs)
+
+    property real playhead: 0
+    property real anchorMs: 0
+    property real anchorAt: 0
+
+    readonly property int aJumpRatherThanJitter: 400
+
+    function movePlayhead() {
+        if (!prompter.rehearsalPlaying) {
+            bar.playhead = prompter.rehearsalAtMs
+            bar.keepUp()
+            return
+        }
+
+        const since = Date.now() - bar.anchorAt
+        const wanted = Math.min(prompter.rehearsalLengthMs, bar.anchorMs + since)
+
+        bar.playhead = Math.abs(wanted - bar.playhead) > bar.aJumpRatherThanJitter
+                       ? wanted
+                       : Math.max(bar.playhead, wanted)
+        bar.keepUp()
+    }
+
+    FrameAnimation {
+        running: prompter.rehearsalPlaying && bar.onScreen && bar.visible
+        onTriggered: bar.movePlayhead()
+    }
 
     Item {
         id: body
@@ -80,6 +109,8 @@ Frame {
             PanelAct {
                 glyphs: bar.glyphs
 
+                enabled: !prompter.rehearsalLoading
+
                 picture: prompter.rehearsalPlaying ? "hold" : "resume"
 
                 text: prompter.rehearsalPlaying ? qsTr("Pause") : qsTr("Play")
@@ -102,6 +133,8 @@ Frame {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
+                    enabled: !prompter.rehearsalLoading
+
                     implicitHeight: picture.stereo ? 44 : 34
 
                     readonly property var nearBars: {
@@ -117,15 +150,6 @@ Frame {
                     readonly property bool stereo: prompter.rehearsalStereo
                                                    && picture.farBars.length > 0
 
-                    readonly property real from: prompter.rehearsalLengthMs > 0
-                                                 ? bar.offsetMs / prompter.rehearsalLengthMs : 0
-                    readonly property real to: prompter.rehearsalLengthMs > 0
-                                               ? (bar.offsetMs + bar.shownMs)
-                                                 / prompter.rehearsalLengthMs : 1
-                    readonly property real played: prompter.rehearsalLengthMs > 0
-                                                   ? prompter.rehearsalAtMs
-                                                     / prompter.rehearsalLengthMs : 0
-
                     ColumnLayout {
                         anchors.fill: parent
                         spacing: picture.stereo ? 2 : 0
@@ -134,9 +158,10 @@ Frame {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             bars: picture.nearBars
-                            from: picture.from
-                            to: picture.to
-                            played: picture.played
+                            fullMs: prompter.rehearsalLengthMs
+                            offsetMs: bar.offsetMs
+                            windowMs: bar.shownMs
+                            headMs: bar.playhead
                             ink: bar.ink
                             tint: Material.accent
                         }
@@ -146,16 +171,19 @@ Frame {
                             Layout.fillHeight: true
                             visible: picture.stereo
                             bars: picture.farBars
-                            from: picture.from
-                            to: picture.to
-                            played: picture.played
+                            fullMs: prompter.rehearsalLengthMs
+                            offsetMs: bar.offsetMs
+                            windowMs: bar.shownMs
+                            headMs: bar.playhead
                             ink: bar.ink
                             tint: Material.accent
                         }
                     }
 
                     Rectangle {
-                        x: (prompter.rehearsalAtMs - bar.offsetMs) / bar.shownMs * parent.width - 1
+
+                        x: Math.round((bar.playhead - bar.offsetMs) / bar.shownMs
+                                      * parent.width - 1)
                         width: 2
                         height: parent.height
                         visible: x > -2 && x < parent.width
@@ -182,6 +210,7 @@ Frame {
                         enabled: bar.zoomed
                         onWheel: (event) => {
                             const steps = event.angleDelta.y / 120
+                            bar.nudged()
                             bar.scrollTo(bar.offsetMs - steps * bar.windowMs * 0.25)
                         }
                     }
@@ -201,6 +230,10 @@ Frame {
                     onPositionChanged: {
                         const wanted = waveScroll.position * prompter.rehearsalLengthMs
                         if (Math.abs(wanted - bar.offsetMs) > 1) {
+
+                            if (waveScroll.pressed) {
+                                bar.nudged()
+                            }
                             bar.scrollTo(wanted)
                         }
                     }
@@ -209,14 +242,16 @@ Frame {
 
             Label {
 
-                text: qsTr("%1 / %2").arg(bar.asClock(prompter.rehearsalAtMs))
-                                     .arg(bar.asClock(prompter.rehearsalLengthMs))
+                text: qsTr("%1 / %2").arg(Duration.text(bar.playhead))
+                                     .arg(Duration.text(prompter.rehearsalLengthMs))
                 font.pixelSize: 12
                 opacity: 0.6
             }
 
             PanelAct {
                 glyphs: bar.glyphs
+
+                enabled: !prompter.rehearsalLoading
 
                 picture: "dismiss"
 
@@ -229,13 +264,6 @@ Frame {
 
     readonly property color ink: Qt.rgba(Material.foreground.r, Material.foreground.g,
                                          Material.foreground.b, 0.45)
-
-    function asClock(ms) {
-        const whole = Math.max(0, Math.floor(ms / 1000))
-        const minutes = Math.floor(whole / 60)
-        const seconds = whole % 60
-        return minutes + ":" + (seconds < 10 ? "0" : "") + seconds
-    }
 
     function scrollTo(ms) {
         const most = Math.max(0, prompter.rehearsalLengthMs - bar.windowMs)
@@ -257,9 +285,24 @@ Frame {
         if (prompter.rehearsalLengthMs <= 0) {
             return
         }
-        const ms = bar.offsetMs + Math.min(1, Math.max(0, fraction)) * bar.shownMs
-        prompter.seekRehearsal(
-            Math.round(Math.min(prompter.rehearsalLengthMs, Math.max(0, ms))))
+        const ms = Math.round(Math.min(prompter.rehearsalLengthMs,
+                                       Math.max(0, bar.offsetMs
+                                                   + Math.min(1, Math.max(0, fraction))
+                                                     * bar.shownMs)))
+
+        bar.playhead = ms
+        bar.anchorMs = ms
+        bar.anchorAt = Date.now()
+        bar.following = true
+        bar.keepUp()
+
+        prompter.seekRehearsal(ms)
+    }
+
+    property bool following: true
+
+    function nudged() {
+        bar.following = false
     }
 
     function keepUp() {
@@ -268,19 +311,40 @@ Frame {
             bar.showTheHandle()
             return
         }
-        const head = prompter.rehearsalAtMs
-        if (head < bar.offsetMs || head > bar.offsetMs + bar.windowMs) {
-            bar.scrollTo(head - bar.windowMs / 2)
+
+        if (!prompter.rehearsalPlaying) {
+            return
+        }
+
+        if (bar.following) {
+            bar.scrollTo(bar.playhead - bar.shownMs / 2)
+            return
+        }
+
+        if (bar.playhead >= bar.offsetMs + bar.shownMs / 2
+                && bar.playhead <= bar.offsetMs + bar.shownMs) {
+            bar.following = true
         }
     }
 
     Connections {
         target: prompter
 
-        function onRehearsalAtChanged() { bar.keepUp() }
+        function onRehearsalAtChanged() {
+            bar.anchorMs = prompter.rehearsalAtMs
+            bar.anchorAt = Date.now()
+
+            if (!prompter.rehearsalPlaying) {
+                bar.movePlayhead()
+            }
+        }
 
         function onRehearsalChanged() {
             bar.offsetMs = 0
+            bar.playhead = 0
+            bar.anchorMs = 0
+            bar.anchorAt = Date.now()
+            bar.following = true
             bar.showTheHandle()
         }
     }

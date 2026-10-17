@@ -745,6 +745,13 @@ constexpr Step kSteps[] = {
          return hasTable(database, "prompt_templates") &&
                 !hasColumn(database, "prompt_templates", "position");
      }},
+
+    {35, R"sql(
+        ALTER TABLE providers ADD COLUMN models_seen TEXT NOT NULL DEFAULT '';
+    )sql",
+     [](sqlite3 *database) {
+         return hasTable(database, "providers") && !hasColumn(database, "providers", "models_seen");
+     }},
 };
 
 }
@@ -2435,7 +2442,8 @@ namespace {
 constexpr auto kProviderColumns =
     "id, kind, type, name, endpoint, model, region, params, has_secret, enabled, is_default, "
     "created_at, updated_at, in_price_micros, out_price_micros, currency, read_timeout_seconds, "
-    "realtime_endpoint, is_realtime_default, realtime_model, realtime_price_micros, language";
+    "realtime_endpoint, is_realtime_default, realtime_model, realtime_price_micros, language, "
+    "models_seen";
 
 [[nodiscard]] core::ProviderConfig providerFrom(sqlite3_stmt *statement)
 {
@@ -2462,6 +2470,7 @@ constexpr auto kProviderColumns =
     provider.realtimeModel = textAt(statement, 19);
     provider.realtimePriceMicros = sqlite3_column_int64(statement, 20);
     provider.language = textAt(statement, 21);
+    provider.modelsSeen = core::decodeNames(textAt(statement, 22));
     return provider;
 }
 
@@ -2485,6 +2494,7 @@ StoreStatus SqliteStore::save(core::ProviderConfig &provider)
 
     const auto kind = std::string{core::toString(provider.kind)};
     const auto params = core::encodeParams(provider.params);
+    const auto names = core::encodeNames(provider.modelsSeen);
 
     if (const auto status = execute("BEGIN IMMEDIATE;"); status != StoreStatus::Ok) {
         return status;
@@ -2501,8 +2511,8 @@ StoreStatus SqliteStore::save(core::ProviderConfig &provider)
                 (id, kind, type, name, endpoint, model, region, params, has_secret, enabled,
                  is_default, created_at, updated_at, in_price_micros, out_price_micros, currency,
                  read_timeout_seconds, realtime_endpoint, is_realtime_default,
-                 realtime_model, realtime_price_micros, language)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 realtime_model, realtime_price_micros, language, models_seen)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(id) DO UPDATE SET
                 kind = excluded.kind, type = excluded.type, name = excluded.name,
                 endpoint = excluded.endpoint, model = excluded.model, region = excluded.region,
@@ -2516,7 +2526,8 @@ StoreStatus SqliteStore::save(core::ProviderConfig &provider)
                 is_realtime_default = excluded.is_realtime_default,
                 realtime_model = excluded.realtime_model,
                 realtime_price_micros = excluded.realtime_price_micros,
-                language = excluded.language;
+                language = excluded.language,
+                models_seen = excluded.models_seen;
         )sql"};
         if (statement.prepareCode() != SQLITE_OK) {
             return give(remember(statement.prepareCode()));
@@ -2543,6 +2554,7 @@ StoreStatus SqliteStore::save(core::ProviderConfig &provider)
         statement.bindText(20, provider.realtimeModel);
         statement.bindInt(21, provider.realtimePriceMicros);
         statement.bindText(22, provider.language);
+        statement.bindText(23, names);
         if (const auto code = sqlite3_step(statement.handle()); code != SQLITE_DONE) {
             return give(remember(code));
         }

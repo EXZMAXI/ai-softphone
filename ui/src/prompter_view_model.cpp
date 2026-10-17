@@ -33,7 +33,7 @@ PrompterViewModel::PrompterViewModel(QObject *parent) : QObject{parent} {}
 bool PrompterViewModel::available() const noexcept
 {
 
-    return configured() && (conversation_ || rehearsing_);
+    return configured() && (conversation_ || (rehearsing_ && !rehearsalLoading_));
 }
 
 bool PrompterViewModel::configured() const noexcept
@@ -186,16 +186,37 @@ QString PrompterViewModel::trouble() const
     return {};
 }
 
+namespace {
+
+[[nodiscard]] bool before(const QVariantMap &row, const QVariantMap &already)
+{
+    const auto at = row.value(QStringLiteral("atMs")).toLongLong();
+    const auto theirs = already.value(QStringLiteral("atMs")).toLongLong();
+    if (at != theirs) {
+        return at < theirs;
+    }
+    return row.value(QStringLiteral("began")).toULongLong() <
+           already.value(QStringLiteral("began")).toULongLong();
+}
+
+}
+
 QVariantList PrompterViewModel::said() const
 {
     auto out = said_;
 
-    if (!provisionalFar_.isEmpty()) {
-        out.push_back(provisionalFar_);
-    }
-    if (!provisionalNear_.isEmpty()) {
-        out.push_back(provisionalNear_);
-    }
+    const auto put = [&out](const QVariantMap &line) {
+        if (line.isEmpty()) {
+            return;
+        }
+        auto where = out.end();
+        while (where != out.begin() && before(line, (where - 1)->toMap())) {
+            --where;
+        }
+        out.insert(where, line);
+    };
+    put(provisionalFar_);
+    put(provisionalNear_);
     return out;
 }
 
@@ -250,6 +271,10 @@ void PrompterViewModel::setRunning(bool running)
     const bool stale = (running && waiting_) || asked_;
     if (running == running_ && !stale) {
         return;
+    }
+
+    if (running && !running_) {
+        ++run_;
     }
     running_ = running;
     waiting_ = waiting_ && !running;
@@ -319,14 +344,35 @@ void PrompterViewModel::setNames(QString templateName, QString recogniserName, Q
     Q_EMIT runningChanged();
 }
 
-void PrompterViewModel::heardPartial(bool near, QString text)
+void PrompterViewModel::heardPartial(bool near, QString text, std::chrono::milliseconds at)
 {
+
+    if (text.isEmpty()) {
+        auto &mine = near ? nearOrder_ : farOrder_;
+        mine = 0;
+        if (near) {
+            provisionalNear_.clear();
+        } else {
+            provisionalFar_.clear();
+        }
+        Q_EMIT saidChanged();
+        return;
+    }
+
     QVariantMap row;
     row.insert(QStringLiteral("text"), std::move(text));
-    row.insert(QStringLiteral("at"), QString{});
+
+    row.insert(QStringLiteral("at"), asStamp(at));
+    row.insert(QStringLiteral("atMs"), static_cast<qlonglong>(at.count()));
     row.insert(QStringLiteral("near"), near);
     row.insert(QStringLiteral("provisional"), true);
     row.insert(QStringLiteral("gap"), 0);
+
+    auto &mine = near ? nearOrder_ : farOrder_;
+    if (mine == 0) {
+        mine = ++ordering_;
+    }
+    row.insert(QStringLiteral("began"), static_cast<qulonglong>(mine));
 
     if (near) {
         provisionalNear_ = std::move(row);
@@ -336,8 +382,21 @@ void PrompterViewModel::heardPartial(bool near, QString text)
     Q_EMIT saidChanged();
 }
 
-void PrompterViewModel::heardTurn(bool near, QString text, std::chrono::milliseconds at)
+void PrompterViewModel::heardTurn(bool near, QString text, std::chrono::milliseconds at,
+                                  qulonglong where)
 {
+
+    for (auto &one : said_) {
+        auto row = one.toMap();
+        if (row.value(QStringLiteral("run")).toULongLong() == run_ &&
+            row.value(QStringLiteral("where")).toULongLong() == where) {
+            row.insert(QStringLiteral("text"), std::move(text));
+            one = row;
+            Q_EMIT saidChanged();
+            return;
+        }
+    }
+
     QVariantMap row;
     row.insert(QStringLiteral("text"), std::move(text));
     row.insert(QStringLiteral("at"), asStamp(at));
@@ -349,12 +408,18 @@ void PrompterViewModel::heardTurn(bool near, QString text, std::chrono::millisec
     row.insert(QStringLiteral("gap"), static_cast<int>(pendingGap_.count()));
     pendingGap_ = std::chrono::milliseconds::zero();
 
-    auto where = said_.end();
-    while (where != said_.begin() &&
-           (where - 1)->toMap().value(QStringLiteral("atMs")).toLongLong() > at.count()) {
-        --where;
+    auto &mine = near ? nearOrder_ : farOrder_;
+    row.insert(QStringLiteral("began"), static_cast<qulonglong>(mine == 0 ? ++ordering_ : mine));
+    mine = 0;
+
+    row.insert(QStringLiteral("where"), where);
+    row.insert(QStringLiteral("run"), static_cast<qulonglong>(run_));
+
+    auto place = said_.end();
+    while (place != said_.begin() && before(row, (place - 1)->toMap())) {
+        --place;
     }
-    said_.insert(where, std::move(row));
+    said_.insert(place, std::move(row));
 
     if (near) {
         provisionalNear_.clear();
@@ -411,6 +476,8 @@ void PrompterViewModel::clear()
     answers_.clear();
     provisionalFar_.clear();
     provisionalNear_.clear();
+    farOrder_ = 0;
+    nearOrder_ = 0;
     pendingGap_ = std::chrono::milliseconds::zero();
     recogniserMicros_ = 0;
     modelMicros_ = 0;
@@ -647,6 +714,7 @@ void PrompterViewModel::stopRehearsing()
     }
 
     rehearsing_ = false;
+    rehearsalLoading_ = false;
     rehearsalName_.clear();
     rehearsalNote_.clear();
     rehearsalPlaying_ = false;
@@ -687,11 +755,33 @@ void PrompterViewModel::seekRehearsal(qint64 positionMs)
     seekRehearsal_(rehearsalAt_);
 }
 
+void PrompterViewModel::rehearsalOpening(QString name, QString note, qint64 lengthMs,
+                                         std::vector<float> nearPicture,
+                                         std::vector<float> farPicture, bool stereo)
+{
+    rehearsing_ = true;
+    rehearsalLoading_ = true;
+    rehearsalName_ = std::move(name);
+    rehearsalNote_ = std::move(note);
+    rehearsalLength_ = lengthMs;
+    rehearsalAt_ = 0;
+    rehearsalPlaying_ = false;
+    wave_ = std::move(nearPicture);
+    farWave_ = std::move(farPicture);
+    rehearsalStereo_ = stereo;
+    ++waveRevision_;
+    Q_EMIT rehearsalChanged();
+    Q_EMIT rehearsalAtChanged();
+
+    Q_EMIT readyChanged();
+}
+
 void PrompterViewModel::rehearsalChosen(QString name, QString note, qint64 lengthMs,
                                         std::vector<float> nearPicture,
                                         std::vector<float> farPicture, bool stereo)
 {
     rehearsing_ = true;
+    rehearsalLoading_ = false;
     rehearsalName_ = std::move(name);
     rehearsalNote_ = std::move(note);
     rehearsalLength_ = lengthMs;
@@ -704,6 +794,20 @@ void PrompterViewModel::rehearsalChosen(QString name, QString note, qint64 lengt
     Q_EMIT rehearsalChanged();
     Q_EMIT rehearsalAtChanged();
     Q_EMIT readyChanged();
+}
+
+void PrompterViewModel::rehearsalDrawn(std::vector<float> nearPicture,
+                                       std::vector<float> farPicture, bool stereo)
+{
+    if (!rehearsing_) {
+
+        return;
+    }
+    wave_ = std::move(nearPicture);
+    farWave_ = std::move(farPicture);
+    rehearsalStereo_ = stereo;
+    ++waveRevision_;
+    Q_EMIT rehearsalChanged();
 }
 
 QString PrompterViewModel::rehearsalNote() const
@@ -733,8 +837,10 @@ void PrompterViewModel::rehearsalRefused(QString why)
 {
 
     rehearsing_ = false;
+    rehearsalLoading_ = false;
     rehearsalName_.clear();
     rehearsalNote_.clear();
+    rehearsalLength_ = 0;
     wave_.clear();
     ++waveRevision_;
     Q_EMIT rehearsalChanged();

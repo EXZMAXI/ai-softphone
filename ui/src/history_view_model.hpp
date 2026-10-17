@@ -87,6 +87,8 @@ class HistoryViewModel : public QObject {
 
     Q_PROPERTY(QVariantList newest READ newest NOTIFY newestChanged)
 
+    Q_PROPERTY(int newestCount READ newestCount NOTIFY newestChanged)
+
     Q_PROPERTY(bool anyNewest READ anyNewest NOTIFY newestChanged)
 
 public:
@@ -211,6 +213,10 @@ public:
     Q_INVOKABLE [[nodiscard]] QVariantMap contactSeed(const QString &id) const;
 
     [[nodiscard]] QVariantList newest() const;
+
+    [[nodiscard]] int newestCount() const;
+
+    [[nodiscard]] Q_INVOKABLE QVariantMap newestAt(int index) const;
 
     [[nodiscard]] bool anyNewest() const noexcept
     {

@@ -1493,10 +1493,6 @@ A tick on a prompt&apos;s card: whether it may be run at all.</extracomment>
         <translation>Lielākais fails, ko šis telefons nosūta, baitos. Ieraksts virs tā tiek noraidīts pirms augšupielādes, nevis pēc tās.</translation>
     </message>
     <message>
-        <source>The longest recording this phone will send, in seconds. Nought is no limit of ours, and whatever the provider allows is what applies.</source>
-        <translation>Garākais ieraksts, ko šis telefons nosūta, sekundēs. Nulle nav mūsu robeža, un spēkā ir tas, ko atļauj sniedzējs.</translation>
-    </message>
-    <message>
         <source>This one is the phone&apos;s own. A recogniser that hands back words with a speaker on each and no turns leaves somebody to decide how long a silence ends one, and this is that number, in milliseconds.</source>
         <translation>Šī pieder pašam telefonam. Atpazinējs, kas atdod vārdus ar runātāju pie katra un bez replikām, atstāj kādam izlemt, cik gars klusums vienu noslēdz, un šis skaitlis ir tieši tas, milisekundēs.</translation>
     </message>
@@ -2408,6 +2404,25 @@ A tick on the Yandex recogniser card: numbers, dates and sums written as they ar
         <source>After this long with no new words, the prompter ends the reply: the only boundary there is on a recogniser that marks none of its own, and a backstop on one that marks them and then stops. Empty uses the prompter&apos;s own shorter default.</source>
         <extracomment>Under the idle timer on a recogniser&apos;s card. It has to cover both of the things this number does, because on a recogniser with no end-of-reply of its own it is the only boundary there is — and *empty* is then the prompter&apos;s own default rather than an off switch.</extracomment>
         <translation>Ja tik ilgi nepienāk jauni vārdi, suflieris pabeidz atbildi: atpazinējam bez savām robežām tā ir vienīgā robeža, bet tam, kas tās atzīmē un tad pārstāj, drošības tīkls. Tukšs — suflieris izmanto savu īsāko noklusējuma vērtību.</translation>
+    </message>
+    <message>
+        <source>This model answers with the words and no times: the transcript can be read, but it is not divided into lines and nothing lights up as it is played.</source>
+        <extracomment>Under the model field on a recogniser&apos;s card, for a model that answers with the words and nothing else. *lights up* is the same word the word-timestamps switch uses, two controls down.</extracomment>
+        <translation>Šis modelis atbild ar vārdiem un bez laikiem: pierakstu var izlasīt, bet tas nav sadalīts rindās un atskaņošanas laikā nekas neiedegas.</translation>
+    </message>
+    <message>
+        <source>Longest reply</source>
+        <extracomment>The label over how many words a reply may grow to before this phone ends it at the next pause.</extracomment>
+        <translation>Garākā atbilde</translation>
+    </message>
+    <message>
+        <source>A recogniser that decides its own phrases can run several minutes of a meeting together. Past this many words the prompter ends the reply at the next pause. Empty waits for the recogniser however long it takes.</source>
+        <extracomment>Under the longest-reply count on a recogniser&apos;s card. A recogniser that never finishes a sentence is the case this is for.</extracomment>
+        <translation>Atpazinējs, kas pats izlemj savas frāzes, var savienot vairākas sapulces minūtes vienā atbildē. Pēc tik daudz vārdiem suflieris beidz atbildi nākamajā pauzē. Tukšs gaida atpazinēju, cik ilgi vajadzīgs.</translation>
+    </message>
+    <message>
+        <source>The longest recording this phone will send, in seconds. Nought asks this phone to work it out: some models state a limit of their own, and a longer recording goes up in pieces.</source>
+        <translation>Garākais ieraksts, ko šis telefons nosūta, sekundēs. Nulle lūdz telefonu izlemt pašam: dažiem modeļiem ir sava robeža, un garāks ieraksts tiek nosūtīts pa daļām.</translation>
     </message>
 </context>
 <context>
@@ -3615,11 +3630,6 @@ What a rule does, with the tag it puts on: &quot;put a tag on it: vip&quot;.</ex
     <message>
         <source>Unknown</source>
         <translation>Nezināms</translation>
-    </message>
-    <message>
-        <source>%1 · %2 · %3:%4</source>
-        <extracomment>One conversation in the list a rehearsal may be pointed at: who it was with, when it happened, and how long it is.</extracomment>
-        <translation>%1 · %2 · %3:%4</translation>
     </message>
     <message>
         <source>No suggestion came back this time. The words are still arriving.</source>

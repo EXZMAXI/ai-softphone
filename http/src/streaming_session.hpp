@@ -178,6 +178,8 @@ private:
     std::vector<std::string> unread_;
 
     std::vector<std::string> remarked_;
+
+    std::vector<std::pair<std::string, std::size_t>> shapesSeen_;
 };
 
 class ProtocolRecogniser final : public core::IStreamingAsr {

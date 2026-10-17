@@ -1477,10 +1477,6 @@ A tick on a prompt&apos;s card: whether it may be run at all.</extracomment>
         <translation>Berkas terbesar yang akan dikirim telepon ini, dalam bita. Rekaman di atasnya ditolak sebelum diunggah, bukan sesudahnya.</translation>
     </message>
     <message>
-        <source>The longest recording this phone will send, in seconds. Nought is no limit of ours, and whatever the provider allows is what applies.</source>
-        <translation>Rekaman terpanjang yang akan dikirim telepon ini, dalam detik. Nol berarti tidak ada batas dari kami, dan yang berlaku adalah apa pun yang diizinkan penyedia.</translation>
-    </message>
-    <message>
         <source>This one is the phone&apos;s own. A recogniser that hands back words with a speaker on each and no turns leaves somebody to decide how long a silence ends one, and this is that number, in milliseconds.</source>
         <translation>Yang ini milik telepon sendiri. Pengenal suara yang mengembalikan kata-kata dengan penutur pada tiap kata dan tanpa giliran membuat seseorang harus memutuskan berapa lama diam mengakhiri satu giliran, dan inilah angkanya, dalam milidetik.</translation>
     </message>
@@ -2378,6 +2374,25 @@ A tick on the Yandex recogniser card: numbers, dates and sums written as they ar
         <source>After this long with no new words, the prompter ends the reply: the only boundary there is on a recogniser that marks none of its own, and a backstop on one that marks them and then stops. Empty uses the prompter&apos;s own shorter default.</source>
         <extracomment>Under the idle timer on a recogniser&apos;s card. It has to cover both of the things this number does, because on a recogniser with no end-of-reply of its own it is the only boundary there is — and *empty* is then the prompter&apos;s own default rather than an off switch.</extracomment>
         <translation>Jika selama itu tidak ada kata baru, pembisik mengakhiri jawaban: pada pengenal suara yang tidak punya batas sendiri inilah satu-satunya batas, dan pada yang menandainya lalu berhenti, jaring pengaman. Kosong — pembisik memakai nilai bawaannya sendiri yang lebih singkat.</translation>
+    </message>
+    <message>
+        <source>This model answers with the words and no times: the transcript can be read, but it is not divided into lines and nothing lights up as it is played.</source>
+        <extracomment>Under the model field on a recogniser&apos;s card, for a model that answers with the words and nothing else. *lights up* is the same word the word-timestamps switch uses, two controls down.</extracomment>
+        <translation>Model ini menjawab dengan kata-kata dan tanpa waktu: transkrip masih terbaca, tetapi tidak terbagi menjadi baris dan tidak ada yang menyala saat dimainkan.</translation>
+    </message>
+    <message>
+        <source>Longest reply</source>
+        <extracomment>The label over how many words a reply may grow to before this phone ends it at the next pause.</extracomment>
+        <translation>Jawaban terpanjang</translation>
+    </message>
+    <message>
+        <source>A recogniser that decides its own phrases can run several minutes of a meeting together. Past this many words the prompter ends the reply at the next pause. Empty waits for the recogniser however long it takes.</source>
+        <extracomment>Under the longest-reply count on a recogniser&apos;s card. A recogniser that never finishes a sentence is the case this is for.</extracomment>
+        <translation>Pengenal suara yang menentukan frasanya sendiri dapat menyatukan beberapa menit rapat menjadi satu jawaban. Setelah sebanyak ini kata, pembisik mengakhiri jawaban pada jeda berikutnya. Kosong menunggu pengenal suara selama apa pun.</translation>
+    </message>
+    <message>
+        <source>The longest recording this phone will send, in seconds. Nought asks this phone to work it out: some models state a limit of their own, and a longer recording goes up in pieces.</source>
+        <translation>Rekaman terpanjang yang akan dikirim telepon ini, dalam detik. Nol meminta telepon menghitungnya sendiri: sebagian model menyatakan batasnya sendiri, dan rekaman yang lebih panjang dikirim bagian demi bagian.</translation>
     </message>
 </context>
 <context>
@@ -3575,11 +3590,6 @@ What a rule does, with the tag it puts on: &quot;put a tag on it: vip&quot;.</ex
     <message>
         <source>Unknown</source>
         <translation>Tidak diketahui</translation>
-    </message>
-    <message>
-        <source>%1 · %2 · %3:%4</source>
-        <extracomment>One conversation in the list a rehearsal may be pointed at: who it was with, when it happened, and how long it is.</extracomment>
-        <translation>%1 · %2 · %3:%4</translation>
     </message>
     <message>
         <source>No suggestion came back this time. The words are still arriving.</source>

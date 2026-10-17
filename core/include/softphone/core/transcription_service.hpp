@@ -56,6 +56,8 @@ public:
     void setProviderMaker(ProviderMaker maker);
     void setSecretLookup(SecretLookup lookup);
     void setPreparer(AudioPreparer prepare);
+
+    void setSpeechFinder(SpeechFinder find);
     void watch(Watcher watcher);
 
     void arm(bool armed);
@@ -92,6 +94,7 @@ private:
     ProviderMaker maker_;
     SecretLookup secret_;
     AudioPreparer prepare_;
+    SpeechFinder findSpeech_;
     Watcher watcher_;
 };
 

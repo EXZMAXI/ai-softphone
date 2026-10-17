@@ -430,11 +430,15 @@ Item {
             onTriggered: readingPanel.offerToSave(2)
         }
 
-        MenuSeparator { visible: transcript.rawKept }
+        MenuSeparator {
+            visible: transcript.rawKept
+            height: visible ? implicitHeight : 0
+        }
 
         MenuItem {
 
             visible: transcript.rawKept
+            height: visible ? implicitHeight : 0
 
             text: qsTr("Source (JSON)")
             onTriggered: readingPanel.offerToSave(3)

@@ -154,6 +154,31 @@ std::string_view toString(AsrStatus status) noexcept
     return "failed";
 }
 
+AsrAnswerShape answerShapeFor(std::string_view type, std::string_view model)
+{
+
+    if (type != "openai") {
+        return AsrAnswerShape::Rich;
+    }
+
+    if (model.rfind("gpt-", 0) != 0) {
+        return AsrAnswerShape::Rich;
+    }
+    if (model.find("diarize") != std::string_view::npos) {
+        return AsrAnswerShape::Diarised;
+    }
+    return AsrAnswerShape::Plain;
+}
+
+std::chrono::seconds longestAtOnceFor(std::string_view type, std::string_view model)
+{
+
+    if (type != "openai" || model.rfind("gpt-", 0) != 0) {
+        return std::chrono::seconds{0};
+    }
+    return std::chrono::minutes{23};
+}
+
 bool worthRetrying(AsrStatus status) noexcept
 {
     switch (status) {

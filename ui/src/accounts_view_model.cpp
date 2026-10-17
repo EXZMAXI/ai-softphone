@@ -749,6 +749,13 @@ int AccountsViewModel::reconnectWhatIsDown()
     return asked;
 }
 
+int AccountsViewModel::theAddressesMoved()
+{
+
+    dispatch_([this]() { engine_.addressesChanged(); });
+    return reconnectWhatIsDown();
+}
+
 void AccountsViewModel::disconnectAccount(const QString &accountId)
 {
     dispatch_([this, id = accountId.toStdString()]() {

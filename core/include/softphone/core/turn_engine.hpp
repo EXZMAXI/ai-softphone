@@ -42,9 +42,11 @@ inline constexpr std::size_t kRepliesOfContext = 6;
 
 inline constexpr auto kProviderIdle = std::chrono::milliseconds{2'500};
 
-inline constexpr auto kJoinWithin = std::chrono::milliseconds{900};
+inline constexpr auto kJoinWithin = std::chrono::milliseconds{3000};
 
-inline constexpr std::size_t kJoinShortest = 5;
+inline constexpr std::size_t kJoinShortest = 8;
+
+inline constexpr std::size_t kLongestReply = 50;
 
 struct TurnRules {
 
@@ -63,6 +65,8 @@ struct TurnRules {
     std::chrono::milliseconds join{kJoinWithin};
 
     std::size_t joinShortestWords{kJoinShortest};
+
+    std::size_t longestReply{kLongestReply};
 
     Backlog backlog{Backlog::Coalesce};
 
@@ -100,6 +104,11 @@ struct TurnReading {
     Verdict verdict{Verdict::Asked};
 
     AsrTurn::Boundary boundary{AsrTurn::Boundary::Provider};
+
+    Voice voice{Voice::Far};
+
+    std::chrono::milliseconds from{0};
+    std::chrono::milliseconds to{0};
 
     std::chrono::milliseconds at{0};
 
@@ -166,6 +175,10 @@ public:
 
     [[nodiscard]] bool watchingForSilence() const noexcept;
 
+    [[nodiscard]] std::chrono::milliseconds lineBeganAt(Voice voice) const noexcept;
+
+    [[nodiscard]] std::string lineInHand(Voice voice) const;
+
     static constexpr auto kEchoWindow = std::chrono::milliseconds{10'000};
 
     static constexpr std::size_t kEchoFloor = 2;
@@ -177,18 +190,43 @@ private:
     struct Side {
         std::string provisional;
         std::chrono::milliseconds lastWord{0};
+
+        std::chrono::milliseconds lastHeard{0};
+
         std::chrono::milliseconds started{0};
 
         AsrTurn waiting;
+
+        std::string owed;
+
+        std::chrono::milliseconds owedFrom{0};
 
         std::chrono::milliseconds waitingSince{0};
 
         std::size_t marks{0};
 
         bool awaitingCopy{false};
+
+        std::string handedOut;
+
+        std::chrono::milliseconds handedAt{0};
+
+        std::optional<unsigned> trimmed;
     };
 
     [[nodiscard]] Side &sideOf(Voice voice) noexcept;
+
+    [[nodiscard]] bool otherSideTookOver(Voice voice) const noexcept;
+
+    [[nodiscard]] static std::string_view whatIsNewIn(Side &side, std::string_view line);
+
+    static void tookItOutOfTheLine(Side &side, const AsrTurn &said);
+
+    static void takeWhatIsOwed(Side &side, AsrTurn &said);
+
+    void giveBackWhatWasHeld(Side &side, Voice voice);
+
+    void handTheTurnOver(Voice voice);
 
     [[nodiscard]] bool soundsLikeEcho(const AsrTurn &mine) const;
 

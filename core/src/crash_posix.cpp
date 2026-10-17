@@ -76,6 +76,28 @@ extern "C" void onFatalSignal(int signalNumber)
 
 }
 
+void reportAndEnd(std::string_view reason) noexcept
+{
+
+    crashDetail::nameTheFiles();
+
+    const int descriptor = ::open(destination().report.data(), O_WRONLY | O_CREAT | O_TRUNC, 0600);
+    if (descriptor >= 0) {
+        crashDetail::writeReport(descriptor, reason);
+
+#if defined(__GLIBC__)
+        static_cast<void>(::write(descriptor, "\nthe stack, newest frame first:\n", 32));
+        std::array<void *, 64> frames{};
+        const auto depth = ::backtrace(frames.data(), static_cast<int>(frames.size()));
+        ::backtrace_symbols_fd(frames.data(), depth, descriptor);
+#endif
+
+        ::close(descriptor);
+    }
+
+    ::_exit(3);
+}
+
 bool writeDumpOfAnotherProcess(unsigned long, unsigned long, unsigned long long,
                                const std::string &) noexcept
 {

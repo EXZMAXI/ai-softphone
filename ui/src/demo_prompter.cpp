@@ -27,7 +27,8 @@ void DemoPrompter::begins()
 
 void DemoPrompter::said(bool near, const QString &text, int atMs)
 {
-    prompter_.heardTurn(near, text, std::chrono::milliseconds{atMs});
+
+    prompter_.heardTurn(near, text, std::chrono::milliseconds{atMs}, said_++);
 }
 
 void DemoPrompter::answered(const QString &text, int covers, int atMs)
@@ -39,6 +40,7 @@ void DemoPrompter::forget()
 {
     prompter_.setRunning(false);
     prompter_.clear();
+    said_ = 0;
 }
 
 }

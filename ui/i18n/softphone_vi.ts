@@ -1477,10 +1477,6 @@ A tick on a prompt&apos;s card: whether it may be run at all.</extracomment>
         <translation>Tệp lớn nhất mà điện thoại này sẽ gửi, tính bằng byte. Bản ghi vượt mức đó bị từ chối trước khi tải lên chứ không phải sau.</translation>
     </message>
     <message>
-        <source>The longest recording this phone will send, in seconds. Nought is no limit of ours, and whatever the provider allows is what applies.</source>
-        <translation>Bản ghi dài nhất mà điện thoại này sẽ gửi, tính bằng giây. Không là không có giới hạn nào từ phía chúng tôi, và cái áp dụng là mức nhà cung cấp cho phép.</translation>
-    </message>
-    <message>
         <source>This one is the phone&apos;s own. A recogniser that hands back words with a speaker on each and no turns leaves somebody to decide how long a silence ends one, and this is that number, in milliseconds.</source>
         <translation>Cái này là của riêng điện thoại. Một bộ nhận dạng trả về từng từ kèm người nói mà không có lượt sẽ để ai đó phải quyết định khoảng lặng bao lâu thì kết thúc một lượt, và đây là con số ấy, tính bằng mili giây.</translation>
     </message>
@@ -2378,6 +2374,25 @@ A tick on the Yandex recogniser card: numbers, dates and sums written as they ar
         <source>After this long with no new words, the prompter ends the reply: the only boundary there is on a recogniser that marks none of its own, and a backstop on one that marks them and then stops. Empty uses the prompter&apos;s own shorter default.</source>
         <extracomment>Under the idle timer on a recogniser&apos;s card. It has to cover both of the things this number does, because on a recogniser with no end-of-reply of its own it is the only boundary there is — and *empty* is then the prompter&apos;s own default rather than an off switch.</extracomment>
         <translation>Nếu trong khoảng thời gian này không có từ mới, người nhắc sẽ kết thúc lượt trả lời: với bộ nhận dạng không có ranh giới riêng thì đây là ranh giới duy nhất, còn với bộ có đánh dấu rồi thôi thì đây là lưới an toàn. Để trống — người nhắc dùng giá trị mặc định ngắn hơn của chính nó.</translation>
+    </message>
+    <message>
+        <source>This model answers with the words and no times: the transcript can be read, but it is not divided into lines and nothing lights up as it is played.</source>
+        <extracomment>Under the model field on a recogniser&apos;s card, for a model that answers with the words and nothing else. *lights up* is the same word the word-timestamps switch uses, two controls down.</extracomment>
+        <translation>Mô hình này trả lời bằng các từ và không có thời gian: bản gỡ băng vẫn đọc được, nhưng không chia thành dòng và không có gì sáng lên khi phát.</translation>
+    </message>
+    <message>
+        <source>Longest reply</source>
+        <extracomment>The label over how many words a reply may grow to before this phone ends it at the next pause.</extracomment>
+        <translation>Lượt trả lời dài nhất</translation>
+    </message>
+    <message>
+        <source>A recogniser that decides its own phrases can run several minutes of a meeting together. Past this many words the prompter ends the reply at the next pause. Empty waits for the recogniser however long it takes.</source>
+        <extracomment>Under the longest-reply count on a recogniser&apos;s card. A recogniser that never finishes a sentence is the case this is for.</extracomment>
+        <translation>Một bộ nhận dạng tự quyết định câu của mình có thể dồn vài phút của cuộc họp vào một lượt trả lời. Vượt quá số từ này, người nhắc kết thúc lượt trả lời ở chỗ ngắt tiếp theo. Để trống là chờ bộ nhận dạng bao lâu cũng được.</translation>
+    </message>
+    <message>
+        <source>The longest recording this phone will send, in seconds. Nought asks this phone to work it out: some models state a limit of their own, and a longer recording goes up in pieces.</source>
+        <translation>Bản ghi dài nhất mà điện thoại này sẽ gửi, tính bằng giây. Số không là yêu cầu điện thoại tự tính: một số mô hình nêu giới hạn riêng, và bản ghi dài hơn sẽ được gửi theo từng phần.</translation>
     </message>
 </context>
 <context>
@@ -3575,11 +3590,6 @@ What a rule does, with the tag it puts on: &quot;put a tag on it: vip&quot;.</ex
     <message>
         <source>Unknown</source>
         <translation>Không rõ</translation>
-    </message>
-    <message>
-        <source>%1 · %2 · %3:%4</source>
-        <extracomment>One conversation in the list a rehearsal may be pointed at: who it was with, when it happened, and how long it is.</extracomment>
-        <translation>%1 · %2 · %3:%4</translation>
     </message>
     <message>
         <source>No suggestion came back this time. The words are still arriving.</source>

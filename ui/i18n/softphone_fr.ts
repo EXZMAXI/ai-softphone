@@ -1485,10 +1485,6 @@ A tick on a prompt&apos;s card: whether it may be run at all.</extracomment>
         <translation>Le plus gros fichier que ce téléphone enverra, en octets. Un enregistrement au-dessus est refusé avant l&apos;envoi plutôt qu&apos;après.</translation>
     </message>
     <message>
-        <source>The longest recording this phone will send, in seconds. Nought is no limit of ours, and whatever the provider allows is what applies.</source>
-        <translation>Le plus long enregistrement que ce téléphone enverra, en secondes. Zéro n&apos;est aucune limite de notre part, et c&apos;est ce que le fournisseur autorise qui s&apos;applique.</translation>
-    </message>
-    <message>
         <source>This one is the phone&apos;s own. A recogniser that hands back words with a speaker on each and no turns leaves somebody to decide how long a silence ends one, and this is that number, in milliseconds.</source>
         <translation>Celle-ci appartient au téléphone. Une reconnaissance qui rend des mots avec un locuteur sur chacun et aucun tour laisse à quelqu&apos;un le soin de décider quelle durée de silence en termine un, et c&apos;est ce nombre, en millisecondes.</translation>
     </message>
@@ -2393,6 +2389,25 @@ A tick on the Yandex recogniser card: numbers, dates and sums written as they ar
         <source>After this long with no new words, the prompter ends the reply: the only boundary there is on a recogniser that marks none of its own, and a backstop on one that marks them and then stops. Empty uses the prompter&apos;s own shorter default.</source>
         <extracomment>Under the idle timer on a recogniser&apos;s card. It has to cover both of the things this number does, because on a recogniser with no end-of-reply of its own it is the only boundary there is — and *empty* is then the prompter&apos;s own default rather than an off switch.</extracomment>
         <translation>Sans nouveau mot pendant ce délai, le souffleur termine la réponse : sur une reconnaissance sans limites propres c&apos;est la seule limite, et sur une qui les marque puis cesse de le faire, un filet de sécurité. Vide : le souffleur prend sa propre valeur par défaut, plus courte.</translation>
+    </message>
+    <message>
+        <source>This model answers with the words and no times: the transcript can be read, but it is not divided into lines and nothing lights up as it is played.</source>
+        <extracomment>Under the model field on a recogniser&apos;s card, for a model that answers with the words and nothing else. *lights up* is the same word the word-timestamps switch uses, two controls down.</extracomment>
+        <translation>Ce modèle répond avec les mots et sans les moments : la transcription se lit, mais elle n&apos;est pas découpée en lignes et rien ne s&apos;allume pendant la lecture.</translation>
+    </message>
+    <message>
+        <source>Longest reply</source>
+        <extracomment>The label over how many words a reply may grow to before this phone ends it at the next pause.</extracomment>
+        <translation>Réponse la plus longue</translation>
+    </message>
+    <message>
+        <source>A recogniser that decides its own phrases can run several minutes of a meeting together. Past this many words the prompter ends the reply at the next pause. Empty waits for the recogniser however long it takes.</source>
+        <extracomment>Under the longest-reply count on a recogniser&apos;s card. A recogniser that never finishes a sentence is the case this is for.</extracomment>
+        <translation>Une reconnaissance qui décide elle-même de ses phrases peut réunir plusieurs minutes d&apos;une réunion en une seule réponse. Passé ce nombre de mots, le souffleur termine la réponse à la pause suivante. Vide attend la reconnaissance le temps qu&apos;il faudra.</translation>
+    </message>
+    <message>
+        <source>The longest recording this phone will send, in seconds. Nought asks this phone to work it out: some models state a limit of their own, and a longer recording goes up in pieces.</source>
+        <translation>Le plus long enregistrement que ce téléphone enverra, en secondes. Zéro demande au téléphone de le déterminer : certains modèles annoncent une limite propre, et un enregistrement plus long part en morceaux.</translation>
     </message>
 </context>
 <context>
@@ -3595,11 +3610,6 @@ What a rule does, with the tag it puts on: &quot;put a tag on it: vip&quot;.</ex
     <message>
         <source>Unknown</source>
         <translation>Inconnu</translation>
-    </message>
-    <message>
-        <source>%1 · %2 · %3:%4</source>
-        <extracomment>One conversation in the list a rehearsal may be pointed at: who it was with, when it happened, and how long it is.</extracomment>
-        <translation>%1 · %2 · %3:%4</translation>
     </message>
     <message>
         <source>No suggestion came back this time. The words are still arriving.</source>

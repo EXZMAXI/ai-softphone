@@ -124,7 +124,7 @@ std::vector<Reading> replay(const std::vector<Reading> &readings, std::chrono::m
         const auto until = index + 1 < readings.size() ? readings.at(index + 1).at : now.at + tick;
         for (auto at = now.at; at < until; at += tick) {
 
-            static_cast<void>(gate.saw(now.held, now.duplex, epoch + at));
+            static_cast<void>(gate.saw(now.held, now.duplex, now.playing, epoch + at));
             append(Reading{at, now.held, now.playing, now.duplex, gate.talking()});
         }
     }

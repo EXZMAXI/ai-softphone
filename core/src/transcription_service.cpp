@@ -106,6 +106,11 @@ void TranscriptionService::setPreparer(AudioPreparer prepare)
     prepare_ = std::move(prepare);
 }
 
+void TranscriptionService::setSpeechFinder(SpeechFinder find)
+{
+    findSpeech_ = std::move(find);
+}
+
 void TranscriptionService::watch(Watcher watcher)
 {
     watcher_ = std::move(watcher);
@@ -323,15 +328,19 @@ JobOutcome TranscriptionService::run(const Job &job, const JobRunner::Cancelled 
 
     {
         const auto wanted = spoken;
+
+        const auto named = configured.model.empty() ? std::string{"none named"} : configured.model;
         const LogAttribute fields[] = {
             {"recording", recording.id},
             {"provider", configured.name.empty() ? configured.id : configured.name},
             {"type", configured.type},
+            {"model", named},
+            {"endpoint", configured.endpoint},
             {"language", wanted}};
         Logger::instance().log(LogLevel::Info, kArea, "transcribing", fields);
     }
 
-    Transcriber transcriber{*provider, prepare_, clock_};
+    Transcriber transcriber{*provider, prepare_, clock_, findSpeech_};
 
     Transcriber::Request request;
     request.recordingId = recording.id;
@@ -386,7 +395,9 @@ JobOutcome TranscriptionService::run(const Job &job, const JobRunner::Cancelled 
         const auto lines = std::to_string(transcript.segments.size());
         const auto words = std::to_string(transcript.wordCount);
 
-        const auto audioMs = std::to_string(transcript.audio.count());
+        const auto conversationMs = std::to_string(
+            std::chrono::duration_cast<std::chrono::milliseconds>(recording.duration).count());
+        const auto sentMs = std::to_string(transcript.audio.count());
         auto furthest = std::chrono::milliseconds::zero();
         for (const auto &line : transcript.segments) {
             furthest = std::max(furthest, line.end);
@@ -395,10 +406,12 @@ JobOutcome TranscriptionService::run(const Job &job, const JobRunner::Cancelled 
         const LogAttribute fields[] = {{"recording", recording.id},
                                        {"transcript", transcript.id},
                                        {"provider", transcript.providerType},
+                                       {"model", transcript.model},
                                        {"language", transcript.detectedLanguage},
                                        {"lines", lines},
                                        {"words", words},
-                                       {"audio_ms", audioMs},
+                                       {"conversation_ms", conversationMs},
+                                       {"sent_ms", sentMs},
                                        {"last_line_ends_ms", lastMs}};
         Logger::instance().log(LogLevel::Info, kArea, "transcribed", fields);
     }

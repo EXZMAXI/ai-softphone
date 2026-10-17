@@ -597,6 +597,21 @@ QVariantList HistoryViewModel::newest() const
     return out;
 }
 
+int HistoryViewModel::newestCount() const
+{
+
+    return static_cast<int>(newest().size());
+}
+
+QVariantMap HistoryViewModel::newestAt(int index) const
+{
+    const auto rows = newest();
+    if (index < 0 || index >= rows.size()) {
+        return {};
+    }
+    return rows.at(index).toMap();
+}
+
 QVariantMap HistoryViewModel::contactSeed(const QString &id) const
 {
     QVariantMap seed;

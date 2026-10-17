@@ -203,4 +203,17 @@ std::string firstJsonValue(std::string_view answer)
     return balancedIn(answer);
 }
 
+std::vector<std::string> knownChatModels(std::string_view type)
+{
+
+    if (type == "yandex") {
+        return {
+            "yandexgpt-5.1",     "yandexgpt-5-pro",     "aliceai-llm",
+            "aliceai-llm-flash", "deepseek-v4.1-flash", "qwen3.6-35b-a3b",
+        };
+    }
+
+    return {};
+}
+
 }

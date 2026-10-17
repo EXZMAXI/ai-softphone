@@ -53,8 +53,8 @@ public:
         std::vector<Kept> raw;
     };
 
-    Transcriber(IAsrProvider &provider, AudioPreparer prepare,
-                WallClock clock = defaultWallClock());
+    Transcriber(IAsrProvider &provider, AudioPreparer prepare, WallClock clock = defaultWallClock(),
+                SpeechFinder findSpeech = {});
 
     Transcriber(const Transcriber &) = delete;
     Transcriber &operator=(const Transcriber &) = delete;
@@ -68,6 +68,7 @@ private:
     IAsrProvider &provider_;
     AudioPreparer prepare_;
     WallClock clock_;
+    SpeechFinder findSpeech_;
 };
 
 }

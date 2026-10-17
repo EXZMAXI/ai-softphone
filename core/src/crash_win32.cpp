@@ -13,7 +13,9 @@
 #include "crash_detail.hpp"
 
 #include <array>
+#include <csignal>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <filesystem>
 #include <string>
@@ -22,6 +24,7 @@
 
 #include <windows.h>
 
+#include <crtdbg.h>
 #include <dbghelp.h>
 #include <io.h>
 
@@ -204,7 +207,7 @@ void watchTheHandler() noexcept
     }
 }
 
-LONG WINAPI onUnhandledException(EXCEPTION_POINTERS *exception) noexcept
+void fileTheReport(EXCEPTION_POINTERS *exception, std::string_view reason) noexcept
 {
     crashDetail::nameTheFiles();
 
@@ -212,9 +215,7 @@ LONG WINAPI onUnhandledException(EXCEPTION_POINTERS *exception) noexcept
         ::_open(destination().report.data(), _O_WRONLY | _O_CREAT | _O_TRUNC | _O_BINARY,
                 _S_IREAD | _S_IWRITE);
     if (descriptor >= 0) {
-        crashDetail::writeReport(
-            descriptor, exception == nullptr ? std::string_view{"the program stopped itself"}
-                                             : nameOf(exception->ExceptionRecord->ExceptionCode));
+        crashDetail::writeReport(descriptor, reason);
         static_cast<void>(
             ::_write(descriptor, "\nthe stacks are in the .dmp beside this file\n", 45));
         ::_close(descriptor);
@@ -225,6 +226,13 @@ LONG WINAPI onUnhandledException(EXCEPTION_POINTERS *exception) noexcept
     if (!writeDumpFromOutside(exception)) {
         writeDump(exception);
     }
+}
+
+LONG WINAPI onUnhandledException(EXCEPTION_POINTERS *exception) noexcept
+{
+    fileTheReport(exception, exception == nullptr
+                                 ? std::string_view{"the program stopped itself"}
+                                 : nameOf(exception->ExceptionRecord->ExceptionCode));
 
     return EXCEPTION_CONTINUE_SEARCH;
 }
@@ -242,6 +250,23 @@ void onTerminate() noexcept
     ::TerminateProcess(::GetCurrentProcess(), 3);
 }
 
+void onAbort(int) noexcept
+{
+    onUnhandledException(nullptr);
+    ::TerminateProcess(::GetCurrentProcess(), 3);
+}
+
+}
+
+void reportAndEnd(std::string_view reason) noexcept
+{
+
+    fileTheReport(nullptr, reason);
+
+    ::TerminateProcess(::GetCurrentProcess(), 3);
+
+    for (;;) {
+    }
 }
 
 bool writeDumpOfAnotherProcess(unsigned long processId, unsigned long threadId,
@@ -324,6 +349,18 @@ bool installCrashHandler(const std::filesystem::path &directory)
     ::SetUnhandledExceptionFilter(&onUnhandledException);
     ::_set_invalid_parameter_handler(&onInvalidParameter);
     std::set_terminate(&onTerminate);
+    static_cast<void>(std::signal(SIGABRT, &onAbort));
+
+#if defined(_DEBUG)
+    if (::IsDebuggerPresent() == FALSE) {
+        static_cast<void>(::_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE));
+        static_cast<void>(::_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR));
+        static_cast<void>(::_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE));
+        static_cast<void>(::_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR));
+    }
+#endif
+
+    static_cast<void>(::_set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT));
 
     return true;
 }

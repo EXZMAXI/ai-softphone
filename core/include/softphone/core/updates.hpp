@@ -47,6 +47,8 @@ struct UpdateChannel {
 
     [[nodiscard]] std::vector<std::string> hostsFor(const std::string &country) const;
 
+    [[nodiscard]] std::vector<std::string> downloadHostsFor(const std::string &country) const;
+
     std::string publicKey;
     Delivery delivery{Delivery::Source};
 
@@ -209,12 +211,17 @@ private:
     void work();
     void doCheck();
     void doFetch();
+
+    [[nodiscard]] std::optional<Release> manifestFrom(const std::string &url,
+                                                      std::string &complaint);
+
+    [[nodiscard]] bool tryToDownload(const ReleasePackage &package, std::string &complaint);
     void publish(const UpdateStatus &status);
     void report(UpdateState state, const std::string &complaint);
 
     void logTheState(UpdateState state, const UpdateStatus &copy) const;
 
-    void sayWhatWasFound(const UpdateStatus &copy) const;
+    void sayWhatWasFound(const UpdateStatus &copy, std::size_t copies) const;
 
     UpdateChannel channel_;
 
@@ -232,6 +239,8 @@ private:
     bool stopping_{false};
     UpdateStatus status_;
     std::optional<Release> offered_;
+
+    std::vector<ReleasePackage> candidates_;
     std::function<void(const UpdateStatus &)> watcher_;
 
     std::thread worker_;

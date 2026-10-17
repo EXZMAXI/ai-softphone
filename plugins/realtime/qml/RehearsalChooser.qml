@@ -144,7 +144,9 @@ Popup {
                 verticalPadding: 6
                 highlighted: ListView.isCurrentItem
 
-                text: entry.modelData.label ?? ""
+                text: qsTr("%1 · %2 · %3").arg(entry.modelData.who ?? "")
+                                          .arg(entry.modelData.when ?? "")
+                                          .arg(Duration.text(entry.modelData.durationMs ?? 0))
 
                 icon.source: chooser.glyphs === ""
                              ? ""

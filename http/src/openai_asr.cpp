@@ -175,6 +175,87 @@ constexpr std::uint64_t kOpenAiUploadCeiling = 25 * 1024 * 1024;
     return {};
 }
 
+[[nodiscard]] std::string pathOf(const std::string &url)
+{
+    const auto scheme = url.find("://");
+    const auto from = scheme == std::string::npos ? 0U : scheme + 3U;
+    const auto slash = url.find('/', from);
+    return slash == std::string::npos ? std::string{} : url.substr(slash);
+}
+
+[[nodiscard]] std::string notServedHere(const core::HttpRequest &request, const std::string &model,
+                                        const std::string &said)
+{
+    const auto path = pathOf(request.url);
+    if (path.empty() || said.find(path) == std::string::npos) {
+        return {};
+    }
+    const auto which = model.empty() ? std::string{"the model this row names"} : "'" + model + "'";
+    return "the address answered and will not serve " + which + " on it: " + request.url +
+           " is the right route for transcribing a file, so this is a model that is not "
+           "available there — a model that only runs in a live session does exactly this. It "
+           "said: " +
+           said;
+}
+
+[[nodiscard]] std::string formatFor(core::AsrAnswerShape shape)
+{
+    switch (shape) {
+    case core::AsrAnswerShape::Rich:
+        return "verbose_json";
+    case core::AsrAnswerShape::Diarised:
+        return "diarized_json";
+    case core::AsrAnswerShape::Plain:
+        return "json";
+    }
+    return "verbose_json";
+}
+
+[[nodiscard]] bool namedInExtras(const core::AsrEndpoint &where, std::string_view name)
+{
+    return std::any_of(where.params.begin(), where.params.end(), [name](const auto &pair) {
+        return pair.first == name && !ours(pair.first);
+    });
+}
+
+[[nodiscard]] std::string extraOf(const core::AsrEndpoint &where, std::string_view name)
+{
+    for (const auto &[had, value] : where.params) {
+        if (had == name) {
+            return value;
+        }
+    }
+    return {};
+}
+
+[[nodiscard]] bool mentions(const std::string &said, std::string_view word)
+{
+    const auto isWordChar = [](char letter) {
+        return (std::isalnum(static_cast<unsigned char>(letter)) != 0) || letter == '_';
+    };
+    for (auto at = said.find(word); at != std::string::npos; at = said.find(word, at + 1)) {
+        const auto before = at == 0 || !isWordChar(said[at - 1]);
+        const auto after = at + word.size() >= said.size() || !isWordChar(said[at + word.size()]);
+        if (before && after) {
+            return true;
+        }
+    }
+    return false;
+}
+
+[[nodiscard]] std::string formatSuggestedIn(const std::string &said, const std::string &sent)
+{
+    if (!mentions(said, "response_format")) {
+        return {};
+    }
+    for (const auto *const offered : {"diarized_json", "verbose_json", "json"}) {
+        if (offered != sent && mentions(said, offered)) {
+            return offered;
+        }
+    }
+    return {};
+}
+
 [[nodiscard]] core::AsrWord wordFrom(const nlohmann::json &entry)
 {
     core::AsrWord word;
@@ -207,7 +288,8 @@ std::string asLanguageCode(std::string_view spoken)
     return iso639Alpha2(text);
 }
 
-core::AsrResult readOpenAiTranscription(std::string_view body)
+core::AsrResult readOpenAiTranscription(std::string_view body,
+                                        std::chrono::milliseconds spanIfNoTimes)
 {
     const auto parsed = nlohmann::json::parse(body, nullptr, false);
     if (parsed.is_discarded() || !parsed.is_object()) {
@@ -219,6 +301,17 @@ core::AsrResult readOpenAiTranscription(std::string_view body)
     result.raw = std::string{body};
     result.status = core::AsrStatus::Ok;
     result.detectedLanguage = asLanguageCode(streaming::readOr(parsed, "language", std::string{}));
+
+    if (result.detectedLanguage.empty()) {
+        const auto several = parsed.find("languages");
+        if (several != parsed.end() && several->is_array() && !several->empty()) {
+            const auto &first = several->front();
+            const auto code = first.is_object()
+                                  ? streaming::readOr(first, "code", std::string{})
+                                  : (first.is_string() ? first.get<std::string>() : std::string{});
+            result.detectedLanguage = asLanguageCode(code);
+        }
+    }
     result.audio = secondsToMs(streaming::readOr(parsed, "duration", 0.0));
     result.model = streaming::readOr(parsed, "model", std::string{});
 
@@ -279,9 +372,10 @@ core::AsrResult readOpenAiTranscription(std::string_view body)
         if (!text.empty()) {
             core::AsrSegment whole;
             whole.start = 0ms;
-            whole.end = result.audio;
+            whole.end = result.audio > 0ms ? result.audio : spanIfNoTimes;
             whole.text = text;
             result.segments.push_back(std::move(whole));
+            result.timed = false;
         }
     }
 
@@ -295,13 +389,19 @@ core::AsrCapabilities OpenAiAsrProvider::capabilities(const core::AsrEndpoint &w
     core::AsrCapabilities can;
     can.multichannel = flagOf(where, "multichannel", false);
     can.diarisation = flagOf(where, "diarisation", false);
-    can.wordTimestamps = flagOf(where, "word_timestamps", true);
+
+    can.wordTimestamps = flagOf(where, "word_timestamps", true) &&
+                         core::answerShapeFor(type(), where.model) == core::AsrAnswerShape::Rich;
     can.languageHint = true;
     can.detectsLanguage = true;
+
+    can.answersWithTimes = core::timesComeBack(core::answerShapeFor(type(), where.model));
     can.formats = kFormats;
     can.maxBytes = numberOf(where, "max_bytes", kOpenAiUploadCeiling);
-    can.maxDuration =
-        std::chrono::seconds{static_cast<std::int64_t>(numberOf(where, "max_duration", 0))};
+
+    const auto stated = numberOf(where, "max_duration", 0);
+    can.maxDuration = stated > 0 ? std::chrono::seconds{static_cast<std::int64_t>(stated)}
+                                 : core::longestAtOnceFor(type(), where.model);
     can.maxConcurrent =
         static_cast<unsigned>(std::max<std::uint64_t>(numberOf(where, "max_concurrent", 1), 1));
     return can;
@@ -316,62 +416,98 @@ core::AsrResult OpenAiAsrProvider::transcribe(const core::AsrEndpoint &where,
         return refuse(core::AsrStatus::Unsupported, "this provider has no address");
     }
 
-    core::HttpRequest request;
-    request.verb = core::HttpVerb::Post;
-    request.url = join(where.url, "audio/transcriptions");
-    request.timeout = where.timeout;
-    if (!where.token.empty()) {
-        request.headers.emplace_back("Authorization", "Bearer " + where.token);
-    }
+    const auto asked = namedInExtras(where, "response_format");
+    auto format = asked ? extraOf(where, "response_format")
+                        : formatFor(core::answerShapeFor(type(), where.model));
+    const auto negotiable = !asked;
 
-    core::HttpPart audio;
-    audio.name = "file";
-    audio.fileName = input.file.filename().string();
-    audio.contentType = input.mimeType;
-    audio.file = input.file;
-    request.parts.push_back(std::move(audio));
+    constexpr int kRounds = 3;
+    std::vector<std::string> tried;
+    std::vector<std::pair<std::string, std::string>> learnt;
 
-    if (!where.model.empty()) {
-        request.parts.push_back({"model", {}, {}, where.model, {}});
-    }
-    request.parts.push_back({"response_format", {}, {}, "verbose_json", {}});
-    if (!options.language.empty()) {
-        request.parts.push_back({"language", {}, {}, options.language, {}});
-    }
-    if (options.wordTimestamps) {
+    for (int round = 0;; ++round) {
+        tried.push_back(format);
 
-        request.parts.push_back({"timestamp_granularities[]", {}, {}, "segment", {}});
-        request.parts.push_back({"timestamp_granularities[]", {}, {}, "word", {}});
-    }
-    for (const auto &[name, value] : where.params) {
-        if (!ours(name)) {
-            request.parts.push_back({name, {}, {}, value, {}});
+        core::HttpRequest request;
+        request.verb = core::HttpVerb::Post;
+        request.url = join(where.url, "audio/transcriptions");
+        request.timeout = where.timeout;
+        if (!where.token.empty()) {
+            request.headers.emplace_back("Authorization", "Bearer " + where.token);
         }
-    }
 
-    const auto answer = client_.send(request, cancelled);
+        core::HttpPart audio;
+        audio.name = "file";
+        audio.fileName = input.file.filename().string();
+        audio.contentType = input.mimeType;
+        audio.file = input.file;
+        request.parts.push_back(std::move(audio));
 
-    if (cancelled && cancelled()) {
-        return refuse(core::AsrStatus::Cancelled, "cancelled");
-    }
-
-    const auto status = statusOf(answer);
-    if (status != core::AsrStatus::Ok) {
-        auto said = complaintIn(answer.body);
-        if (said.empty()) {
-            said = answer.answered() ? "the provider answered " + std::to_string(answer.status)
-                                     : answer.error;
+        if (!where.model.empty()) {
+            request.parts.push_back({"model", {}, {}, where.model, {}});
         }
-        auto result = refuse(status, std::move(said));
-        result.raw = answer.body;
+        if (!format.empty()) {
+            request.parts.push_back({"response_format", {}, {}, format, {}});
+        }
+        if (!options.language.empty()) {
+            request.parts.push_back({"language", {}, {}, options.language, {}});
+        }
+
+        if (options.wordTimestamps && format == "verbose_json" &&
+            !namedInExtras(where, "timestamp_granularities[]")) {
+            request.parts.push_back({"timestamp_granularities[]", {}, {}, "segment", {}});
+            request.parts.push_back({"timestamp_granularities[]", {}, {}, "word", {}});
+        }
+        for (const auto &[name, value] : where.params) {
+
+            if (!ours(name) && name != "response_format" && name != "timestamp_granularities[]") {
+                request.parts.push_back({name, {}, {}, value, {}});
+            }
+        }
+
+        const auto answer = client_.send(request, cancelled);
+
+        if (cancelled && cancelled()) {
+            return refuse(core::AsrStatus::Cancelled, "cancelled");
+        }
+
+        const auto status = statusOf(answer);
+        if (status != core::AsrStatus::Ok) {
+            auto said = complaintIn(answer.body);
+            if (said.empty()) {
+                said = answer.answered() ? "the provider answered " + std::to_string(answer.status)
+                                         : answer.error;
+            }
+            if (answer.status == 404) {
+                if (auto better = notServedHere(request, where.model, said); !better.empty()) {
+                    said = std::move(better);
+                }
+            }
+
+            if (negotiable && round + 1 < kRounds) {
+                const auto next = formatSuggestedIn(said, format);
+                const auto fresh =
+                    !next.empty() && std::find(tried.begin(), tried.end(), next) == tried.end();
+                if (fresh) {
+                    learnt.emplace_back("response_format", next);
+                    format = next;
+                    continue;
+                }
+            }
+
+            auto result = refuse(status, std::move(said));
+            result.raw = answer.body;
+            return result;
+        }
+
+        auto result = readOpenAiTranscription(answer.body, input.duration);
+        if (result.model.empty()) {
+            result.model = where.model;
+        }
+
+        result.learnt = std::move(learnt);
         return result;
     }
-
-    auto result = readOpenAiTranscription(answer.body);
-    if (result.model.empty()) {
-        result.model = where.model;
-    }
-    return result;
 }
 
 core::AsrProbe OpenAiAsrProvider::probe(const core::AsrEndpoint &where)

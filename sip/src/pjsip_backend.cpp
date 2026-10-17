@@ -5108,6 +5108,34 @@ void PjsipBackend::forgetAccount(const std::string &accountId)
     impl_->accounts.erase(it);
 }
 
+void PjsipBackend::addressesChanged()
+{
+    if (!impl_->running || impl_->endpoint == nullptr) {
+        return;
+    }
+
+    impl_->ensureThreadRegistered();
+
+    try {
+        pj::IpChangeParam moved;
+        moved.restartListener = true;
+        moved.shutdownTransport = true;
+        impl_->endpoint->handleIpChange(moved);
+    } catch (const pj::Error &error) {
+        core::Logger::instance().log(core::LogLevel::Warning, "sip",
+                                     "the stack would not take the address change: " +
+                                         error.info());
+        return;
+    }
+
+    const auto howMany = std::to_string(impl_->accounts.size());
+    const core::LogAttribute fields[] = {{"lines", howMany}};
+    core::Logger::instance().log(core::LogLevel::Info, "sip",
+                                 "this machine's addresses moved; the listeners are open again "
+                                 "and every line is registering through them",
+                                 fields);
+}
+
 void PjsipBackend::requestUnregistration(const std::string &accountId)
 {
     const auto it = impl_->accounts.find(accountId);

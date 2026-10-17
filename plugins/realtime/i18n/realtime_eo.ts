@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   AI Softphone - a cross-platform desktop SIP softphone with an AI enrichment layer.
   https://ai-softphone.com
@@ -57,7 +57,7 @@
     </message>
     <message>
         <source>Save the prompter</source>
-        <extracomment>The title of the dialog that writes the prompter's two columns to a file.</extracomment>
+        <extracomment>The title of the dialog that writes the prompter&apos;s two columns to a file.</extracomment>
         <translation>[Šàvé thé prömptér·····]</translation>
     </message>
     <message>
@@ -75,12 +75,12 @@
     </message>
     <message>
         <source>Clear the prompter?</source>
-        <extracomment>Asked before the prompter's two columns are emptied.</extracomment>
+        <extracomment>Asked before the prompter&apos;s two columns are emptied.</extracomment>
         <translation>[Çléàr thé prömptér?······]</translation>
     </message>
     <message>
         <source>Assistant</source>
-        <extracomment>A picker: which of the prompter's assistants to run. The same word the settings section's list of them is headed with.</extracomment>
+        <extracomment>A picker: which of the prompter&apos;s assistants to run. The same word the settings section&apos;s list of them is headed with.</extracomment>
         <translation>[Àššíštàñt···]</translation>
     </message>
     <message>
@@ -119,7 +119,7 @@
     </message>
     <message>
         <source>End the reply here and suggest what to say</source>
-        <extracomment>The tip on the button that asks for a suggestion about the reply being spoken now. It ends the reply as well as asking, which is the half a person needs to know before pressing it mid-sentence. *Reply* is this product's own word for one turn of a conversation — see `When a reply has ended` on the prompter's settings page.</extracomment>
+        <extracomment>The tip on the button that asks for a suggestion about the reply being spoken now. It ends the reply as well as asking, which is the half a person needs to know before pressing it mid-sentence. *Reply* is this product&apos;s own word for one turn of a conversation — see `When a reply has ended` on the prompter&apos;s settings page.</extracomment>
         <translation>[Éñd thé réply héré àñd šüggéšt whàt tö šày··············]</translation>
     </message>
     <message>
@@ -156,7 +156,7 @@
     </message>
     <message>
         <source>No conversations in the library yet</source>
-        <extracomment>A menu entry standing where the library's conversations would be, when there are none to rehearse against.</extracomment>
+        <extracomment>A menu entry standing where the library&apos;s conversations would be, when there are none to rehearse against.</extracomment>
         <translation>[Ñö çöñvéršàtíöñš íñ thé líbràry yét············]</translation>
     </message>
     <message>
@@ -195,7 +195,7 @@
     <name>RehearsalBar</name>
     <message>
         <source>Pause</source>
-        <extracomment>A button on the rehearsal's player.</extracomment>
+        <extracomment>A button on the rehearsal&apos;s player.</extracomment>
         <translation>[Pàüšé··]</translation>
     </message>
     <message>
@@ -209,22 +209,30 @@
     </message>
     <message>
         <source>Play the recording into the prompter</source>
-        <extracomment>The tip on Play on the rehearsal's player.</extracomment>
+        <extracomment>The tip on Play on the rehearsal&apos;s player.</extracomment>
         <translation>[Plày thé réçördíñg íñtö thé prömptér············]</translation>
     </message>
     <message>
         <source>%1 / %2</source>
-        <extracomment>The rehearsal's player: where the playhead is, out of how long the recording is. Both are minutes and seconds.</extracomment>
+        <extracomment>The rehearsal&apos;s player: where the playhead is, out of how long the recording is. Both are minutes and seconds, with hours in front of them where the recording runs that long.</extracomment>
         <translation>[%1 / %2··]</translation>
     </message>
     <message>
         <source>Stop rehearsing</source>
-        <extracomment>A button on the rehearsal's player: stop rehearsing and go back to listening to real conversations.</extracomment>
+        <extracomment>A button on the rehearsal&apos;s player: stop rehearsing and go back to listening to real conversations.</extracomment>
         <translation>[Štöp réhéàršíñg·····]</translation>
     </message>
     <message>
         <source>Back to listening to calls</source>
         <translation>[Bàçk tö líštéñíñg tö çàllš·········]</translation>
+    </message>
+</context>
+<context>
+    <name>RehearsalChooser</name>
+    <message>
+        <source>%1 · %2 · %3</source>
+        <extracomment>One conversation in the list a rehearsal may be pointed at: who it was with, when it happened, and how long it is.</extracomment>
+        <translation>[%1 · %2 · %3····]</translation>
     </message>
 </context>
 <context>
@@ -246,7 +254,7 @@
     <message>
         <source>off</source>
         <comment>a prompt</comment>
-        <extracomment>Marks a prompt that has been switched off. Disambiguated from the language model's own "off" above: the two agree with different nouns in every Romance and Slavic language M16 ships.</extracomment>
+        <extracomment>Marks a prompt that has been switched off. Disambiguated from the language model&apos;s own &quot;off&quot; above: the two agree with different nouns in every Romance and Slavic language M16 ships.</extracomment>
         <translation>[öff··]</translation>
     </message>
     <message>
@@ -303,8 +311,8 @@
         <translation>[Špééçh réçögñítíöñ whílé à çöñvéršàtíöñ íš hàppéñíñg, àñd šüggéštíöñš wríttéñ tö yöür öwñ íñštrüçtíöñš. Böth àré çhàrgéd by thé míñüté.···············································]</translation>
     </message>
     <message>
-        <source>The other party's voice is sent to a recogniser as it is spoken, which is no less than recording them. Where Settings → Recording asks for them to be told first, a prompter starts only after they have been.</source>
-        <translation>[Thé öthér pàrty'š vöíçé íš šéñt tö à réçögñíšér àš ít íš špökéñ, whíçh íš ñö léšš thàñ réçördíñg thém. Whéré Šéttíñgš → Réçördíñg àškš för thém tö bé töld fíršt, à prömptér štàrtš öñly àftér théy hàvé bééñ.········································································]</translation>
+        <source>The other party&apos;s voice is sent to a recogniser as it is spoken, which is no less than recording them. Where Settings → Recording asks for them to be told first, a prompter starts only after they have been.</source>
+        <translation>[Thé öthér pàrty&apos;š vöíçé íš šéñt tö à réçögñíšér àš ít íš špökéñ, whíçh íš ñö léšš thàñ réçördíñg thém. Whéré Šéttíñgš → Réçördíñg àškš för thém tö bé töld fíršt, à prömptér štàrtš öñly àftér théy hàvé bééñ.········································································]</translation>
     </message>
     <message>
         <source>Text size</source>
@@ -317,8 +325,11 @@
     </message>
     <message numerus="yes">
         <source>Transcript and suggestions: %n pixel(s)</source>
-        <extracomment>Over the slider that sets how large the prompter's two columns are drawn. %n is the size in pixels. The two columns are named by what is in them rather than by their arrangement.</extracomment>
-        <translation><numerusform>[Tràñšçrípt àñd šüggéštíöñš: %n píxél(š)·············]</numerusform><numerusform>[Tràñšçrípt àñd šüggéštíöñš: %n píxél(š)·············]</numerusform></translation>
+        <extracomment>Over the slider that sets how large the prompter&apos;s two columns are drawn. %n is the size in pixels. The two columns are named by what is in them rather than by their arrangement.</extracomment>
+        <translation>
+            <numerusform>[Tràñšçrípt àñd šüggéštíöñš: %n píxél(š)·············]</numerusform>
+            <numerusform>[Tràñšçrípt àñd šüggéštíöñš: %n píxél(š)·············]</numerusform>
+        </translation>
     </message>
     <message>
         <source>Repeat the newest line above the columns</source>
@@ -332,11 +343,14 @@
     <message numerus="yes">
         <source>The repeated line: %n pixel(s)</source>
         <extracomment>Over the slider that sets how large the repeated newest line is drawn. %n is the size in pixels.</extracomment>
-        <translation><numerusform>[Thé répéàtéd líñé: %n píxél(š)··········]</numerusform><numerusform>[Thé répéàtéd líñé: %n píxél(š)··········]</numerusform></translation>
+        <translation>
+            <numerusform>[Thé répéàtéd líñé: %n píxél(š)··········]</numerusform>
+            <numerusform>[Thé répéàtéd líñé: %n píxél(š)··········]</numerusform>
+        </translation>
     </message>
     <message>
-        <source>Each one listens to a conversation as it happens and writes something into the prompter's window: the words as they are said, a translation of them, or a suggestion for what to say next. You choose which to run when you start a prompter.</source>
-        <translation>[Éàçh öñé líštéñš tö à çöñvéršàtíöñ àš ít hàppéñš àñd wrítéš šöméthíñg íñtö thé prömptér'š wíñdöw: thé wördš àš théy àré šàíd, à tràñšlàtíöñ öf thém, ör à šüggéštíöñ för whàt tö šày ñéxt. Yöü çhööšé whíçh tö rüñ whéñ yöü štàrt à prömptér.··················································································]</translation>
+        <source>Each one listens to a conversation as it happens and writes something into the prompter&apos;s window: the words as they are said, a translation of them, or a suggestion for what to say next. You choose which to run when you start a prompter.</source>
+        <translation>[Éàçh öñé líštéñš tö à çöñvéršàtíöñ àš ít hàppéñš àñd wrítéš šöméthíñg íñtö thé prömptér&apos;š wíñdöw: thé wördš àš théy àré šàíd, à tràñšlàtíöñ öf thém, ör à šüggéštíöñ för whàt tö šày ñéxt. Yöü çhööšé whíçh tö rüñ whéñ yöü štàrt à prömptér.··················································································]</translation>
     </message>
     <message>
         <source>Move up</source>
@@ -356,7 +370,7 @@
     </message>
     <message>
         <source>%1 · about %2 replies</source>
-        <extracomment>Over an answer that covers more than one reply: %1 is how many. §8.3's coalescing, said rather than hidden.</extracomment>
+        <extracomment>Over an answer that covers more than one reply: %1 is how many. §8.3&apos;s coalescing, said rather than hidden.</extracomment>
         <translation>[%1 · àböüt %2 réplíéš·······]</translation>
     </message>
     <message>
@@ -377,7 +391,7 @@ A suggestion, on the right button: put everything the model wrote on the clipboa
     </message>
     <message>
         <source>Copy this line</source>
-        <extracomment>A line of the live transcript, on the right button: put this line's words on the clipboard.</extracomment>
+        <extracomment>A line of the live transcript, on the right button: put this line&apos;s words on the clipboard.</extracomment>
         <translation>[Çöpy thíš líñé····]</translation>
     </message>
     <message>

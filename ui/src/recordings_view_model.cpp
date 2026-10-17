@@ -132,7 +132,7 @@ void RecordingRows::everyRowSaysSomethingNew()
 
 RecordingsViewModel::RecordingsViewModel(QObject *parent) : QObject{parent}, rows_{*this} {}
 
-void RecordingsViewModel::setActions(Reader refresh, Opener open, Plain stop, Plain pause,
+void RecordingsViewModel::setActions(Reader refresh, Opener open, Action stop, Plain pause,
                                      Plain resume, Seek seek, Speed speed, Channels channels,
                                      Action remove, Action pin, Export save, Renamer rename)
 {
@@ -768,11 +768,37 @@ void RecordingsViewModel::setWaveform(const QString &id, std::vector<double> nea
 }
 
 void RecordingsViewModel::setPlayback(bool playing, qint64 positionMs, qint64 durationMs,
-                                      bool ended)
+                                      bool ended, bool ours)
 {
+    const auto wasPlaying = playing_;
+    const auto wasAt = positionMs_;
+    const auto wasLong = durationMs_;
+    const auto wasOurs = ours_;
+    const auto wasStarting = starting_;
+
+    ours_ = ours;
     playing_ = playing;
-    positionMs_ = ended ? 0 : positionMs;
-    durationMs_ = durationMs;
+
+    if (ours_) {
+        positionMs_ = ended ? 0 : positionMs;
+        durationMs_ = durationMs;
+    }
+
+    if (starting_ && ours_ && !playing_) {
+        starting_ = false;
+        if (resume_) {
+            resume_();
+        }
+    }
+
+    if (playing_) {
+        starting_ = false;
+    }
+
+    if (playing_ == wasPlaying && positionMs_ == wasAt && durationMs_ == wasLong &&
+        ours_ == wasOurs && starting_ == wasStarting && !ended) {
+        return;
+    }
     Q_EMIT playbackChanged();
 }
 
@@ -843,7 +869,7 @@ void RecordingsViewModel::play(const QString &id)
 void RecordingsViewModel::startPlaying()
 {
 
-    if (playing_ || openId_.isEmpty()) {
+    if (playing_ || starting_ || openId_.isEmpty()) {
         return;
     }
     play(openId_);
@@ -856,6 +882,8 @@ void RecordingsViewModel::reportUnreadable(const QString &id)
         return;
     }
     unreadable_ = true;
+
+    starting_ = false;
     Q_EMIT playbackChanged();
 }
 
@@ -872,6 +900,8 @@ void RecordingsViewModel::closePlayer()
     }
 
     playing_ = false;
+    starting_ = false;
+    ours_ = false;
     unreadable_ = false;
     positionMs_ = 0;
     durationMs_ = 0;
@@ -885,7 +915,7 @@ void RecordingsViewModel::closePlayer()
     Q_EMIT playbackChanged();
 
     if (stop_) {
-        stop_();
+        stop_(openId_);
     }
 }
 
@@ -931,6 +961,11 @@ void RecordingsViewModel::openRow(const QString &id, bool play)
 {
     openId_ = id;
     unreadable_ = false;
+
+    const auto *about = find(id);
+    const auto playable = about != nullptr && about->hasAudio() && !about->unfinished;
+    ours_ = false;
+    starting_ = play && playable && playerShown_;
     positionMs_ = 0;
     durationMs_ = 0;
     nearWave_.clear();
@@ -942,9 +977,8 @@ void RecordingsViewModel::openRow(const QString &id, bool play)
     Q_EMIT waveChanged();
     Q_EMIT playbackChanged();
 
-    const auto *row = find(id);
-    openedWhileBeingWritten_ = row != nullptr && row->unfinished;
-    if (row != nullptr && (!row->hasAudio() || row->unfinished)) {
+    openedWhileBeingWritten_ = about != nullptr && about->unfinished;
+    if (about != nullptr && !playable) {
         return;
     }
 
@@ -955,16 +989,34 @@ void RecordingsViewModel::openRow(const QString &id, bool play)
 
 void RecordingsViewModel::togglePlay()
 {
-    if (openId_.isEmpty()) {
+
+    if (openId_.isEmpty() || unreadable_ || !openHasAudio() || openUnfinished()) {
         return;
     }
 
     if (playing_) {
+        starting_ = false;
         if (pause_) {
             pause_();
         }
         return;
     }
+
+    if (starting_) {
+        starting_ = false;
+        Q_EMIT playbackChanged();
+        return;
+    }
+
+    if (!ours_) {
+        starting_ = true;
+        if (resume_) {
+            resume_();
+        }
+        Q_EMIT playbackChanged();
+        return;
+    }
+
     if (resume_) {
         resume_();
     }
@@ -976,9 +1028,12 @@ void RecordingsViewModel::stop()
     playerShown_ = false;
     readingShown_ = false;
 
+    const auto was = openId_;
     openId_.clear();
     unreadable_ = false;
     playing_ = false;
+    starting_ = false;
+    ours_ = false;
     positionMs_ = 0;
     durationMs_ = 0;
     nearWave_.clear();
@@ -993,7 +1048,7 @@ void RecordingsViewModel::stop()
     }
 
     if (stop_) {
-        stop_();
+        stop_(was);
     }
 }
 

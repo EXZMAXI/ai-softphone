@@ -60,6 +60,8 @@ class ProvidersViewModel : public QObject {
 
     Q_PROPERTY(bool canTranscribe READ canTranscribe NOTIFY draftChanged)
 
+    Q_PROPERTY(bool modelAnswersWithoutTimes READ modelAnswersWithoutTimes NOTIFY draftChanged)
+
     Q_PROPERTY(QString realtimeModel READ realtimeModel WRITE setRealtimeModel NOTIFY draftChanged)
 
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY draftChanged)
@@ -188,6 +190,7 @@ public:
 
     [[nodiscard]] bool canStream() const;
     [[nodiscard]] bool canTranscribe() const;
+    [[nodiscard]] bool modelAnswersWithoutTimes() const;
 
     [[nodiscard]] QString liveAddress(const QString &type) const;
 
@@ -355,6 +358,8 @@ private:
         std::vector<std::pair<QString, QString>> knobs;
 
         std::vector<std::pair<QString, QString>> learnt;
+
+        QStringList modelsSeen;
 
         QString token;
         QString waitMinutes;

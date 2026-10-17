@@ -17,11 +17,16 @@
 
 #include <string>
 #include <string_view>
+#include <utility>
 
 namespace softphone::http::streaming {
 
 struct RealtimeGrowing {
     std::string said;
+
+    std::string parked;
+
+    bool everFinished{false};
 
     std::size_t handshakes{1};
 
@@ -31,6 +36,17 @@ struct RealtimeGrowing {
 };
 
 constexpr std::string_view kOurHandshake = "softphone-configure-";
+
+inline void keepWhatWasParked(StreamingHeard &heard, RealtimeGrowing &growing)
+{
+    if (growing.parked.empty()) {
+        return;
+    }
+    core::AsrTurn said;
+    said.text = std::exchange(growing.parked, std::string{});
+    said.boundary = core::AsrTurn::Boundary::Provider;
+    heard.turns.push_back(std::move(said));
+}
 
 inline bool readRealtimeEvent(const nlohmann::json &message, StreamingHeard &heard,
                               RealtimeGrowing &growing)
@@ -75,6 +91,8 @@ inline bool readRealtimeEvent(const nlohmann::json &message, StreamingHeard &hea
     if (kind == "conversation.item.input_audio_transcription.delta") {
         heard.understood = true;
 
+        keepWhatWasParked(heard, growing);
+
         const auto added = readOr<std::string>(message, "delta", {});
         if (!added.empty()) {
             growing.said += added;
@@ -97,6 +115,8 @@ inline bool readRealtimeEvent(const nlohmann::json &message, StreamingHeard &hea
         heard.understood = true;
 
         const auto text = firstString(message, "transcript", "text");
+        growing.everFinished = true;
+        growing.parked.clear();
         growing.said.clear();
         if (!text.empty()) {
             core::AsrTurn said;
@@ -110,7 +130,13 @@ inline bool readRealtimeEvent(const nlohmann::json &message, StreamingHeard &hea
     if (kind == "input_audio_buffer.committed" || kind == "input_audio_buffer.cleared" ||
         kind == "input_audio_buffer.speech_started") {
         heard.understood = true;
-        growing.said.clear();
+
+        keepWhatWasParked(heard, growing);
+        if (growing.everFinished) {
+            growing.said.clear();
+        } else {
+            growing.parked = std::exchange(growing.said, std::string{});
+        }
         return true;
     }
 

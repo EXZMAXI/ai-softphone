@@ -365,7 +365,7 @@ void WasapiDetector::watch()
             seen_.title.clear();
         }
 
-        const auto move = gate.saw(held, answering, now);
+        const auto move = gate.saw(held, answering, playing, now);
         talking_.store(gate.talking(), std::memory_order_release);
 
         {

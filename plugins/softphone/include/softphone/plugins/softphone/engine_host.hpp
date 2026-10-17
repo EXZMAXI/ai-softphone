@@ -31,6 +31,7 @@
 #include <optional>
 #include <string>
 #include <thread>
+#include <unordered_map>
 
 namespace softphone::plugins::softphone {
 
@@ -130,19 +131,25 @@ public:
 
         bool ended{false};
 
-        std::filesystem::path file;
+        std::string claim;
     };
 
     void setPlaybackListener(std::function<void(Playback)> listener);
 
     void setPlaybackFailureListener(std::function<void(std::filesystem::path)> told);
 
-    void playRecording(const std::filesystem::path &file, bool start = true);
-    void stopPlaying();
-    void pausePlaying(bool paused);
-    void seekPlayback(std::uint64_t positionMs);
-    void setPlaybackSpeed(double speed);
-    void setPlaybackChannels(bool nearSide, bool farSide);
+    void playRecording(const std::filesystem::path &file, bool start, std::string claim);
+
+    void resumePlaying(std::string claim);
+
+    void stopPlaying(std::string claim);
+
+    void pausePlaying(std::string claim);
+
+    void seekPlayback(std::uint64_t positionMs, std::string claim);
+
+    void setPlaybackSpeed(double speed, std::string claim);
+    void setPlaybackChannels(bool nearSide, bool farSide, std::string claim);
 
     void setKnownAccounts(std::vector<core::AccountConfig> accounts);
 
@@ -255,13 +262,27 @@ private:
     std::unique_ptr<media::Mp3Stream> stream_;
     bool playing_{false};
 
-    double wantedSpeed_{1.0};
-    bool wantedNear_{true};
-    bool wantedFar_{true};
     core::IScheduler::TimerId playbackTimer_{};
     std::function<void(Playback)> playbackListener_;
 
     std::filesystem::path playingFile_;
+
+    std::string playingClaim_;
+
+    struct Standing {
+        std::filesystem::path file;
+        std::uint64_t positionMs{0};
+        double speed{1.0};
+        bool nearSide{true};
+        bool farSide{true};
+    };
+
+    std::unordered_map<std::string, Standing> standing_;
+
+    void rememberWhereItWas();
+
+    void openHere(const std::filesystem::path &file, bool start, const std::string &claim,
+                  std::uint64_t fromMs);
     std::function<void(std::string, core::EncoderStatus)> recordingRefused_;
     std::function<void(std::filesystem::path)> playbackFailed_;
 

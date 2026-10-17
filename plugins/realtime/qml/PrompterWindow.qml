@@ -223,6 +223,7 @@ Item {
 
             visible: prompter.rehearsing
             glyphs: prompterBody.glyphs
+            onScreen: prompterBody.onScreen
         }
 
         Label {

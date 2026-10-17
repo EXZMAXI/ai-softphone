@@ -537,14 +537,26 @@ Item {
         shooter.phone.raise()
     }
 
+    function beginWhenBothAreReady() {
+        if (startup.ready && shots.phoneBuilt && !shooter.walking) {
+            shooter.putThePhoneOnTheScreen()
+            begin.restart()
+        }
+    }
+
     Connections {
         target: startup
 
         function onChanged() {
-            if (startup.ready && !shooter.walking) {
-                shooter.putThePhoneOnTheScreen()
-                begin.restart()
-            }
+            shooter.beginWhenBothAreReady()
+        }
+    }
+
+    Connections {
+        target: shots
+
+        function onPhoneBuiltChanged() {
+            shooter.beginWhenBothAreReady()
         }
     }
 
@@ -556,10 +568,5 @@ Item {
         onTriggered: shooter.begin()
     }
 
-    Component.onCompleted: {
-        if (startup.ready) {
-            shooter.putThePhoneOnTheScreen()
-            begin.restart()
-        }
-    }
+    Component.onCompleted: shooter.beginWhenBothAreReady()
 }

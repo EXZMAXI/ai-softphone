@@ -11,6 +11,7 @@
 #include <softphone/core/streaming_asr.hpp>
 
 #include <algorithm>
+#include <cctype>
 
 namespace softphone::core {
 
@@ -216,6 +217,16 @@ std::string_view liveAddressHere(std::string_view type, std::string_view territo
     return {};
 }
 
+bool listensLive(std::string_view model)
+{
+
+    std::string folded{model};
+    std::ranges::transform(folded, folded.begin(), [](unsigned char letter) {
+        return static_cast<char>(std::tolower(letter));
+    });
+    return folded.find("realtime") != std::string::npos || folded.find("live") != std::string::npos;
+}
+
 std::vector<std::string> knownModels(std::string_view type, bool live)
 {
 
@@ -224,8 +235,7 @@ std::vector<std::string> knownModels(std::string_view type, bool live)
     }
 
     if (type == "openai") {
-        return live ? std::vector<std::string>{"gpt-live-transcribe", "gpt-transcribe"}
-                    : std::vector<std::string>{};
+        return live ? std::vector<std::string>{"gpt-live-transcribe"} : std::vector<std::string>{};
     }
 
     if (type == "speechmatics") {

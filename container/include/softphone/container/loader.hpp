@@ -32,6 +32,10 @@ void close(void *handle);
 
 [[nodiscard]] std::string lastError();
 
+[[nodiscard]] bool lastFailureIsAMismatch();
+
+[[nodiscard]] std::string whyItWouldNotOpen();
+
 }
 
 [[nodiscard]] std::string libraryFileName(std::string_view id);

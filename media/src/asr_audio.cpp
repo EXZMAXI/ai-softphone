@@ -13,12 +13,15 @@
 #include <softphone/core/resample.hpp>
 #include <softphone/core/uuid.hpp>
 #include <softphone/media/mp3.hpp>
+#include <softphone/media/waveform.hpp>
 
 #include <algorithm>
 #include <array>
 #include <cstdint>
 #include <cstring>
 #include <fstream>
+#include <iterator>
+#include <optional>
 #include <string>
 #include <system_error>
 #include <utility>
@@ -295,6 +298,113 @@ core::PcmReader makePcmReader()
 {
     return [](const std::filesystem::path &file, unsigned rate, std::vector<std::int16_t> &mono) {
         return readPcmForAsr(file, rate, mono);
+    };
+}
+
+bool readSidesForRehearsal(
+    const std::filesystem::path &file, unsigned rate,
+    const std::function<bool(std::span<const std::int16_t>, std::span<const std::int16_t>)> &taking)
+{
+    if (rate == 0 || !taking) {
+        return false;
+    }
+
+    Mp3Decoder decoder;
+    if (!succeeded(decoder.open(file))) {
+        return false;
+    }
+
+    const auto info = decoder.info();
+    if (info.sampleRate == 0 || info.channels == 0) {
+        return false;
+    }
+
+    const auto sides = info.channels >= 2 ? 2U : 1U;
+
+    std::vector<std::int16_t> interleaved(static_cast<std::size_t>(info.sampleRate) *
+                                          info.channels);
+    std::array<std::vector<std::int16_t>, 2> one;
+    std::array<std::vector<std::int16_t>, 2> converted;
+
+    std::array<core::ResampleState, 2> held;
+
+    bool anything = false;
+    for (;;) {
+        const auto read = decoder.read(interleaved);
+        if (read == 0) {
+            break;
+        }
+        const auto frames = read / info.channels;
+
+        for (unsigned side = 0; side < sides; ++side) {
+            one[side].resize(frames);
+            for (std::size_t frame = 0; frame < frames; ++frame) {
+                one[side][frame] = interleaved[frame * info.channels + side];
+            }
+            if (info.sampleRate == rate) {
+                continue;
+            }
+            converted[side].clear();
+            core::resample(held[side], one[side], info.sampleRate, rate, converted[side]);
+        }
+
+        const auto lane = [&one, &converted, &info, rate](unsigned side) {
+            return info.sampleRate == rate ? std::span<const std::int16_t>{one[side]}
+                                           : std::span<const std::int16_t>{converted[side]};
+        };
+
+        const auto near = lane(0);
+        const auto far = sides > 1 ? lane(1) : std::span<const std::int16_t>{};
+        if (near.empty()) {
+            continue;
+        }
+        anything = true;
+        if (!taking(near, far)) {
+
+            decoder.close();
+            return false;
+        }
+    }
+
+    decoder.close();
+    return anything;
+}
+
+std::vector<core::SpeechSpan> speechSpansIn(const std::filesystem::path &file,
+                                            std::chrono::milliseconds duration)
+{
+    std::vector<core::SpeechSpan> found;
+    if (file.empty() || duration <= 0ms) {
+        return found;
+    }
+
+    Waveform picture;
+    if (!waveformFor(file, picture) || picture.empty()) {
+        return found;
+    }
+
+    const auto add = [&found](std::vector<core::SpeechSpan> &&more) {
+        found.insert(found.end(), std::make_move_iterator(more.begin()),
+                     std::make_move_iterator(more.end()));
+    };
+
+    add(core::speechIn(picture.nearSide, duration, 0U));
+    if (!picture.farSide.empty()) {
+        add(core::speechIn(picture.farSide, duration, 1U));
+    }
+
+    std::vector<std::uint8_t> either = picture.nearSide;
+    for (std::size_t at = 0; at < either.size() && at < picture.farSide.size(); ++at) {
+        either[at] = std::max(either[at], picture.farSide[at]);
+    }
+    add(core::speechIn(either, duration, std::nullopt));
+    return found;
+}
+
+core::SpeechFinder makeSpeechFinder()
+{
+    return [](const std::filesystem::path &file, std::chrono::milliseconds duration) {
+        return speechSpansIn(file, duration);
     };
 }
 

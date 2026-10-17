@@ -13,6 +13,7 @@
 #include <softphone/core/asr.hpp>
 #include <softphone/core/http.hpp>
 
+#include <chrono>
 #include <string>
 #include <string_view>
 
@@ -40,7 +41,9 @@ private:
     core::IHttpClient &client_;
 };
 
-[[nodiscard]] core::AsrResult readOpenAiTranscription(std::string_view body);
+[[nodiscard]] core::AsrResult
+readOpenAiTranscription(std::string_view body,
+                        std::chrono::milliseconds spanIfNoTimes = std::chrono::milliseconds{0});
 
 [[nodiscard]] std::string asLanguageCode(std::string_view spoken);
 

@@ -20,6 +20,8 @@
 #include <array>
 #include <cctype>
 #include <charconv>
+#include <chrono>
+#include <cstdint>
 #include <cstdlib>
 #include <string>
 #include <system_error>
@@ -98,6 +100,24 @@ constexpr std::string_view configuredFormat() noexcept
 #else
     return "source";
 #endif
+}
+
+[[nodiscard]] std::vector<std::string> eachOnce(std::vector<std::string> asked)
+{
+    std::vector<std::string> once;
+    once.reserve(asked.size());
+    for (auto &url : asked) {
+        if (std::find(once.begin(), once.end(), url) == once.end()) {
+            once.push_back(std::move(url));
+        }
+    }
+    return once;
+}
+
+[[nodiscard]] std::int64_t sinceInMilliseconds(std::chrono::steady_clock::time_point began)
+{
+    const auto spent = std::chrono::steady_clock::now() - began;
+    return std::chrono::duration_cast<std::chrono::milliseconds>(spent).count();
 }
 
 [[nodiscard]] std::string_view trimmed(std::string_view text) noexcept
@@ -211,14 +231,19 @@ std::vector<std::string> UpdateChannel::hostsFor(const std::string &country) con
         asked.insert(asked.end(), found->second.begin(), found->second.end());
     }
 
-    std::vector<std::string> once;
-    once.reserve(asked.size());
-    for (auto &url : asked) {
-        if (std::find(once.begin(), once.end(), url) == once.end()) {
-            once.push_back(std::move(url));
-        }
+    return eachOnce(asked);
+}
+
+std::vector<std::string> UpdateChannel::downloadHostsFor(const std::string &country) const
+{
+
+    std::vector<std::string> asked;
+    if (const auto found = manifestUrlsByCountry.find(country);
+        !country.empty() && found != manifestUrlsByCountry.end()) {
+        asked = found->second;
     }
-    return once;
+    asked.insert(asked.end(), manifestUrls.begin(), manifestUrls.end());
+    return eachOnce(asked);
 }
 
 UpdateChannel buildChannel()
@@ -527,6 +552,34 @@ void UpdateService::setCountry(std::string country)
     country_ = std::move(country);
 }
 
+std::optional<Release> UpdateService::manifestFrom(const std::string &url, std::string &complaint)
+{
+    const auto document = transport_.fetch(url);
+    if (!document.ok) {
+        complaint = document.error.empty() ? "the update server did not answer" : document.error;
+        const LogAttribute refused[]{{"host", url}, {"why", complaint}};
+        Logger::instance().log(LogLevel::Warning, kArea, "a host did not answer", refused);
+        return std::nullopt;
+    }
+
+    const auto signature = transport_.fetch(url + std::string{kSignatureSuffix});
+    if (!signature.ok) {
+        complaint = "the manifest arrived without its signature";
+        return std::nullopt;
+    }
+
+    if (!signatures_.verify(document.body, trimmed(signature.body), channel_.publicKey)) {
+        complaint = "the manifest is not signed by this product's key";
+        return std::nullopt;
+    }
+
+    auto found = readManifest(document.body, complaint);
+    if (!found) {
+        return std::nullopt;
+    }
+    return found;
+}
+
 void UpdateService::doCheck()
 {
     report(UpdateState::Checking, {});
@@ -540,38 +593,29 @@ void UpdateService::doCheck()
         return channel_.hostsFor(country_);
     }();
 
+    std::vector<std::pair<std::string, Release>> proved;
+
     for (const std::string &url : asked) {
-        const auto document = transport_.fetch(url);
-        if (!document.ok) {
-            lastComplaint =
-                document.error.empty() ? "the update server did not answer" : document.error;
-            const LogAttribute refused[]{{"host", url}, {"why", lastComplaint}};
-            Logger::instance().log(LogLevel::Warning, kArea, "a host did not answer", refused);
-            continue;
-        }
-
-        const auto signature = transport_.fetch(url + std::string{kSignatureSuffix});
-        if (!signature.ok) {
-            lastComplaint = "the manifest arrived without its signature";
-            continue;
-        }
-
-        if (!signatures_.verify(document.body, trimmed(signature.body), channel_.publicKey)) {
-            lastComplaint = "the manifest is not signed by this product's key";
-            continue;
-        }
+        const auto began = std::chrono::steady_clock::now();
 
         std::string complaint;
-        auto found = readManifest(document.body, complaint);
+        auto found = manifestFrom(url, complaint);
         if (!found) {
             lastComplaint = complaint;
             continue;
         }
 
         ++answered;
+
+        const auto shown = found->versionText;
+        const auto took = std::to_string(sinceInMilliseconds(began));
+        const LogAttribute answeredWith[]{{"host", url}, {"version", shown}, {"ms", took}};
+        Logger::instance().log(LogLevel::Debug, kArea, "a host proved a version", answeredWith);
+
         if (!best || isNewer(found->version, best->version)) {
-            best = std::move(found);
+            best = *found;
         }
+        proved.emplace_back(url, std::move(*found));
     }
 
     if (answered == 0) {
@@ -586,6 +630,7 @@ void UpdateService::doCheck()
         {
             const std::lock_guard guard{mutex_};
             offered_.reset();
+            candidates_.clear();
             status_.offered.clear();
             status_.notes.clear();
             status_.downloadUrl.clear();
@@ -598,7 +643,34 @@ void UpdateService::doCheck()
         return;
     }
 
-    const auto *package = release->packageFor(channel_.delivery);
+    std::vector<ReleasePackage> candidates;
+    {
+        const auto order = [this]() {
+            const std::lock_guard guard{mutex_};
+            return channel_.downloadHostsFor(country_);
+        }();
+
+        for (const std::string &url : order) {
+            const auto found = std::find_if(proved.begin(), proved.end(),
+                                            [&url](const auto &one) { return one.first == url; });
+            if (found == proved.end() || !(found->second.version == release->version)) {
+                continue;
+            }
+            const auto *one = found->second.packageFor(channel_.delivery);
+            if (one == nullptr) {
+                continue;
+            }
+
+            const auto already =
+                std::find_if(candidates.begin(), candidates.end(),
+                             [&one](const ReleasePackage &had) { return had.url == one->url; });
+            if (already == candidates.end()) {
+                candidates.push_back(*one);
+            }
+        }
+    }
+
+    const auto *package = candidates.empty() ? nullptr : &candidates.front();
 
     UpdateStatus copy;
     {
@@ -616,23 +688,28 @@ void UpdateService::doCheck()
         status_.checkedAt = std::chrono::system_clock::now();
 
         offered_ = std::move(release);
+        candidates_ = candidates;
         copy = status_;
 
         logTheState(UpdateState::Available, copy);
-        sayWhatWasFound(copy);
+        sayWhatWasFound(copy, candidates.size());
     }
 
     publish(copy);
 }
 
-void UpdateService::sayWhatWasFound(const UpdateStatus &copy) const
+void UpdateService::sayWhatWasFound(const UpdateStatus &copy, std::size_t copies) const
 {
 
     const auto delivery = toString(channel_.delivery);
     const auto actionable = copy.selfReplacing || !copy.downloadUrl.empty();
+
+    const auto spare = std::to_string(copies);
     const LogAttribute found[]{
         {"offered", copy.offered},
         {"delivery", delivery},
+        {"from", copy.downloadUrl},
+        {"copies", spare},
         {"package", copy.downloadUrl.empty() ? "none for this delivery" : "yes"},
         {"canBeOffered", actionable ? "yes" : "no"},
     };
@@ -645,17 +722,16 @@ void UpdateService::sayWhatWasFound(const UpdateStatus &copy) const
 
 void UpdateService::doFetch()
 {
-    Release release;
+    std::vector<ReleasePackage> candidates;
     {
         const std::lock_guard guard{mutex_};
         if (!offered_) {
             return;
         }
-        release = *offered_;
+        candidates = candidates_;
     }
 
-    const auto *package = release.packageFor(channel_.delivery);
-    if (package == nullptr) {
+    if (candidates.empty()) {
         report(UpdateState::Failed, "this release publishes nothing for this kind of installation");
         return;
     }
@@ -672,21 +748,44 @@ void UpdateService::doFetch()
         std::filesystem::remove_all(entry.path(), ignored);
     }
 
-    const auto landing = workshop_ / fileNameFrom(package->url, "ai-softphone-update");
-
     report(UpdateState::Downloading, {});
 
     std::string complaint;
+    for (const auto &package : candidates) {
+        if (tryToDownload(package, complaint)) {
+            return;
+        }
+    }
+
+    report(UpdateState::Failed, complaint.empty() ? "the download did not finish" : complaint);
+}
+
+bool UpdateService::tryToDownload(const ReleasePackage &package, std::string &complaint)
+{
+    const auto landing = workshop_ / fileNameFrom(package.url, "ai-softphone-update");
+
+    {
+        const std::lock_guard guard{mutex_};
+        status_.received = 0;
+        status_.total = package.size;
+    }
+
+    const auto expected = std::to_string(package.size);
+    const LogAttribute going[]{{"from", package.url}, {"bytes", expected}};
+    Logger::instance().log(LogLevel::Info, kArea, "downloading the update", going);
+
+    const auto began = std::chrono::steady_clock::now();
+
     const auto arrived = transport_.download(
-        package->url, landing,
-        [this, expected = package->size](std::uint64_t received, std::uint64_t total) {
+        package.url, landing,
+        [this, whole = package.size](std::uint64_t received, std::uint64_t total) {
             UpdateStatus copy;
             bool carryOn = false;
             {
                 const std::lock_guard guard{mutex_};
                 carryOn = !stopping_;
                 status_.received = received;
-                status_.total = total != 0 ? total : expected;
+                status_.total = total != 0 ? total : whole;
                 copy = status_;
             }
 
@@ -697,29 +796,37 @@ void UpdateService::doFetch()
         },
         complaint);
 
-    if (!arrived) {
+    const auto giveUp = [&](std::string reason) {
         std::error_code ignored;
         std::filesystem::remove(landing, ignored);
-        report(UpdateState::Failed, complaint.empty() ? "the download did not finish" : complaint);
-        return;
+        complaint = std::move(reason);
+
+        const auto received = std::to_string(status().received);
+        const auto spent = std::to_string(sinceInMilliseconds(began));
+        const LogAttribute gaveUp[]{{"from", package.url},
+                                    {"received", received},
+                                    {"of", expected},
+                                    {"ms", spent},
+                                    {"why", complaint}};
+        Logger::instance().log(LogLevel::Warning, kArea, "a download did not finish", gaveUp);
+        return false;
+    };
+
+    if (!arrived) {
+        return giveUp(complaint.empty() ? "the download did not finish" : complaint);
     }
 
-    if (package->size != 0) {
+    std::error_code failure;
+    if (package.size != 0) {
         const auto size = std::filesystem::file_size(landing, failure);
-        if (failure || size != package->size) {
-            std::error_code ignored;
-            std::filesystem::remove(landing, ignored);
-            report(UpdateState::Failed, "the download is not the size the manifest gave");
-            return;
+        if (failure || size != package.size) {
+            return giveUp("the download is not the size the manifest gave");
         }
     }
 
     const auto digest = signatures_.digest(landing);
-    if (digest.empty() || digest != package->sha256) {
-        std::error_code ignored;
-        std::filesystem::remove(landing, ignored);
-        report(UpdateState::Failed, "the download does not match the digest the manifest signed");
-        return;
+    if (digest.empty() || digest != package.sha256) {
+        return giveUp("the download does not match the digest the manifest signed");
     }
 
     if (channel_.delivery == Delivery::AppImage) {
@@ -736,11 +843,13 @@ void UpdateService::doFetch()
     {
         const std::lock_guard guard{mutex_};
         status_.ready = landing;
+        status_.downloadUrl = package.url;
         status_.state = UpdateState::Ready;
         status_.complaint.clear();
         copy = status_;
     }
     publish(copy);
+    return true;
 }
 
 bool UpdateService::apply(std::string &complaint)

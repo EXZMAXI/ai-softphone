@@ -186,6 +186,36 @@
 
 namespace {
 
+constexpr const char *kForTheRehearsal = "a rehearsal";
+
+[[nodiscard]] std::tuple<std::vector<float>, std::vector<float>, bool>
+lanesOfWaveform(const softphone::media::Waveform &picture, bool twoSides)
+{
+    const auto lane = [](const std::vector<std::uint8_t> &from) {
+        std::vector<float> drawn;
+        drawn.reserve(from.size());
+        for (const auto one : from) {
+            drawn.push_back(static_cast<float>(one) / 255.0F);
+        }
+        return drawn;
+    };
+
+    auto mine = lane(picture.nearSide);
+    auto theirs = lane(picture.farSide);
+    softphone::ui::raiseOffTheNoiseFloor(std::span{mine});
+    softphone::ui::raiseOffTheNoiseFloor(std::span{theirs});
+    const auto stereo = twoSides && !theirs.empty() && theirs != mine;
+    if (!stereo) {
+        theirs.clear();
+    }
+    return std::tuple{std::move(mine), std::move(theirs), stereo};
+}
+
+[[nodiscard]] std::string claimFor(const QString &row)
+{
+    return "the library: " + row.toStdString();
+}
+
 [[nodiscard]] QStringList &qtComplaints()
 {
     static QStringList kept;
@@ -227,6 +257,10 @@ void carryQtMessages(QtMsgType type, const QMessageLogContext &context, const QS
         while (kept.size() > 20) {
             kept.removeFirst();
         }
+    }
+
+    if (type == QtFatalMsg) {
+        softphone::core::reportAndEnd(message.toStdString());
     }
 
     if (previousQtHandler != nullptr) {
@@ -973,13 +1007,40 @@ int main(int argc, char *argv[])
                              if (reachability != QNetworkInformation::Reachability::Online) {
                                  return;
                              }
-                             static_cast<void>(accounts.reconnectWhatIsDown());
+                             static_cast<void>(accounts.theAddressesMoved());
                          });
     } else {
         softphone::core::Logger::instance().log(
             softphone::core::LogLevel::Debug, "registration",
             "this system offers no way to hear about the network coming back; the lines will "
             "come back on the retry clock alone");
+    }
+
+    {
+        static constexpr auto kHowOften = std::chrono::seconds{20};
+        static constexpr auto kSlept = std::chrono::seconds{60};
+
+        auto *const watchTheClock = new QTimer{&app};
+        QObject::connect(
+            watchTheClock, &QTimer::timeout, &app,
+            [&accounts, lastTick = QDateTime::currentMSecsSinceEpoch()]() mutable {
+                const auto now = QDateTime::currentMSecsSinceEpoch();
+                const auto moved = now - lastTick;
+                lastTick = now;
+                if (moved < std::chrono::milliseconds{kSlept}.count()) {
+                    return;
+                }
+
+                const auto away = std::to_string(moved / 1000);
+                const softphone::core::LogAttribute fields[] = {{"seconds", away}};
+                softphone::core::Logger::instance().log(
+                    softphone::core::LogLevel::Info, "registration",
+                    "this machine was away for longer than a tick of ours; telling the stack its "
+                    "addresses may have moved",
+                    fields);
+                static_cast<void>(accounts.theAddressesMoved());
+            });
+        watchTheClock->start(std::chrono::milliseconds{kHowOften});
     }
 
     softphone::ui::SoundViewModel sound{
@@ -2406,7 +2467,7 @@ int main(int argc, char *argv[])
                 }
 
                 const auto file = softphone::core::recordingsDirectory() / row.filePath;
-                host.playRecording(file, play);
+                host.playRecording(file, play, claimFor(id));
 
                 static_cast<void>(store.noteAccess(wanted, softphone::core::RecordingAccess::Played,
                                                    row.filePath));
@@ -2440,13 +2501,20 @@ int main(int argc, char *argv[])
                 });
             });
         },
-        [&host]() { host.stopPlaying(); }, [&host]() { host.pausePlaying(true); },
-        [&host]() { host.pausePlaying(false); },
-        [&host](qint64 positionMs) {
-            host.seekPlayback(static_cast<std::uint64_t>(std::max<qint64>(0, positionMs)));
+
+        [&host](const QString &id) { host.stopPlaying(claimFor(id)); },
+        [&host, &recordings]() { host.pausePlaying(claimFor(recordings.openId())); },
+        [&host, &recordings]() { host.resumePlaying(claimFor(recordings.openId())); },
+        [&host, &recordings](qint64 positionMs) {
+            host.seekPlayback(static_cast<std::uint64_t>(std::max<qint64>(0, positionMs)),
+                              claimFor(recordings.openId()));
         },
-        [&host](double speed) { host.setPlaybackSpeed(speed); },
-        [&host](bool nearSide, bool farSide) { host.setPlaybackChannels(nearSide, farSide); },
+        [&host, &recordings](double speed) {
+            host.setPlaybackSpeed(speed, claimFor(recordings.openId()));
+        },
+        [&host, &recordings](bool nearSide, bool farSide) {
+            host.setPlaybackChannels(nearSide, farSide, claimFor(recordings.openId()));
+        },
         [&storage, refreshRecordings](const QString &id) {
             storage.withRecordings([wanted = id.toStdString(),
                                     refreshRecordings](softphone::core::IRecordingStore &store) {
@@ -2707,6 +2775,8 @@ int main(int argc, char *argv[])
 
     pipeline.setPreparer(softphone::media::makeAsrPreparer(softphone::core::recordingsDirectory() /
                                                            softphone::core::kScratch));
+
+    pipeline.setSpeechFinder(softphone::media::makeSpeechFinder());
 
     pipeline.attach();
     generation.attach();
@@ -3951,7 +4021,7 @@ int main(int argc, char *argv[])
 
     const auto rehearsing = std::make_shared<std::atomic<bool>>(false);
 
-    const auto rehearsalFile = std::make_shared<std::filesystem::path>();
+    const auto rehearsalRound = std::make_shared<std::atomic<std::uint64_t>>(0);
 
     auto promptingCall = std::make_shared<std::string>();
 
@@ -4080,7 +4150,7 @@ int main(int argc, char *argv[])
         }
 
         if (rehearsing->load(std::memory_order_acquire)) {
-            host.pausePlaying(true);
+            host.pausePlaying(kForTheRehearsal);
         }
 
         fileThePrompter();
@@ -4153,18 +4223,14 @@ int main(int argc, char *argv[])
                     std::chrono::duration_cast<std::chrono::milliseconds>(
                         one.startedAt.time_since_epoch())
                         .count());
-                const auto who = one.remoteName.empty()
-                                     ? softphone::ui::PrompterViewModel::tr("Unknown")
-                                     : QString::fromStdString(one.remoteName);
-                const auto minutes = one.duration.count() / 60000;
-                const auto seconds = (one.duration.count() / 1000) % 60;
-                entry.insert(QStringLiteral("label"),
-
-                             softphone::ui::PrompterViewModel::tr("%1 · %2 · %3:%4")
-                                 .arg(who)
-                                 .arg(QLocale{}.toString(when, QLocale::ShortFormat))
-                                 .arg(minutes)
-                                 .arg(seconds, 2, 10, QLatin1Char('0')));
+                entry.insert(QStringLiteral("who"),
+                             one.remoteName.empty()
+                                 ? softphone::ui::PrompterViewModel::tr("Unknown")
+                                 : QString::fromStdString(one.remoteName));
+                entry.insert(QStringLiteral("when"),
+                             QLocale{}.toString(when, QLocale::ShortFormat));
+                entry.insert(QStringLiteral("durationMs"),
+                             static_cast<qint64>(one.duration.count()));
 
                 entry.insert(QStringLiteral("incoming"),
                              one.direction == softphone::core::CallDirection::Incoming);
@@ -4183,16 +4249,18 @@ int main(int argc, char *argv[])
     };
 
     prompter.setRehearsalActions(
-        [&storage, &app, &prompter, &host, rehearsal, rehearsalFile,
-         rehearsing](const QString &recordingId, const QString &fileUrl) {
+        [&storage, &app, &prompter, &host, rehearsal, rehearsing,
+         rehearsalRound](const QString &recordingId, const QString &fileUrl) {
             const auto wantedRow = recordingId.toStdString();
             const auto wantedFile =
                 fileUrl.isEmpty()
                     ? std::filesystem::path{}
                     : softphone::core::fromUtf8(QUrl{fileUrl}.toLocalFile().toStdString());
 
-            storage.withRecordings([&app, &prompter, &host, rehearsal, rehearsalFile, rehearsing,
-                                    wantedRow,
+            const auto round = rehearsalRound->fetch_add(1, std::memory_order_acq_rel) + 1;
+
+            storage.withRecordings([&app, &prompter, &host, rehearsal, rehearsing, rehearsalRound,
+                                    round, wantedRow,
                                     wantedFile](softphone::core::IRecordingStore &store) {
 
                 const auto refuse = [&app, &prompter](const char *code) {
@@ -4228,6 +4296,33 @@ int main(int argc, char *argv[])
                     return;
                 }
 
+                if (facts.channels < 2) {
+                    sides = softphone::core::RehearsalFeed::Sides::FarOnly;
+                }
+
+                softphone::media::Waveform drawnAlready;
+                if (!softphone::media::needsConvertingToMp3(file)) {
+                    static_cast<void>(softphone::media::cachedWaveform(file, drawnAlready));
+                }
+
+                {
+                    auto [near, far, stereo] = lanesOfWaveform(
+                        drawnAlready, sides == softphone::core::RehearsalFeed::Sides::NearAndFar);
+                    QMetaObject::invokeMethod(
+                        &app,
+                        [&prompter, name,
+                         note = QString::fromLatin1(
+                             sides == softphone::core::RehearsalFeed::Sides::NearAndFar
+                                 ? "two-sides"
+                                 : "one-room"),
+                         lengthMs = static_cast<qint64>(facts.duration.count()),
+                         near = std::move(near), far = std::move(far), stereo]() mutable {
+                            prompter.rehearsalOpening(name, note, lengthMs, std::move(near),
+                                                      std::move(far), stereo);
+                        },
+                        Qt::QueuedConnection);
+                }
+
                 if (softphone::media::needsConvertingToMp3(file)) {
                     std::error_code checking;
                     const auto size = std::filesystem::file_size(file, checking);
@@ -4248,97 +4343,132 @@ int main(int argc, char *argv[])
                     file = converted;
                 }
 
-                std::vector<std::int16_t> samples;
-                unsigned channels = 0;
-                unsigned rate = 0;
-
-                softphone::media::Mp3Info asMp3;
-                softphone::media::WavInfo asWav;
-                if (softphone::media::succeeded(
-                        softphone::media::decodeMp3(file, samples, asMp3)) &&
-                    asMp3.frames > 0) {
-                    channels = asMp3.channels;
-                    rate = asMp3.sampleRate;
-                } else if (softphone::media::succeeded(
-                               softphone::media::decodeWav(file, samples, asWav)) &&
-                           asWav.frames > 0) {
-                    channels = asWav.channels;
-                    rate = asWav.sampleRate;
-                } else {
-                    refuse("rehearsal-unreadable");
-                    return;
-                }
-
-                if (channels < 2) {
-                    sides = softphone::core::RehearsalFeed::Sides::FarOnly;
-                }
-
-                rehearsal->load(samples, channels, rate, sides);
-                if (!rehearsal->ready()) {
-                    refuse("rehearsal-unreadable");
-                    return;
-                }
-
-                softphone::media::Waveform picture;
-                static_cast<void>(softphone::media::waveformFor(file, picture));
-                const auto lane = [](const std::vector<std::uint8_t> &from) {
-                    std::vector<float> drawn;
-                    drawn.reserve(from.size());
-                    for (const auto one : from) {
-                        drawn.push_back(static_cast<float>(one) / 255.0F);
-                    }
-                    return drawn;
-                };
-                auto nearDrawn = lane(picture.nearSide);
-                auto farDrawn = lane(picture.farSide);
-
-                softphone::ui::raiseOffTheNoiseFloor(std::span{nearDrawn});
-                softphone::ui::raiseOffTheNoiseFloor(std::span{farDrawn});
-
-                const auto stereo = sides == softphone::core::RehearsalFeed::Sides::NearAndFar &&
-                                    !farDrawn.empty() && farDrawn != nearDrawn;
-                if (!stereo) {
-                    farDrawn.clear();
-                }
+                const auto lengthMs = static_cast<qint64>(facts.duration.count());
 
                 const auto note = QString::fromLatin1(
                     sides == softphone::core::RehearsalFeed::Sides::NearAndFar ? "two-sides"
                                                                                : "one-room");
 
-                const auto lengthMs = static_cast<qint64>(rehearsal->length().count());
-
-                *rehearsalFile = file;
                 rehearsing->store(true, std::memory_order_release);
 
-                host.playRecording(file, false);
+                host.playRecording(file, false, kForTheRehearsal);
 
-                QMetaObject::invokeMethod(
-                    &app,
-                    [&prompter, name, note, lengthMs, nearDrawn, farDrawn, stereo]() mutable {
-                        prompter.rehearsalChosen(std::move(name), std::move(note), lengthMs,
-                                                 std::move(nearDrawn), std::move(farDrawn), stereo);
-                    },
-                    Qt::QueuedConnection);
+                QThreadPool::globalInstance()->start([&app, &prompter, rehearsal, rehearsing,
+                                                      rehearsalRound, round, file, name, note,
+                                                      lengthMs, sides, duration = facts.duration,
+                                                      drawn = drawnAlready]() {
+
+                    bool said = false;
+                    const auto ours = [rehearsalRound, round] {
+                        return rehearsalRound->load(std::memory_order_acquire) == round;
+                    };
+
+                    rehearsal->expect(duration,
+                                      sides != softphone::core::RehearsalFeed::Sides::NearAndFar);
+                    if (!ours()) {
+                        return;
+                    }
+
+                    auto lanes = lanesOfWaveform(
+                        drawn, sides == softphone::core::RehearsalFeed::Sides::NearAndFar);
+
+                    const auto read = softphone::media::readSidesForRehearsal(
+                        file, softphone::core::kRehearsalRate,
+                        [&](std::span<const std::int16_t> near, std::span<const std::int16_t> far) {
+                            if (!ours()) {
+                                return false;
+                            }
+                            rehearsal->feedSides(near, far);
+                            if (!said) {
+                                said = true;
+                                QMetaObject::invokeMethod(
+                                    &app,
+                                    [&prompter, name, note, lengthMs, rehearsalRound, round,
+                                     mine = std::move(std::get<0>(lanes)),
+                                     theirs = std::move(std::get<1>(lanes)),
+                                     stereo = std::get<2>(lanes)]() mutable {
+
+                                        if (rehearsalRound->load(std::memory_order_acquire) !=
+                                            round) {
+                                            return;
+                                        }
+                                        prompter.rehearsalChosen(std::move(name), std::move(note),
+                                                                 lengthMs, std::move(mine),
+                                                                 std::move(theirs), stereo);
+                                    },
+                                    Qt::QueuedConnection);
+                            }
+                            return true;
+                        });
+
+                    if (!read && !said && ours()) {
+
+                        rehearsing->store(false, std::memory_order_release);
+                        QMetaObject::invokeMethod(
+                            &app,
+                            [&prompter] {
+                                prompter.rehearsalRefused(QStringLiteral("rehearsal-unreadable"));
+                            },
+                            Qt::QueuedConnection);
+                        return;
+                    }
+
+                    if (!ours()) {
+                        return;
+                    }
+
+                    if (!drawn.empty()) {
+
+                        return;
+                    }
+
+                    softphone::media::Waveform picture;
+                    if (!softphone::media::waveformFor(file, picture) || !ours()) {
+                        return;
+                    }
+
+                    auto late = lanesOfWaveform(
+                        picture, sides == softphone::core::RehearsalFeed::Sides::NearAndFar);
+                    QMetaObject::invokeMethod(
+                        &app,
+                        [&prompter, rehearsalRound, round, mine = std::move(std::get<0>(late)),
+                         theirs = std::move(std::get<1>(late)),
+                         stereo = std::get<2>(late)]() mutable {
+                            if (rehearsalRound->load(std::memory_order_acquire) != round) {
+
+                                return;
+                            }
+                            prompter.rehearsalDrawn(std::move(mine), std::move(theirs), stereo);
+                        },
+                        Qt::QueuedConnection);
+                });
             });
         },
-        [&host, rehearsal, rehearsalFile, rehearsing] {
+        [&host, rehearsal, rehearsing, rehearsalRound] {
 
+            rehearsalRound->fetch_add(1, std::memory_order_acq_rel);
             rehearsing->store(false, std::memory_order_release);
-            rehearsalFile->clear();
             rehearsal->rewind();
-            host.stopPlaying();
+            host.stopPlaying(kForTheRehearsal);
         },
-        [&host](bool wanted) { host.pausePlaying(!wanted); },
+        [&host](bool wanted) {
+            if (wanted) {
+                host.resumePlaying(kForTheRehearsal);
+            } else {
+                host.pausePlaying(kForTheRehearsal);
+            }
+        },
         [&host](qint64 positionMs) {
-            host.seekPlayback(static_cast<std::uint64_t>(std::max<qint64>(0, positionMs)));
+            host.seekPlayback(static_cast<std::uint64_t>(std::max<qint64>(0, positionMs)),
+                              kForTheRehearsal);
         },
         refreshRehearsalChoices);
 
     prompter.setActions(
         [&host, &storage, &app, &prompter, &prompting, &promptingId, &stopPrompting, llmProviderFor,
          streamingAsrFor, answered, prompted, promptingCall, promptingRecording, promptingWith,
-         &languageNow, captureNow, consentWanted, rehearsal, rehearsing,
-         rehearsalFile](const QString &templateId) {
+         &languageNow, captureNow, consentWanted, rehearsal,
+         rehearsing](const QString &templateId) {
 
             const auto didNotStart = [&app, &prompter](const std::string &why) {
                 softphone::core::Logger::instance().log(softphone::core::LogLevel::Warning,
@@ -4421,8 +4551,7 @@ int main(int argc, char *argv[])
             host.post([&host, &app, &prompter, &prompting, &promptingId, &stopPrompting,
                        llmProviderFor, streamingAsrFor, answered, prompted, promptingCall,
                        promptingRecording, promptingWith, &languageNow, prompt, chosenRecogniser,
-                       chosenModel, captureNow, consentWanted, didNotStart, rehearsal, rehearsing,
-                       rehearsalFile] {
+                       chosenModel, captureNow, consentWanted, didNotStart, rehearsal, rehearsing] {
 
                 stopPrompting();
 
@@ -4615,6 +4744,19 @@ int main(int argc, char *argv[])
                     opening.turns.providerIdle =
                         millis("turn_idle_ms", softphone::core::kProviderIdle);
                     opening.turns.join = millis("turn_join_ms", softphone::core::kJoinWithin);
+
+                    const auto said = softphone::core::knobValue(chosenRecogniser.params, knobs,
+                                                                 "turn_longest_words");
+                    if (said.empty()) {
+                        opening.turns.longestReply = 0;
+                    } else {
+                        try {
+                            opening.turns.longestReply =
+                                static_cast<std::size_t>(std::max(0, std::stoi(said)));
+                        } catch (const std::exception &) {
+                            opening.turns.longestReply = softphone::core::kLongestReply;
+                        }
+                    }
                 }
 
                 opening.turns.speakerLanguage = softphone::ui::contentLanguage(languageNow);
@@ -4681,22 +4823,24 @@ int main(int argc, char *argv[])
                     QMetaObject::invokeMethod(
                         &app, [&prompter] { prompter.setRunning(true); }, Qt::QueuedConnection);
                 };
-                listener.partial = [&app, &prompter](softphone::core::Voice voice,
-                                                     std::string text) {
+                listener.partial = [&app, &prompter](softphone::core::Voice voice, std::string text,
+                                                     std::chrono::milliseconds at) {
                     QMetaObject::invokeMethod(
                         &app,
                         [&prompter, near = voice == softphone::core::Voice::Near,
-                         text = std::move(text)]() mutable {
-                            prompter.heardPartial(near, QString::fromStdString(text));
+                         text = std::move(text), at]() mutable {
+                            prompter.heardPartial(near, QString::fromStdString(text), at);
                         },
                         Qt::QueuedConnection);
                 };
-                listener.turn = [&app, &prompter](softphone::core::AsrTurn said) {
+                listener.turn = [&app, &prompter](softphone::core::AsrTurn said,
+                                                  std::size_t where) {
                     QMetaObject::invokeMethod(
                         &app,
-                        [&prompter, said = std::move(said)] {
+                        [&prompter, said = std::move(said), where] {
                             prompter.heardTurn(said.voice == softphone::core::Voice::Near,
-                                               QString::fromStdString(said.text), said.start);
+                                               QString::fromStdString(said.text), said.start,
+                                               static_cast<qulonglong>(where));
                         },
                         Qt::QueuedConnection);
                 };
@@ -4746,7 +4890,7 @@ int main(int argc, char *argv[])
                     std::move(opening), std::move(adapter), std::move(ask), std::move(listener));
 
                 if (onARehearsal) {
-                    host.pausePlaying(false);
+                    host.resumePlaying(kForTheRehearsal);
                 }
             });
         },
@@ -4992,17 +5136,18 @@ int main(int argc, char *argv[])
 
     jobs.start();
 
-    host.setPlaybackListener([&recordings, &app, &prompter, rehearsal, rehearsalFile](
+    host.setPlaybackListener([&recordings, &app, &prompter, rehearsal](
                                  softphone::plugins::softphone::EngineHost::Playback where) {
         QMetaObject::invokeMethod(
             &app,
-            [&recordings, &prompter, rehearsal, rehearsalFile, where]() {
-                const bool oursToRehearse = !rehearsalFile->empty() && where.file == *rehearsalFile;
+            [&recordings, &prompter, rehearsal, where]() {
+                const auto position = static_cast<qint64>(where.positionMs);
 
-                if (oursToRehearse) {
+                if (where.claim == kForTheRehearsal) {
                     rehearsal->upTo(
                         std::chrono::milliseconds{static_cast<std::int64_t>(where.positionMs)});
-                    prompter.rehearsalAt(static_cast<qint64>(where.positionMs), where.playing);
+                    prompter.rehearsalAt(position, where.playing);
+                    recordings.setPlayback(false, 0, 0, false, false);
 
                     if (where.ended && prompter.running()) {
                         prompter.stop();
@@ -5010,8 +5155,14 @@ int main(int argc, char *argv[])
                     return;
                 }
 
-                recordings.setPlayback(where.playing, static_cast<qint64>(where.positionMs),
-                                       static_cast<qint64>(where.durationMs), where.ended);
+                if (prompter.rehearsalPlaying()) {
+                    prompter.rehearsalAt(prompter.rehearsalAtMs(), false);
+                }
+
+                const bool ours = where.claim == claimFor(recordings.openId());
+                recordings.setPlayback(ours && where.playing, ours ? position : 0,
+                                       ours ? static_cast<qint64>(where.durationMs) : 0,
+                                       ours && where.ended, ours);
             },
             Qt::QueuedConnection);
     });
@@ -5681,6 +5832,8 @@ int main(int argc, char *argv[])
     QTimer hurry;
     const auto windowIsUp = [&](QObject *built) {
         mark("the window built");
+
+        shots.thePhoneIsBuilt();
 
         phoneUp = built;
 

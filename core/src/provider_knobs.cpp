@@ -74,7 +74,9 @@ namespace {
 {
     return {
         ours("turn_idle_ms", KnobKind::Number, "2500"),
-        ours("turn_join_ms", KnobKind::Number, "900"),
+        ours("turn_join_ms", KnobKind::Number, "3000"),
+
+        ours("turn_longest_words", KnobKind::Number, "50"),
     };
 }
 

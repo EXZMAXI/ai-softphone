@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
+#include <optional>
+#include <span>
 #include <string>
 #include <vector>
 
@@ -68,7 +70,8 @@ void offer(AsrPlan &plan, const AsrCapabilities &can, const AsrOptions &options,
            const std::filesystem::path &file, std::string_view sourceMime, Voice voice,
            std::string_view stemId, std::optional<unsigned> sourceChannel,
            std::chrono::milliseconds offset, std::chrono::milliseconds duration, double bytesPerMs,
-           unsigned channels, std::vector<Voice> channelVoices)
+           unsigned channels, std::vector<Voice> channelVoices,
+           std::span<const SpeechSpan> phrases = {})
 {
     const auto rewritten = sourceChannel.has_value();
     const auto whole = pieceLength(can, duration, bytesPerMs);
@@ -77,14 +80,19 @@ void offer(AsrPlan &plan, const AsrCapabilities &can, const AsrOptions &options,
         return;
     }
 
-    const auto cut = whole < duration;
+    const auto pieces = piecesOfSpeech(
+        phrases,
+        std::min(whole, std::chrono::duration_cast<std::chrono::milliseconds>(kLongestPiece)),
+        duration);
+
+    const auto cut = !pieces.empty() || whole < duration;
     const auto mime = chooseFormat(can, sourceMime, rewritten || cut);
     if (mime.empty()) {
         plan.refusal = "no audio format this build writes is one the provider accepts";
         return;
     }
 
-    for (auto at = 0ms; at < duration; at += whole) {
+    const auto put = [&](std::chrono::milliseconds at, std::chrono::milliseconds length) {
         AsrStep step;
         step.input.file = file;
         step.input.mimeType = mime;
@@ -92,16 +100,134 @@ void offer(AsrPlan &plan, const AsrCapabilities &can, const AsrOptions &options,
         step.input.stemId = std::string{stemId};
         step.input.offset = offset + at;
         step.input.from = at;
-        step.input.duration = std::min(whole, duration - at);
+        step.input.duration = length;
         step.input.sourceChannel = sourceChannel;
         step.input.channels = channels;
         step.input.channelVoices = channelVoices;
         step.input.rewrite = rewritten || cut;
         step.options = options;
         plan.steps.push_back(std::move(step));
+    };
+
+    if (!pieces.empty()) {
+        plan.cutAtSilences = true;
+        for (const auto &piece : pieces) {
+            put(piece.from, piece.length());
+        }
+        return;
+    }
+
+    for (auto at = 0ms; at < duration; at += whole) {
+        put(at, std::min(whole, duration - at));
     }
 }
 
+[[nodiscard]] std::vector<SpeechSpan> phrasesFor(const AsrSubject &subject,
+                                                 std::optional<unsigned> channel)
+{
+    std::vector<SpeechSpan> mine;
+    for (const auto &one : subject.speech) {
+        if (one.channel == channel && one.length() > 0ms) {
+            mine.push_back(one);
+        }
+    }
+    std::stable_sort(mine.begin(), mine.end(), [](const SpeechSpan &left, const SpeechSpan &right) {
+        return left.from < right.from;
+    });
+    return mine;
+}
+
+}
+
+std::vector<SpeechSpan> speechIn(std::span<const std::uint8_t> loudness,
+                                 std::chrono::milliseconds over, std::optional<unsigned> channel)
+{
+    std::vector<SpeechSpan> found;
+    if (loudness.empty() || over <= 0ms) {
+        return found;
+    }
+
+    std::vector<std::uint8_t> sorted{loudness.begin(), loudness.end()};
+    const auto tenth = sorted.begin() + static_cast<std::ptrdiff_t>(sorted.size() / 10);
+    std::nth_element(sorted.begin(), tenth, sorted.end());
+
+    const auto threshold = static_cast<int>(*tenth) + kSpeechAboveFloor;
+    if (threshold > 255) {
+        return found;
+    }
+
+    const auto count = static_cast<std::int64_t>(loudness.size());
+    const auto edge = [over, count](std::size_t index) {
+        return std::chrono::milliseconds{over.count() * static_cast<std::int64_t>(index) / count};
+    };
+    const auto startOfBucket = [&edge](std::size_t index) { return edge(index); };
+    const auto endOfBucket = [&edge](std::size_t index) { return edge(index + 1); };
+
+    for (std::size_t at = 0; at < loudness.size(); ++at) {
+        if (static_cast<int>(loudness[at]) < threshold) {
+            continue;
+        }
+        if (!found.empty() && startOfBucket(at) - found.back().to < kPhraseSilence) {
+            found.back().to = endOfBucket(at);
+            continue;
+        }
+        found.push_back(SpeechSpan{channel, startOfBucket(at), endOfBucket(at)});
+    }
+
+    const auto end = endOfBucket(loudness.size() - 1);
+    for (auto &phrase : found) {
+        phrase.from = std::max(0ms, phrase.from - kPhrasePadding);
+        phrase.to = std::min(end, phrase.to + kPhrasePadding);
+    }
+    return found;
+}
+
+std::vector<SpeechSpan> piecesOfSpeech(std::span<const SpeechSpan> phrases,
+                                       std::chrono::milliseconds longest,
+                                       std::chrono::milliseconds endOfRecording)
+{
+    std::vector<SpeechSpan> pieces;
+    if (phrases.empty() || longest <= 0ms) {
+        return pieces;
+    }
+
+    for (const auto &phrase : phrases) {
+        if (phrase.length() <= 0ms) {
+            continue;
+        }
+
+        if (!pieces.empty() && phrase.to - pieces.back().from <= longest &&
+            pieces.back().to <= phrase.from) {
+            pieces.back().to = phrase.to;
+            continue;
+        }
+        pieces.push_back(SpeechSpan{phrase.channel, phrase.from, phrase.to});
+
+        while (pieces.back().length() > longest) {
+            const auto over = pieces.back();
+            pieces.back().to = over.from + longest;
+            pieces.push_back(SpeechSpan{over.channel, over.from + longest, over.to});
+        }
+    }
+
+    for (auto &piece : pieces) {
+        if (piece.length() >= kShortestPiece) {
+            continue;
+        }
+        auto wanted = kShortestPiece - piece.length();
+
+        const auto back = std::min(wanted / 2, piece.from);
+        piece.from -= back;
+        wanted -= back;
+
+        const auto room = endOfRecording > 0ms ? std::max(0ms, endOfRecording - piece.to) : wanted;
+        const auto forward = std::min(wanted, room);
+        piece.to += forward;
+        wanted -= forward;
+
+        piece.from = std::max(0ms, piece.from - wanted);
+    }
+    return pieces;
 }
 
 AsrPlan planTranscription(const AsrCapabilities &can, const AsrSubject &subject,
@@ -131,6 +257,11 @@ AsrPlan planTranscription(const AsrCapabilities &can, const AsrSubject &subject,
 
     const auto separable = subject.nearFar && subject.channels >= 2;
 
+    const auto cutting = !can.answersWithTimes && !subject.speech.empty();
+    const auto wholeFile = cutting ? phrasesFor(subject, std::nullopt) : std::vector<SpeechSpan>{};
+    const auto nearPhrases = cutting ? phrasesFor(subject, 0U) : std::vector<SpeechSpan>{};
+    const auto farPhrases = cutting ? phrasesFor(subject, 1U) : std::vector<SpeechSpan>{};
+
     const auto stemsUsable =
         !subject.stems.empty() &&
         std::all_of(subject.stems.begin(), subject.stems.end(), [](const AsrSubject::Stem &s) {
@@ -140,7 +271,7 @@ AsrPlan planTranscription(const AsrCapabilities &can, const AsrSubject &subject,
     if (!separable) {
 
         offer(plan, can, mixedInput, subject.file, subject.mimeType, Voice::Mixed, {}, std::nullopt,
-              0ms, subject.duration, bytesPerMs, subject.channels, {});
+              0ms, subject.duration, bytesPerMs, subject.channels, {}, wholeFile);
         return plan;
     }
 
@@ -148,7 +279,7 @@ AsrPlan planTranscription(const AsrCapabilities &can, const AsrSubject &subject,
 
     if (stemsUsable) {
         offer(plan, can, shared, subject.file, subject.mimeType, Voice::Near, {}, 0U, 0ms,
-              subject.duration, nearBytesPerMs, 1, {});
+              subject.duration, nearBytesPerMs, 1, {}, nearPhrases);
         for (const auto &stem : subject.stems) {
             if (!plan.refusal.empty()) {
                 break;
@@ -158,7 +289,9 @@ AsrPlan planTranscription(const AsrCapabilities &can, const AsrSubject &subject,
                     ? static_cast<double>(stem.bytes) / static_cast<double>(stem.duration.count())
                     : 0.0;
             offer(plan, can, shared, stem.file, subject.mimeType, Voice::Stem, stem.id,
-                  std::nullopt, stem.offset, stem.duration, perMs, 1, {});
+                  std::nullopt, stem.offset, stem.duration, perMs, 1, {},
+                  cutting ? std::span<const SpeechSpan>{stem.speech}
+                          : std::span<const SpeechSpan>{});
         }
         return plan;
     }
@@ -168,7 +301,8 @@ AsrPlan planTranscription(const AsrCapabilities &can, const AsrSubject &subject,
 
         options.diarise = can.diarisation && subject.parties > 2;
         offer(plan, can, options, subject.file, subject.mimeType, Voice::Mixed, {}, std::nullopt,
-              0ms, subject.duration, bytesPerMs, subject.channels, {Voice::Near, Voice::Far});
+              0ms, subject.duration, bytesPerMs, subject.channels, {Voice::Near, Voice::Far},
+              wholeFile);
         return plan;
     }
 
@@ -176,10 +310,10 @@ AsrPlan planTranscription(const AsrCapabilities &can, const AsrSubject &subject,
     farOptions.diarise = can.diarisation && subject.parties > 2;
 
     offer(plan, can, shared, subject.file, subject.mimeType, Voice::Near, {}, 0U, 0ms,
-          subject.duration, nearBytesPerMs, 1, {});
+          subject.duration, nearBytesPerMs, 1, {}, nearPhrases);
     if (plan.refusal.empty()) {
         offer(plan, can, farOptions, subject.file, subject.mimeType, Voice::Far, {}, 1U, 0ms,
-              subject.duration, nearBytesPerMs, 1, {});
+              subject.duration, nearBytesPerMs, 1, {}, farPhrases);
     }
     return plan;
 }

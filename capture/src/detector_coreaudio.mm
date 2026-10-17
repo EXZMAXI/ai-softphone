@@ -265,7 +265,7 @@ void CoreAudioDetector::tick()
 
         const auto at = std::chrono::steady_clock::now();
 
-        const auto move = gate.saw(reading.held, reading.duplex, at);
+        const auto move = gate.saw(reading.held, reading.duplex, reading.playing, at);
         talking_.store(gate.talking(), std::memory_order_release);
 
         {

@@ -53,7 +53,7 @@ public:
         Ended,
     };
 
-    Move saw(bool held, bool playing, std::chrono::steady_clock::time_point now);
+    Move saw(bool held, bool duplex, bool audible, std::chrono::steady_clock::time_point now);
 
     [[nodiscard]] bool talking() const noexcept
     {
@@ -65,6 +65,8 @@ public:
 private:
     DetectorSettings settings_;
     bool talking_{false};
+
+    bool heard_{false};
 
     std::chrono::steady_clock::time_point since_{};
     bool pending_{false};

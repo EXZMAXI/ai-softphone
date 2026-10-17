@@ -1181,12 +1181,14 @@ Item {
                         Button {
                             Layout.alignment: Qt.AlignHCenter
 
+                            readonly property bool sounding: recordings.playing
+                                                             || recordings.starting
+
                             display: AbstractButton.IconOnly
-                            icon.source: recordingsBody.glyph(recordings.playing ? "hold"
-                                                                                   : "resume")
+                            icon.source: recordingsBody.glyph(sounding ? "hold" : "resume")
                             icon.width: 20
                             icon.height: 20
-                            text: recordings.playing ? qsTr("Pause") : qsTr("Play")
+                            text: sounding ? qsTr("Pause") : qsTr("Play")
                             Accessible.name: text
                             onClicked: recordings.togglePlay()
 

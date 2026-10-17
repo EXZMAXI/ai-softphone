@@ -46,4 +46,6 @@ inline constexpr std::string_view kWriteCrashDumpOption = "--write-crash-dump";
 
 void writeCrashReport(int descriptor, std::string_view reason) noexcept;
 
+[[noreturn]] void reportAndEnd(std::string_view reason) noexcept;
+
 }

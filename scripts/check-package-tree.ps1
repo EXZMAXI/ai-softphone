@@ -214,6 +214,13 @@ if (-not (Test-Path $translationsDirectory)) {
     }
 }
 
+$said = & python3 (Join-Path $PSScriptRoot 'check-package-imports.py') $Tree 2>&1
+if ($LASTEXITCODE -eq 0) {
+    foreach ($line in $said) { Write-Host "$line" }
+} else {
+    Complain (($said | ForEach-Object { "$_".Trim() }) -join ' / ')
+}
+
 Write-Host ''
 if ($failures -eq 0) {
     Write-Host 'The tree is one somebody else can run.'

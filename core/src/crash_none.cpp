@@ -12,6 +12,8 @@
 
 #include "crash_detail.hpp"
 
+#include <cstdlib>
+
 namespace softphone::core {
 
 bool writeDumpOfAnotherProcess(unsigned long, unsigned long, unsigned long long,
@@ -19,6 +21,12 @@ bool writeDumpOfAnotherProcess(unsigned long, unsigned long, unsigned long long,
 {
 
     return false;
+}
+
+void reportAndEnd(std::string_view) noexcept
+{
+
+    ::_Exit(3);
 }
 
 bool installCrashHandler(const std::filesystem::path &)

@@ -361,7 +361,8 @@ public:
         const auto heard = yandex::readResponse(payload);
 
         if (core::Logger::instance().level() >= core::LogLevel::Trace) {
-            auto line = "yandex ← " + heard.shape;
+
+            auto line = std::string{core::toString(options_.voice)} + " yandex ← " + heard.shape;
             if (!heard.text.empty()) {
                 line += ": " + heard.text;
             }

@@ -1241,7 +1241,9 @@ ApplicationWindow {
     Loader {
         id: settingsFrame
 
-        active: !shape.inAWorkspace
+        property bool everWanted: false
+
+        active: settingsFrame.everWanted && !shape.inAWorkspace
 
         sourceComponent: SettingsWindow {
 
@@ -1682,6 +1684,11 @@ ApplicationWindow {
         : (settingsFrame.item !== null && settingsFrame.item.visible)
 
     function showSettings(section) {
+
+        if (!shape.inAWorkspace) {
+            settingsFrame.everWanted = true
+        }
+
         if (section !== undefined && section !== "") {
             if (shape.inAWorkspace) {
                 const zones = root.zonesNow()

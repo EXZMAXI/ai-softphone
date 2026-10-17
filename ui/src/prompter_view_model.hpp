@@ -18,6 +18,7 @@
 #include <QVariantList>
 #include <QVariantMap>
 
+#include <cstdint>
 #include <functional>
 #include <vector>
 
@@ -74,6 +75,8 @@ class PrompterViewModel : public QObject {
     Q_PROPERTY(qint64 rehearsalLengthMs READ rehearsalLengthMs NOTIFY rehearsalChanged)
 
     Q_PROPERTY(int rehearsalWaveRevision READ rehearsalWaveRevision NOTIFY rehearsalChanged)
+
+    Q_PROPERTY(bool rehearsalLoading READ rehearsalLoading NOTIFY rehearsalChanged)
 
     Q_PROPERTY(bool rehearsalStereo READ rehearsalStereo NOTIFY rehearsalChanged)
 
@@ -147,6 +150,11 @@ public:
         return rehearsalStereo_;
     }
 
+    [[nodiscard]] bool rehearsalLoading() const noexcept
+    {
+        return rehearsalLoading_;
+    }
+
     [[nodiscard]] QVariantList rehearsalChoices() const
     {
         return rehearsalChoices_;
@@ -154,9 +162,15 @@ public:
 
     [[nodiscard]] Q_INVOKABLE QVariantList rehearsalWaveNow(const QString &side) const;
 
+    void rehearsalOpening(QString name, QString note, qint64 lengthMs,
+                          std::vector<float> nearPicture = {}, std::vector<float> farPicture = {},
+                          bool stereo = false);
+
     void rehearsalChosen(QString name, QString note, qint64 lengthMs,
                          std::vector<float> nearPicture, std::vector<float> farPicture,
                          bool stereo);
+
+    void rehearsalDrawn(std::vector<float> nearPicture, std::vector<float> farPicture, bool stereo);
     void rehearsalAt(qint64 positionMs, bool playing);
     void rehearsalRefused(QString why);
     void setRehearsalChoices(QVariantList rows);
@@ -202,8 +216,9 @@ public:
     [[nodiscard]] Q_INVOKABLE QString saidAsText() const;
     [[nodiscard]] Q_INVOKABLE QString answersAsText() const;
 
-    void heardPartial(bool near, QString text);
-    void heardTurn(bool near, QString text, std::chrono::milliseconds at);
+    void heardPartial(bool near, QString text, std::chrono::milliseconds at);
+
+    void heardTurn(bool near, QString text, std::chrono::milliseconds at, qulonglong where);
     void heardAnswer(QString text, int covers, std::chrono::milliseconds at);
     void heardGap(std::chrono::milliseconds lost);
     void heardSpent(std::int64_t recogniserMicros, std::int64_t modelMicros, bool estimated);
@@ -294,6 +309,7 @@ private:
     std::vector<float> wave_;
     std::vector<float> farWave_;
     bool rehearsalStereo_{false};
+    bool rehearsalLoading_{false};
     int waveRevision_{0};
     QVariantList rehearsalChoices_;
 
@@ -312,6 +328,12 @@ private:
     QVariantMap provisionalNear_;
 
     QVariantList answers_;
+
+    std::uint64_t ordering_{0};
+    std::uint64_t farOrder_{0};
+    std::uint64_t nearOrder_{0};
+
+    std::uint64_t run_{0};
 
     std::chrono::milliseconds pendingGap_{0};
 

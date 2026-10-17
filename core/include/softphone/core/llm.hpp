@@ -140,6 +140,8 @@ struct LlmProbe {
 [[nodiscard]] int estimateTokens(std::string_view text) noexcept;
 [[nodiscard]] int estimateTokens(const std::vector<LlmMessage> &messages) noexcept;
 
+[[nodiscard]] std::vector<std::string> knownChatModels(std::string_view type);
+
 [[nodiscard]] std::string firstJsonValue(std::string_view answer);
 
 using LlmCancel = std::function<bool()>;

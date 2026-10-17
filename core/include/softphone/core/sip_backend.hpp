@@ -45,6 +45,8 @@ public:
     virtual void requestUnregistration(const std::string &accountId) = 0;
 
     virtual void forgetAccount(const std::string &accountId) = 0;
+
+    virtual void addressesChanged() = 0;
 };
 
 }

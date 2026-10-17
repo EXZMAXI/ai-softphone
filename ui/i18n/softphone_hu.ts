@@ -1477,10 +1477,6 @@ A tick on a prompt&apos;s card: whether it may be run at all.</extracomment>
         <translation>A legnagyobb fájl, amelyet ez a telefon elküld, bájtban. Az ennél nagyobb felvétel a feltöltés előtt kerül elutasításra, nem utána.</translation>
     </message>
     <message>
-        <source>The longest recording this phone will send, in seconds. Nought is no limit of ours, and whatever the provider allows is what applies.</source>
-        <translation>A leghosszabb felvétel, amelyet ez a telefon elküld, másodpercben. A nulla nem a mi korlátunk, és az érvényes, amit a szolgáltató enged.</translation>
-    </message>
-    <message>
         <source>This one is the phone&apos;s own. A recogniser that hands back words with a speaker on each and no turns leaves somebody to decide how long a silence ends one, and this is that number, in milliseconds.</source>
         <translation>Ez a telefoné. Az a felismerő, amely szavakat ad vissza, mindegyiken egy beszélővel, megszólalások nélkül, valakire hagyja annak eldöntését, mekkora csend zár le egyet, és ez a szám az, ezredmásodpercben.</translation>
     </message>
@@ -2378,6 +2374,25 @@ A tick on the Yandex recogniser card: numbers, dates and sums written as they ar
         <source>After this long with no new words, the prompter ends the reply: the only boundary there is on a recogniser that marks none of its own, and a backstop on one that marks them and then stops. Empty uses the prompter&apos;s own shorter default.</source>
         <extracomment>Under the idle timer on a recogniser&apos;s card. It has to cover both of the things this number does, because on a recogniser with no end-of-reply of its own it is the only boundary there is — and *empty* is then the prompter&apos;s own default rather than an off switch.</extracomment>
         <translation>Ha ennyi ideig nem érkezik új szó, a súgó lezárja a választ: saját határok nélküli felismerőnél ez az egyetlen határ, annál pedig, amelyik megjelöli őket, majd abbahagyja, biztonsági tartalék. Üresen a súgó a saját rövidebb alapértékét használja.</translation>
+    </message>
+    <message>
+        <source>This model answers with the words and no times: the transcript can be read, but it is not divided into lines and nothing lights up as it is played.</source>
+        <extracomment>Under the model field on a recogniser&apos;s card, for a model that answers with the words and nothing else. *lights up* is the same word the word-timestamps switch uses, two controls down.</extracomment>
+        <translation>Ez a modell szavakkal válaszol, idők nélkül: az átirat olvasható, de nincs sorokra osztva, és lejátszás közben semmi sem világít fel.</translation>
+    </message>
+    <message>
+        <source>Longest reply</source>
+        <extracomment>The label over how many words a reply may grow to before this phone ends it at the next pause.</extracomment>
+        <translation>Leghosszabb válasz</translation>
+    </message>
+    <message>
+        <source>A recogniser that decides its own phrases can run several minutes of a meeting together. Past this many words the prompter ends the reply at the next pause. Empty waits for the recogniser however long it takes.</source>
+        <extracomment>Under the longest-reply count on a recogniser&apos;s card. A recogniser that never finishes a sentence is the case this is for.</extracomment>
+        <translation>Az a felismerő, amely maga dönt a tagolásról, egy megbeszélés több percét is egy válaszba fűzheti. Ennyi szó után a súgó a következő szünetnél lezárja a választ. Üresen hagyva annyit vár a felismerőre, amennyi kell.</translation>
+    </message>
+    <message>
+        <source>The longest recording this phone will send, in seconds. Nought asks this phone to work it out: some models state a limit of their own, and a longer recording goes up in pieces.</source>
+        <translation>A leghosszabb felvétel, amelyet ez a telefon elküld, másodpercben. A nulla arra kéri a telefont, hogy maga döntse el: egyes modellek saját korlátot adnak meg, a hosszabb felvétel pedig részletekben megy fel.</translation>
     </message>
 </context>
 <context>
@@ -3575,11 +3590,6 @@ What a rule does, with the tag it puts on: &quot;put a tag on it: vip&quot;.</ex
     <message>
         <source>Unknown</source>
         <translation>Ismeretlen</translation>
-    </message>
-    <message>
-        <source>%1 · %2 · %3:%4</source>
-        <extracomment>One conversation in the list a rehearsal may be pointed at: who it was with, when it happened, and how long it is.</extracomment>
-        <translation>%1 · %2 · %3:%4</translation>
     </message>
     <message>
         <source>No suggestion came back this time. The words are still arriving.</source>
