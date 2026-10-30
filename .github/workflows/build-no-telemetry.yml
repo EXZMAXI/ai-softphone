@@ -44,21 +44,28 @@ jobs:
         Write-Host "=== Изменения в коде (git diff): ===" -ForegroundColor Yellow
         git diff
 
-    - name: 3. Установка Qt 6 в облаке
+    # >>> НОВЫЙ ШАГ: Явная установка стабильного Python для избежания багов aqt <<<
+    - name: 3. Установка стабильной версии Python (для корректной работы aqt)
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: 4. Установка Qt 6 в облаке
       uses: jurplel/install-qt-action@v4
       with:
-        version: '6.8.1'                                     # <-- ИСПРАВЛЕНО: проект требует Qt >= 6.8
+        version: '6.8.1'
         host: 'windows'
         target: 'desktop'
-        arch: 'win64_msvc2022_64'                            # <-- ИСПРАВЛЕНО: для windows-latest и Qt 6.8 нужна эта архитектура
-        modules: 'qtmultimedia qtwebsockets qt5compat qtdeclarative' # <-- ДОБАВЛЕНО: qtdeclarative содержит Qt6LabsPlatform
+        arch: 'win64_msvc2022_64'
+        modules: 'qtmultimedia qtwebsockets qt5compat' # <-- УБРАНО: qtdeclarative (он устанавливается по умолчанию как базовый компонент)
+        setup-python: false # <-- ДОБАВЛЕНО: используем Python 3.12 с предыдущего шага, игнорируя сломанный Python 3.15+ на раннере
 
-    - name: 4. Настройка компилятора Visual Studio (MSVC x64)
+    - name: 5. Настройка компилятора Visual Studio (MSVC x64)
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
 
-    - name: 5. Сборка зависимости pjproject (PJSIP)
+    - name: 6. Сборка зависимости pjproject (PJSIP)
       shell: pwsh
       run: |
         Write-Host "=== Сборка pjproject (PJSIP) ===" -ForegroundColor Cyan
@@ -69,7 +76,7 @@ jobs:
             Write-Host "Скрипт scripts/build-pjproject.ps1 не найден. Пропускаем." -ForegroundColor Yellow
         }
 
-    - name: 6. Сборка проекта через CMake
+    - name: 7. Сборка проекта через CMake
       shell: pwsh
       run: |
         if (Test-Path "vcpkg.json") {
@@ -80,7 +87,7 @@ jobs:
         }
         cmake --build build --config Release --parallel
 
-    - name: 7. Выгрузка готового .exe файла в Artifacts
+    - name: 8. Выгрузка готового .exe файла в Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: ai-softphone-no-telemetry-win64
