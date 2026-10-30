@@ -11,29 +11,77 @@ jobs:
     - name: 1. Скачивание исходного кода
       uses: actions/checkout@v4
 
-    - name: 2. Безопасный патч исходников (Отключение телеметрии на уровне бэкенда)
+    - name: 2. Патч исходников (серая телеметрия + запрет смены режима)
       shell: pwsh
       run: |
-        Write-Host "=== Поиск и модификация файлов телеметрии ===" -ForegroundColor Cyan
+        Write-Host "=== Патч файлов телеметрии ===" -ForegroundColor Cyan
+
+        function Disable-QmlBlocks {
+            param([string]$Text)
+            $lines = [System.Collections.Generic.List[string]]::new($Text -split "`r?`n")
+            $out   = [System.Collections.Generic.List[string]]::new()
+            $elemRe = '^(\s*)(RadioButton|ListRadioButton|Button|Switch|CheckBox|ComboBox)\s*\{'
+            $i = 0
+            while ($i -lt $lines.Count) {
+                $line = $lines[$i]
+                $m = [regex]::Match($line, $elemRe)
+                if ($m.Success -and -not $line.Contains('}')) {
+                    $indent = $m.Groups[1].Value
+                    $closeRe = '^' + [regex]::Escape($indent) + '\}\s*$'
+                    $block = [System.Collections.Generic.List[string]]::new()
+                    $block.Add($line)
+                    $j = $i + 1
+                    while ($j -lt $lines.Count) {
+                        $block.Add($lines[$j])
+                        if ($lines[$j] -match $closeRe) { break }
+                        $j++
+                    }
+                    $joined = $block -join "`n"
+                    if ($joined -match '(?i)(telemetry|report|sendNow|sendReport|sendTelemetry)') {
+                        $filtered = @($block | Where-Object { $_ -notmatch '^\s*enabled\s*:' })
+                        $out.Add($filtered[0])
+                        $out.Add($indent + "    enabled: false")
+                        for ($k = 1; $k -lt $filtered.Count; $k++) { $out.Add($filtered[$k]) }
+                        Write-Host "  -> Заблокирован блок: $($m.Groups[2].Value) (строка $($i+1))" -ForegroundColor Green
+                    } else {
+                        foreach ($b in $block) { $out.Add($b) }
+                    }
+                    $i = $j + 1
+                } else {
+                    $out.Add($line); $i++
+                }
+            }
+            return ($out -join "`n")
+        }
+
+        # 1. QML: серые контролы телеметрии + принудительный "off"
         Get-ChildItem -Path . -Recurse -Filter *.qml | ForEach-Object {
-          $content = Get-Content $_.FullName -Raw -Encoding UTF8
-          if ($content -match "telemetry") {
-            Write-Host "Патчим QML UI: $($_.FullName)" -ForegroundColor Green
-            $patched = $content -replace 'telemetry\.mode', '"off"'
-            Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
-          }
+            $content = Get-Content $_.FullName -Raw -Encoding UTF8
+            if ($content -match '(?i)telemetry') {
+                Write-Host "Патчим QML: $($_.FullName)" -ForegroundColor Green
+                $patched = Disable-QmlBlocks -Text $content
+                $patched = $patched -replace 'telemetry\.mode', '"off"'
+                Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
+            }
         }
+
+        # 2. C++: бэкенд всегда хранит и возвращает только "off"
         Get-ChildItem -Path . -Recurse -Include *.cpp, *.h, *.hpp | ForEach-Object {
-          $content = Get-Content $_.FullName -Raw -Encoding UTF8
-          if ($content -match "telemetry" -or $content -match '"basic"' -or $content -match '"extended"') {
-            Write-Host "Патчим C++ логику: $($_.FullName)" -ForegroundColor Green
-            $patched = $content -replace '"basic"', '"off"'
-            $patched = $patched -replace '"extended"', '"off"'
-            Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
-          }
+            $content = Get-Content $_.FullName -Raw -Encoding UTF8
+            if ($content -match '(?i)telemetry' -or $content -match '"basic"' -or $content -match '"extended"') {
+                Write-Host "Патчим C++: $($_.FullName)" -ForegroundColor Green
+                $patched = $content -replace '"basic"', '"off"'
+                $patched = $patched -replace '"extended"', '"off"'
+                Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
+            }
         }
-        Write-Host "=== Изменения в коде (git diff): ===" -ForegroundColor Yellow
+
+        Write-Host "=== git diff: ===" -ForegroundColor Yellow
         git diff
+        if (Test-Path "ui/qml/TelemetryChoice.qml") {
+            Write-Host "=== TelemetryChoice.qml после патча: ===" -ForegroundColor Yellow
+            Get-Content "ui/qml/TelemetryChoice.qml"
+        }
 
     - name: 3. Установка стабильной версии Python (для корректной работы aqt)
       uses: actions/setup-python@v5
@@ -58,11 +106,10 @@ jobs:
     - name: 6. Сборка зависимости pjproject (PJSIP)
       shell: pwsh
       run: |
-        Write-Host "=== Сборка pjproject (PJSIP) ===" -ForegroundColor Cyan
         if (Test-Path "scripts/build-pjproject.ps1") {
             powershell -ExecutionPolicy Bypass -File scripts/build-pjproject.ps1
         } else {
-            Write-Host "Скрипт scripts/build-pjproject.ps1 не найден. Пропускаем." -ForegroundColor Yellow
+            Write-Host "Скрипт build-pjproject.ps1 не найден. Пропускаем." -ForegroundColor Yellow
         }
 
     - name: 7. Сборка проекта через CMake
@@ -75,35 +122,55 @@ jobs:
         }
         cmake --build build --config Release --parallel
 
-    # >>> НОВЫЙ ШАГ: Сборка самодостаточной портативной папки <<<
-    - name: 8. Упаковка портативной версии (windeployqt + плагины + OpenSSL)
+    - name: 8. Упаковка ПОЛНОГО комплекта (как в эталонной папке) + проверка
       shell: pwsh
       run: |
         $Stage = "dist"
         New-Item -ItemType Directory -Path $Stage -Force | Out-Null
-        
-        # 1. Основные бинарники (exe + dll ядра) рядом друг с другом
+
+        # 1. Все бинарники сборки (exe, dll ядра и плагинов, pdb)
         Copy-Item -Path "build\bin\Release\*" -Destination $Stage -Recurse -Force
-        
-        # 2. Плагины: сохраняем исходную структуру И дублируем в plugins/ рядом с exe
+
+        # 2. Плагины: структура plugins/ + копия рядом с exe (как ожидает загрузчик)
         if (Test-Path "build\lib\ai-softphone") {
             Copy-Item -Path "build\lib\ai-softphone" -Destination "$Stage\lib\ai-softphone" -Recurse -Force
             $pluginsRoot = (Resolve-Path "build\lib\ai-softphone\plugins").Path
             Get-ChildItem -Path $pluginsRoot -Recurse -Filter *.dll | ForEach-Object {
-                $rel = $_.FullName.Substring($pluginsRoot.Length + 1)
+                $rel  = $_.FullName.Substring($pluginsRoot.Length + 1)
                 $dest = Join-Path "$Stage\plugins" $rel
                 New-Item -ItemType Directory -Path (Split-Path $dest) -Force | Out-Null
                 Copy-Item $_.FullName -Destination $dest -Force
             }
         }
-        
-        # 3. windeployqt подтягивает Qt6Core, Qt6Qml, Qt6QuickControls2, platforms/, qml/ и рантайм MSVC
+
+        # 3. Qt-рантайм: платформы, qml, styles, tls, iconengines, imageformats, MSVC-рантайм, opengl32sw и т.д.
         & "$env:QT_ROOT_DIR\bin\windeployqt.exe" --release --no-translations --qmldir "ui\qml" "$Stage\ai-softphone.exe"
-        
-        # 4. DLL OpenSSL (нужны для SIP/TLS)
+
+        # 4. OpenSSL (libssl-3-x64.dll / libcrypto-3-x64.dll)
         Copy-Item "C:\Program Files\OpenSSL\bin\*.dll" -Destination $Stage -Force -ErrorAction SilentlyContinue
-        
-        Write-Host "=== Содержимое папки dist: ===" -ForegroundColor Cyan
+
+        # 5. VC++ Redistributable (для целевых ПК без VS)
+        try {
+            Invoke-WebRequest -Uri "https://aka.ms/vs/17/release/vc_redist.x64.exe" -OutFile "$Stage\vc_redist.x64.exe" -UseBasicParsing
+        } catch { Write-Host "vc_redist: скачать не удалось, пропускаем." -ForegroundColor Yellow }
+
+        # 6. КОНТРОЛЬ КОМПЛЕКТА: сверяемся с эталонным списком файлов
+        $required = @(
+            "ai-softphone.exe", "Qt6Core.dll", "Qt6Qml.dll", "Qt6Gui.dll",
+            "Qt6QuickControls2.dll", "Qt6Network.dll", "Qt6Widgets.dll",
+            "softphone_core.dll", "softphone_sip.dll", "softphone_plugin_realtime.dll",
+            "softphone_plugin_softphone.dll", "softphone_plugin_monolith.dll",
+            "libssl-3-x64.dll", "libcrypto-3-x64.dll",
+            "msvcp140.dll", "vcruntime140.dll",
+            "platforms\qwindows.dll", "styles\qwindowsvistastyle.dll", "tls\qschannelbackend.dll"
+        )
+        $missing = @()
+        foreach ($r in $required) { if (-not (Test-Path (Join-Path $Stage $r))) { $missing += $r } }
+        if ($missing.Count -gt 0) {
+            Write-Host "НЕ ХВАТАЕТ ФАЙЛОВ: $($missing -join ', ')" -ForegroundColor Red
+            exit 1
+        }
+        Write-Host "=== Комплект полный. Содержимое dist: ===" -ForegroundColor Cyan
         Get-ChildItem $Stage | Select-Object Name
 
     - name: 9. Выгрузка готовой портативной папки в Artifacts
