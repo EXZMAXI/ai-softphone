@@ -11,30 +11,28 @@ jobs:
     - name: 1. Скачивание исходного кода
       uses: actions/checkout@v4
 
-    - name: 2. Патч исходников (Отключение телеметрии + серая кнопка в UI)
+    - name: 2. Безопасный патч исходников (Отключение телеметрии на уровне бэкенда)
       shell: pwsh
       run: |
         Write-Host "=== Поиск и модификация файлов телеметрии ===" -ForegroundColor Cyan
         
-        # 1. Патчим QML-файлы интерфейса
+        # 1. Патчим QML-файлы (БЕЗОПАСНО: только форсируем значение модели, не ломая синтаксис)
         Get-ChildItem -Path . -Recurse -Filter *.qml | ForEach-Object {
           $content = Get-Content $_.FullName -Raw -Encoding UTF8
           if ($content -match "telemetry") {
             Write-Host "Патчим QML UI: $($_.FullName)" -ForegroundColor Green
+            # Принудительно выставляем "off" в привязках модели
             $patched = $content -replace 'telemetry\.mode', '"off"'
-            $patched = $patched -replace '(ComboBox\s*\{)', "`$1`n            enabled: false"
-            $patched = $patched -replace '(RadioButton\s*\{)', "`$1`n            enabled: false"
-            $patched = $patched -replace '(Switch\s*\{)', "`$1`n            enabled: false"
-            $patched = $patched -replace '(Button\s*\{)', "`$1`n            enabled: false"
             Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
           }
         }
         
-        # 2. Патчим C++ файлы
+        # 2. Патчим C++ файлы (Жесткий запрет на уровне логики)
         Get-ChildItem -Path . -Recurse -Include *.cpp, *.h, *.hpp | ForEach-Object {
           $content = Get-Content $_.FullName -Raw -Encoding UTF8
-          if ($content -match "telemetry") {
+          if ($content -match "telemetry" -or $content -match '"basic"' -or $content -match '"extended"') {
             Write-Host "Патчим C++ логику: $($_.FullName)" -ForegroundColor Green
+            # Любая попытка сохранить "basic" или "extended" будет заменена на "off"
             $patched = $content -replace '"basic"', '"off"'
             $patched = $patched -replace '"extended"', '"off"'
             Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
@@ -44,7 +42,6 @@ jobs:
         Write-Host "=== Изменения в коде (git diff): ===" -ForegroundColor Yellow
         git diff
 
-    # >>> НОВЫЙ ШАГ: Явная установка стабильного Python для избежания багов aqt <<<
     - name: 3. Установка стабильной версии Python (для корректной работы aqt)
       uses: actions/setup-python@v5
       with:
@@ -57,8 +54,8 @@ jobs:
         host: 'windows'
         target: 'desktop'
         arch: 'win64_msvc2022_64'
-        modules: 'qtmultimedia qtwebsockets qt5compat' # <-- УБРАНО: qtdeclarative (он устанавливается по умолчанию как базовый компонент)
-        setup-python: false # <-- ДОБАВЛЕНО: используем Python 3.12 с предыдущего шага, игнорируя сломанный Python 3.15+ на раннере
+        modules: 'qtmultimedia qtwebsockets qt5compat'
+        setup-python: false
 
     - name: 5. Настройка компилятора Visual Studio (MSVC x64)
       uses: ilammy/msvc-dev-cmd@v1
