@@ -15,30 +15,23 @@ jobs:
       shell: pwsh
       run: |
         Write-Host "=== Поиск и модификация файлов телеметрии ===" -ForegroundColor Cyan
-        
-        # 1. Патчим QML-файлы (БЕЗОПАСНО: только форсируем значение модели, не ломая синтаксис)
         Get-ChildItem -Path . -Recurse -Filter *.qml | ForEach-Object {
           $content = Get-Content $_.FullName -Raw -Encoding UTF8
           if ($content -match "telemetry") {
             Write-Host "Патчим QML UI: $($_.FullName)" -ForegroundColor Green
-            # Принудительно выставляем "off" в привязках модели
             $patched = $content -replace 'telemetry\.mode', '"off"'
             Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
           }
         }
-        
-        # 2. Патчим C++ файлы (Жесткий запрет на уровне логики)
         Get-ChildItem -Path . -Recurse -Include *.cpp, *.h, *.hpp | ForEach-Object {
           $content = Get-Content $_.FullName -Raw -Encoding UTF8
           if ($content -match "telemetry" -or $content -match '"basic"' -or $content -match '"extended"') {
             Write-Host "Патчим C++ логику: $($_.FullName)" -ForegroundColor Green
-            # Любая попытка сохранить "basic" или "extended" будет заменена на "off"
             $patched = $content -replace '"basic"', '"off"'
             $patched = $patched -replace '"extended"', '"off"'
             Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
           }
         }
-        
         Write-Host "=== Изменения в коде (git diff): ===" -ForegroundColor Yellow
         git diff
 
@@ -67,7 +60,6 @@ jobs:
       run: |
         Write-Host "=== Сборка pjproject (PJSIP) ===" -ForegroundColor Cyan
         if (Test-Path "scripts/build-pjproject.ps1") {
-            Write-Host "Запуск scripts/build-pjproject.ps1..." -ForegroundColor Yellow
             powershell -ExecutionPolicy Bypass -File scripts/build-pjproject.ps1
         } else {
             Write-Host "Скрипт scripts/build-pjproject.ps1 не найден. Пропускаем." -ForegroundColor Yellow
@@ -77,17 +69,45 @@ jobs:
       shell: pwsh
       run: |
         if (Test-Path "vcpkg.json") {
-            Write-Host "Обнаружен vcpkg.json, используем встроенный vcpkg..." -ForegroundColor Cyan
             cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
         } else {
             cmake -B build -DCMAKE_BUILD_TYPE=Release
         }
         cmake --build build --config Release --parallel
 
-    - name: 8. Выгрузка готового .exe файла в Artifacts
+    # >>> НОВЫЙ ШАГ: Сборка самодостаточной портативной папки <<<
+    - name: 8. Упаковка портативной версии (windeployqt + плагины + OpenSSL)
+      shell: pwsh
+      run: |
+        $Stage = "dist"
+        New-Item -ItemType Directory -Path $Stage -Force | Out-Null
+        
+        # 1. Основные бинарники (exe + dll ядра) рядом друг с другом
+        Copy-Item -Path "build\bin\Release\*" -Destination $Stage -Recurse -Force
+        
+        # 2. Плагины: сохраняем исходную структуру И дублируем в plugins/ рядом с exe
+        if (Test-Path "build\lib\ai-softphone") {
+            Copy-Item -Path "build\lib\ai-softphone" -Destination "$Stage\lib\ai-softphone" -Recurse -Force
+            $pluginsRoot = (Resolve-Path "build\lib\ai-softphone\plugins").Path
+            Get-ChildItem -Path $pluginsRoot -Recurse -Filter *.dll | ForEach-Object {
+                $rel = $_.FullName.Substring($pluginsRoot.Length + 1)
+                $dest = Join-Path "$Stage\plugins" $rel
+                New-Item -ItemType Directory -Path (Split-Path $dest) -Force | Out-Null
+                Copy-Item $_.FullName -Destination $dest -Force
+            }
+        }
+        
+        # 3. windeployqt подтягивает Qt6Core, Qt6Qml, Qt6QuickControls2, platforms/, qml/ и рантайм MSVC
+        & "$env:QT_ROOT_DIR\bin\windeployqt.exe" --release --no-translations --qmldir "ui\qml" "$Stage\ai-softphone.exe"
+        
+        # 4. DLL OpenSSL (нужны для SIP/TLS)
+        Copy-Item "C:\Program Files\OpenSSL\bin\*.dll" -Destination $Stage -Force -ErrorAction SilentlyContinue
+        
+        Write-Host "=== Содержимое папки dist: ===" -ForegroundColor Cyan
+        Get-ChildItem $Stage | Select-Object Name
+
+    - name: 9. Выгрузка готовой портативной папки в Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: ai-softphone-no-telemetry-win64
-        path: |
-          build/**/*.exe
-          build/**/*.dll
+        path: dist
