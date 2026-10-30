@@ -1,0 +1,88 @@
+name: Build Custom No-Telemetry EXE
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: 1. Скачивание исходного кода
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: 2. Патч исходников (отключение телеметрии + серая кнопка в UI)
+        shell: pwsh
+        run: |
+          Write-Host "=== Поиск и модификация файлов телеметрии ===" -ForegroundColor Cyan
+
+          # 1. Патчим QML-файлы интерфейса (делаем кнопку/переключатель неактивным - серым)
+          Get-ChildItem -Path . -Recurse -Filter *.qml | ForEach-Object {
+              $content = Get-Content $_.FullName -Raw -Encoding UTF8
+              if ($content -match "telemetry") {
+                  Write-Host "Патчим QML UI: $($_.FullName)" -ForegroundColor Green
+                  
+                  # Принудительно отображаем режим "off"
+                  $patched = $content -replace 'telemetry\.mode', '"off"'
+                  
+                  # Делаем элементы управления внутри блока телеметрии неактивными (серыми)
+                  $patched = $patched -replace '(ComboBox\s*\{)', "`$1`n            enabled: false"
+                  $patched = $patched -replace '(RadioButton\s*\{)', "`$1`n            enabled: false"
+                  $patched = $patched -replace '(Switch\s*\{)', "`$1`n            enabled: false"
+                  $patched = $patched -replace '(Button\s*\{)', "`$1`n            enabled: false"
+                  
+                  Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
+              }
+          }
+
+          # 2. Патчим C++ файлы (меняем дефолтный режим с "basic"/"extended" на "off")
+          Get-ChildItem -Path . -Recurse -Include *.cpp, *.h, *.hpp | ForEach-Object {
+              $content = Get-Content $_.FullName -Raw -Encoding UTF8
+              if ($content -match "telemetry") {
+                  Write-Host "Патчим C++ логику: $($_.FullName)" -ForegroundColor Green
+                  
+                  # Заменяем режимы "basic" и "extended" на "off" в логике чтения/записи настроек
+                  $patched = $content -replace '"basic"', '"off"'
+                  $patched = $patched -replace '"extended"', '"off"'
+                  
+                  Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
+              }
+          }
+
+          Write-Host "=== Изменения в коде (git diff): ===" -ForegroundColor Yellow
+          git diff
+
+      - name: 3. Установка Qt 6 в облаке
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.7.2'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+          modules: 'qtmultimedia qtwebsockets qt5compat'
+
+      - name: 4. Настройка компилятора Visual Studio (MSVC x64)
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: 5. Сборка проекта через CMake
+        shell: pwsh
+        run: |
+          if (Test-Path "vcpkg.json") {
+              Write-Host "Обнаружен vcpkg.json, используем встроенный vcpkg..."
+              cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
+          } else {
+              cmake -B build -DCMAKE_BUILD_TYPE=Release
+          }
+          cmake --build build --config Release --parallel
+
+      - name: 6. Выгрузка готового .exe файла в Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-softphone-no-telemetry-win64
+          path: |
+            build/**/*.exe
+            build/**/*.dll
