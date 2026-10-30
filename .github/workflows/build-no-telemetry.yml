@@ -8,84 +8,78 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: 1. Скачивание исходного кода
-      uses: actions/checkout@v4
+      - name: 1. Скачивание исходного кода
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-    - name: 2. Патч исходников (Отключение телеметрии + серая кнопка в UI)
-      shell: pwsh
-      run: |
-        Write-Host "=== Поиск и модификация файлов телеметрии ===" -ForegroundColor Cyan
-        
-        # 1. Патчим QML-файлы интерфейса
-        Get-ChildItem -Path . -Recurse -Filter *.qml | ForEach-Object {
-          $content = Get-Content $_.FullName -Raw -Encoding UTF8
-          if ($content -match "telemetry") {
-            Write-Host "Патчим QML UI: $($_.FullName)" -ForegroundColor Green
-            $patched = $content -replace 'telemetry\.mode', '"off"'
-            $patched = $patched -replace '(ComboBox\s*\{)', "`$1`n            enabled: false"
-            $patched = $patched -replace '(RadioButton\s*\{)', "`$1`n            enabled: false"
-            $patched = $patched -replace '(Switch\s*\{)', "`$1`n            enabled: false"
-            $patched = $patched -replace '(Button\s*\{)', "`$1`n            enabled: false"
-            Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
+      - name: 2. Патч исходников (отключение телеметрии + серая кнопка в UI)
+        shell: pwsh
+        run: |
+          Write-Host "=== Патчим код телеметрии ===" -ForegroundColor Cyan
+          Get-ChildItem -Path . -Recurse -Filter *.qml | ForEach-Object {
+              $content = Get-Content $_.FullName -Raw -Encoding UTF8
+              if ($content -match "telemetry") {
+                  $patched = $content -replace 'telemetry\.mode', '"off"'
+                  $patched = $patched -replace '(ComboBox\s*\{)', "`$1`n            enabled: false"
+                  Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
+              }
           }
-        }
-        
-        # 2. Патчим C++ файлы
-        Get-ChildItem -Path . -Recurse -Include *.cpp, *.h, *.hpp | ForEach-Object {
-          $content = Get-Content $_.FullName -Raw -Encoding UTF8
-          if ($content -match "telemetry") {
-            Write-Host "Патчим C++ логику: $($_.FullName)" -ForegroundColor Green
-            $patched = $content -replace '"basic"', '"off"'
-            $patched = $patched -replace '"extended"', '"off"'
-            Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
+          Get-ChildItem -Path . -Recurse -Include *.cpp, *.h, *.hpp | ForEach-Object {
+              $content = Get-Content $_.FullName -Raw -Encoding UTF8
+              if ($content -match "telemetry") {
+                  $patched = $content -replace '"basic"', '"off"'
+                  $patched = $patched -replace '"extended"', '"off"'
+                  Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
+              }
           }
-        }
-        
-        Write-Host "=== Изменения в коде (git diff): ===" -ForegroundColor Yellow
-        git diff
 
-    - name: 3. Установка Qt 6 в облаке
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: '6.7.2'
-        host: 'windows'
-        target: 'desktop'
-        arch: 'win64_msvc2019_64'
-        modules: 'qtmultimedia qtwebsockets qt5compat'
+      - name: 3. Установка Qt 6.7.2 в облаке
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.7.2'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+          modules: 'qtmultimedia qtwebsockets qt5compat'
 
-    - name: 4. Настройка компилятора Visual Studio (MSVC x64)
-      uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: x64
+      - name: 3.1. Исправление версии Qt в CMake-файлах под 6.7
+        shell: pwsh
+        run: |
+          Write-Host "Снижаем требования Qt до 6.7..." -ForegroundColor Cyan
+          Get-ChildItem -Path . -Recurse -Filter "CMakeLists.txt" | ForEach-Object {
+              $content = Get-Content $_.FullName -Raw -Encoding UTF8
+              if ($content -match "Qt6") {
+                  $patched = $content -replace '6\.8', '6.7'
+                  Set-Content -Path $_.FullName -Value $patched -Encoding UTF8
+              }
+          }
 
-    # >>> НОВЫЙ ШАГ: Сборка зависимости pjproject перед CMake <<<
-    - name: 5. Сборка зависимости pjproject (PJSIP)
-      shell: pwsh
-      run: |
-        Write-Host "=== Сборка pjproject (PJSIP) ===" -ForegroundColor Cyan
-        if (Test-Path "scripts/build-pjproject.ps1") {
-            Write-Host "Запуск scripts/build-pjproject.ps1..." -ForegroundColor Yellow
-            # Запускаем скрипт именно так, как требует сообщение об ошибке CMake
-            powershell -ExecutionPolicy Bypass -File scripts/build-pjproject.ps1
-        } else {
-            Write-Host "Скрипт scripts/build-pjproject.ps1 не найден. Пропускаем." -ForegroundColor Yellow
-        }
+      - name: 4. Настройка компилятора Visual Studio (MSVC x64)
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
 
-    - name: 6. Сборка проекта через CMake
-      shell: pwsh
-      run: |
-        if (Test-Path "vcpkg.json") {
-            Write-Host "Обнаружен vcpkg.json, используем встроенный vcpkg..." -ForegroundColor Cyan
-            cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
-        } else {
-            cmake -B build -DCMAKE_BUILD_TYPE=Release
-        }
-        cmake --build build --config Release --parallel
+      - name: 5. Сборка проекта через CMake
+        shell: pwsh
+        run: |
+          # Если проект требует предварительной сборки pjproject через скрипт автора:
+          if (Test-Path "scripts/build-pjproject.ps1") {
+              Write-Host "Сборка зависимостей pjproject..." -ForegroundColor Yellow
+              & .\scripts\build-pjproject.ps1
+          }
 
-    - name: 7. Выгрузка готового .exe файла в Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: ai-softphone-no-telemetry-win64
-        path: |
-          build/**/*.exe
-          build/**/*.dll
+          if (Test-Path "vcpkg.json") {
+              cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$env:QT_ROOT_DIR" -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
+          } else {
+              cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$env:QT_ROOT_DIR"
+          }
+          cmake --build build --config Release --parallel
+
+      - name: 6. Выгрузка готового .exe файла в Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-softphone-no-telemetry-win64
+          path: |
+            build/**/*.exe
+            build/**/*.dll
